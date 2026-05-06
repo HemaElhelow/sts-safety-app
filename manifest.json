@@ -1,0 +1,10 @@
+{
+  "name": "STS Safety",
+  "short_name": "STS Safety",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "lang": "ar",
+  "dir": "rtl"
+}
