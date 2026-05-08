@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تقييم المخاطر - Ganoub Elwady Safety</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            padding: 20px 15px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .question-box {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-content {
+            padding: 20px 15px;
+        }
+        
+        .counter {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            margin: -20px -15px 20px -15px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        
+        .question {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .question-image-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0 25px 0;
+        }
+        
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
+        
+        .buttons {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            font-size: 1rem;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:active::before {
+            left: 100%;
+        }
+        
+        .btn-safe {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-unsafe {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+        
+        .btn-missing {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(33, 150, 243, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            touch-action: manipulation;
+        }
+        
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .back-btn.hidden {
+            transform: translateY(100px);
+            opacity: 0;
+        }
+        
+        .risk-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .risk-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .risk-header {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .risk-body {
+            padding: 20px 15px;
+        }
+        
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            direction: ltr;
+        }
+        
+        .risk-cell {
+            aspect-ratio: 1;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            touch-action: manipulation;
+            min-height: 45px;
+        }
+        
+        .risk-cell.green { 
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .risk-cell.yellow { 
+            background: linear-gradient(135deg, #FFEB3B, #FDD835);
+            color: #333;
+        }
+        
+        .risk-cell.orange { 
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+        }
+        
+        .risk-cell.red { 
+            background: linear-gradient(135deg, #F44336, #D32F2F);
+            color: white;
+        }
+        
+        .risk-cell:active {
+            transform: scale(0.95);
+        }
+        
+        .risk-cell.selected {
+            border-color: #333;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        
+        .note-section {
+            margin-top: 20px;
+        }
+        
+        .note-section h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .note-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 100px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .note-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        
+        .save-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+        
+        .btn-save.stop-work {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+        
+        .btn-save:active {
+            transform: translateY(2px);
+        }
+        
+        .risk-footer {
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn-cancel {
+            background: #9e9e9e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+        
+        .btn-cancel:active {
+            background: #757575;
+            transform: translateY(1px);
+        }
+        
+        .risk-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            display: none;
+            text-align: right;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-right: 4px solid #4caf50;
+        }
+        
+        .risk-code {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            margin-top: 10px;
+            border-radius: 5px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            text-align: center;
+            background: #ffebee;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        
+        .final-screen {
+            display: none;
+            padding: 20px 15px;
+        }
+        
+        .final-matrix {
+            margin: 20px 0;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            min-height: 80px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        
+        .final-buttons {
+            display: grid;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .btn-final {
+            padding: 15px 20px;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            touch-action: manipulation;
+        }
+        
+        .btn-final-primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-final-secondary {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-final-danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+        
+        .btn-final:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+            font-size: 0.8rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        
+        .validation-error {
+            color: #f44336;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            text-align: center;
+            background: #ffebee;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        /* أنماط إضافية للتحسينات */
+        #progressIndicator {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .backup-notification {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            z-index: 99;
+            animation: pulse 2s infinite;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .validation-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 10px;
+            padding: 8px;
+            background: #ffebee;
+            border-radius: 5px;
+            display: none;
+            animation: shake 0.5s;
+        }
+
+        /* تحسينات للأجهزة الصغيرة */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+                font-size: 13px;
+            }
+            
+            .header {
+                padding: 15px 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .question-content {
+                padding: 15px 10px;
+            }
+            
+            .question {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+            
+            .btn {
+                padding: 14px 16px;
+                font-size: 0.95rem;
+            }
+            
+            .risk-matrix {
+                gap: 6px;
+            }
+            
+            .risk-cell {
+                min-height: 40px;
+                font-size: 0.8rem;
+            }
+            
+            .back-btn {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                left: 15px;
+                font-size: 18px;
+            }
+            
+            .legend {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .legend-item {
+                font-size: 0.75rem;
+            }
+            
+            .backup-notification {
+                bottom: 70px;
+                left: 15px;
+                font-size: 0.7rem;
+                padding: 8px 12px;
+            }
+        }
+        
+        /* تحسينات للأجهزة الكبيرة */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+            
+            .buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .final-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .legend {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* إضافة تأثيرات حركة سلسة */
+        .question-box {
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .risk-modal.show {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .risk-content {
+            animation: slideInUp 0.3s ease-out;
+        }
+        
+        /* تحسين تفاعل اللمس */
+        .btn, .risk-cell, .btn-save, .btn-cancel, .btn-final {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        
+        /* إضافة نمط للتركيز بالكيبورد */
+        .btn:focus, .risk-cell:focus, .btn-save:focus, .btn-cancel:focus, .btn-final:focus {
+            outline: 2px solid #2196F3;
+            outline-offset: 2px;
+        }
+        
+        /* تحسين النصوص للعربية */
+        body {
+            line-height: 1.6;
+        }
+        
+        .question, .risk-header, .note-section h3 {
+            text-align: center;
+        }
+        
+        .text-input, .note-input {
+            text-align: right;
+            direction: rtl;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Ganoub Elwady Safety</h1>
+        <p>نظام تقييم المخاطر</p>
+    </div>
+    
+    <div class="question-box">
+        <div class="question-content">
+            <div class="counter" id="counter">السؤال 1 من <span id="totalQuestions">38</span></div>
+            <div class="question" id="question">تحميل السؤال...</div>
+            
+            <div class="question-image-container">
+                <img id="questionImage" class="question-image" style="display:none;">
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-safe" onclick="answer('آمن')">✓ آمن</button>
+                <button class="btn btn-unsafe" onclick="answer('غير آمن')">✗ غير آمن</button>
+                <button class="btn btn-missing" onclick="answer('غير مطبق')">— غير مطبق</button>
+            </div>
+            
+            <div class="validation-message" id="validationMessage">يجب الإجابة على هذا السؤال قبل الانتقال للسؤال التالي</div>
+            
+            <div class="risk-result" id="riskResult"></div>
+            
+            <div class="final-screen" id="finalScreen">
+                <h2 style="text-align: center; margin-bottom: 20px; color: #333;">تقييم المخاطر النهائي</h2>
+                <p style="text-align: center; margin-bottom: 20px; color: #666;">يرجى مراجعة مصفوفة المخاطر وإدخال أي ملاحظات إضافية:</p>
+                
+                <div class="final-matrix">
+                    <div class="risk-matrix" id="finalRiskMatrix"></div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #4CAF50, #45a049);"></div>
+                            <span>مخاطر منخفضة (1-2)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #FFEB3B, #FDD835);"></div>
+                            <span>مخاطر متوسطة (3-6)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #FF9800, #F57C00);"></div>
+                            <span>مخاطر عالية (8-12)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #F44336, #D32F2F);"></div>
+                            <span>مخاطر شديدة (15-25)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: right; margin-top: 20px;">
+                    <h3>الاخطار الاضافية وغير متحكم بها:</h3>
+                    <textarea class="text-input" id="finalNotes" rows="3" placeholder="أدخل الاخطار الاضافية وغير متحكم بها..."></textarea>
+                    
+                    <h3>تدابير التحكم فى الاخطار الاضافية:</h3>
+                    <textarea class="text-input" id="finalRecommendations" rows="3" placeholder="أدخل تدابير التحكم فى الاخطار الإضافية..."></textarea>
+                    <div class="validation-error" id="matrixError">يجب تحديد مستوى الخطر من المصفوفة</div>
+                    <div class="validation-error" id="notesError">يجب إدخال الاخطار الاضافية وتدابير التحكم بها</div>
+                </div>
+                
+                <div class="final-buttons">
+                    <button class="btn-final btn-final-secondary" onclick="noAdditionalRisks()">لا يوجد خطر إضافي</button>
+                    <button class="btn-final btn-final-primary" onclick="saveAndViewResults()">حفظ والذهاب للنتيجة</button>
+                    <button class="btn-final btn-final-danger" onclick="saveAndAddMore()">حفظ وإضافة آخر</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="back-btn hidden" id="backBtn" onclick="goToPreviousQuestion()">←</button>
+
+<div class="risk-modal" id="riskModal">
+    <div class="risk-content">
+        <div class="risk-header">تقييم الخطر غير الآمن</div>
+        <div class="risk-body">
+            <p style="margin-bottom: 15px; text-align: center;">يرجى تحديد مستوى الخطر من مصفوفة التقييم أدناه:</p>
+            
+            <div class="risk-matrix" id="riskMatrix"></div>
+            
+            <div class="note-section" id="noteSection">
+                <h3>ملاحظات إضافية:</h3>
+                <textarea class="note-input" id="riskNote" placeholder="اكتب هنا أي ملاحظات إضافية حول الخطر..."></textarea>
+                <div class="error-message" id="noteError">يجب إدخال ملاحظات حول الخطر قبل الحفظ</div>
+                <div class="save-container">
+                    <button class="btn-save" id="saveBtn" onclick="saveRiskAssessment()">حفظ التقييم</button>
+                </div>
+            </div>
+        </div>
+        <div class="risk-footer">
+            <button class="btn-cancel" onclick="closeRiskModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // قائمة الأسئلة التي ستخفي عندما لا يتضمن النشاط برج
+    const towerRelatedQuestions = [13, 14, 15, 16, 17, 18, 19, 23, 36, 37, 38];
+
+    // قاعدة بيانات الأسئلة الكاملة مع الصور (باستخدام المسار الصحيح)
+    const allQuestions = [
+        { id: 1, text: "هل جميع افراد فريق العمل مؤهلين ومصرح لهم بالعمل؟", category: "التأهيل والترخيص", image: "/assets/a.png" },
+        { id: 2, text: "هل جميع اعضاء الفريق لائقين طبيا للقيام بالعمل المكلفين به؟", category: "اللياقة الطبية", image: "/assets/b.png" },
+        { id: 3, text: "هل يتواجد بالموقع الرقابة المؤهلة والجيدة؟", category: "الرقابة", image: "/assets/c.png" },
+        { id: 4, text: "هل يتواجد فردين بالموقع في الاعمال شديدة الخطورة وهل تم تدريب احدهم على اجراءات الطوارئ (الانقاذ على ارتفاعات، إيقاف الطوارئ، اسعافات اولية، مكافحة حريق)؟", category: "التدريب", image: "/assets/d.jpg" },
+        { id: 5, text: "هل الموقع على درجة جيدة من النظافة؟", category: "النظافة", image: "/assets/e.png" },
+        { id: 6, text: "هل الموقع مؤمن ودخوله في اوقات محددة؟ وهل جميع العلامات التحذيرية في اماكنها (الكهرباء، التسلق، الاشعاع، المواد القابلة للاشتعال، الدخول في اوقات محددة... الخ)؟", category: "الأمان", image: "/assets/f.png" },
+        { id: 7, text: "هل الموقع والمنطقة المحيطة خالية من الغازات والسوائل القابلة للاشتعال والاحتراق، عناصر متفجرة، ابخرة، ادخنة، اتربة، الخ؟", category: "البيئة", image: "/assets/g.png" },
+        { id: 8, text: "هل وسائل الخروج (مثل الباب والطريق والسلالم) امنة للخروج بسلام؟", category: "مسالك الهروب", image: "/assets/exit.png" },
+        { id: 9, text: "هل يوجد مسافة امان بين فريق العمل والوصلات الكهربية المرتفعة؟", category: "السلامة الكهربائية", image: "/assets/jj.png" },
+        { id: 10, text: "هل الموقع خالي من الحيوانات والثعابين وأي حيوانات ضارة أخرى؟", category: "السلامة العامة", image: "/assets/i.png" },
+        { id: 11, text: "هل تم التحكم في اخطار الموجات الكهرومغناطيسية؟", category: "المخاطر الفيزيائية", image: "/assets/j.png" },
+        { id: 12, text: "هل التوصيلات الكهربائية والاجهزة تم التفتيش عليها (معزولة، وتعمل جيدا) مثل (الاسلاك، الكابلات، المفاتيح، المولد، المحولات، البطاريات، كشافات الانارة، فيوزات، كابل الأرضي موجود... الخ)؟", category: "التفتيش الكهربائي", image: "/assets/k.png" },
+        { id: 13, text: "هل الرفع اليدوي يتم باستخدام معدات جيدة (مخطط لها، باستخدام بكارة مناسبة، تحديد اماكن الرفع والتنزيل)؟", category: "الرفع اليدوي", image: "/assets/l.png" },
+        { id: 14, text: "هل عملية الرفع مخطط لها قبل بدء العمل وباستخدام معدات مناسبة (القائم بهذا العمل مختص وحاصل على شهادة سارية)؟", category: "رفع المعدات", image: "/assets/m.png" },
+        { id: 15, text: "هل تم التحكم المناسب في العمل على ارتفاعات من حيث (وجود عدد 2 على الاقل متسلق ابراج مدربين، لائقين طبيا، استخدام معدات التسلق والهبوط المناسب)？", category: "العمل على الارتفاعات", image: "/assets/n.png" },
+        { id: 16, text: "هل سطح الموقع امن بما فيه الكفاية (حافة سطح الموقع، بدون انبعاج - انحدار - بدون هشاشة - لايوجد نقاط ضعف)؟", category: "سلامة الأسطح", image: "/assets/o.png" },
+        { id: 17, text: "هل تم احتساب حد الامان للاحمال قبل بدء العمل؟", category: "تحميل المعدات", image: "/assets/p.png" },
+        { id: 18, text: "هل المنطقة تحت رفع الخامات خالية والتحرك فيها امن؟", category: "مناطق العمل", image: "/assets/q.png" },
+        { id: 19, text: "هل تم فحص معدات التسلق قبل السماح بالعمل بها في كل وردية؟", category: "فحص المعدات", image: "/assets/r.png" },
+        { id: 20, text: "هل يتم التحكم في الاعمال شديدة الخطورة من حيث (تم وضع خطة، تم التدريب على استخدامها، استخدام مهمات الوقاية الشخصية المناسبة، وخطة الطوارئ موضوعة في مكانها)؟", category: "الأعمال الخطرة", image: "/assets/ss.png" },
+        { id: 21, text: "هل تم التحكم في الاعمال الكهربائية (ممنوع العمل على مصدر الكهرباء الحي، استخدام مهمات شخصية صالحة، استخدام علامات التحذير ووسائل المنع للتيار الكهربي، استخدام معدات يدوية معزولة عزل مزدوج، استخدام اسلاك كهربائية ممتدة لايوجد بها وصلات)؟", category: "الأعمال الكهربائية", image: "/assets/s.png" },
+        { id: 22, text: "هل أدوات الحماية الشخصية مناسبة وتم فحصها قبل العمل؟", category: "معدات الوقاية", image: "/assets/mmm.png" },
+        { id: 23, text: "هل معدات الحماية من السقوط المستخدمة امنة وفي حالة جيدة؟", category: "معدات الوقاية", image: "/assets/u.png" },
+        { id: 24, text: "هل خوذة الرأس وحذاء الامان بحالة جيدة؟", category: "معدات الوقاية", image: "/assets/v.png" },
+        { id: 25, text: "هل يتم فحص الأدوات والمعدات قبل وبعد الاستخدام ويتم تخزينها بطريقة سليمة؟", category: "فحص المعدات", image: "/assets/aaa.png" },
+        { id: 26, text: "هل المركبات مطابقة لمواصفات فودافون (ايرباج، فرامل هيدروليكية، حزام أمان، شنطة طوارئ)؟", category: "سلامة المركبات", image: "/assets/x.png" },
+        { id: 27, text: "هل السائق مدرب على اساليب القيادة الامنة؟", category: "تدريب السائقين", image: "/assets/yy.png" },
+        { id: 28, text: "هل يوجد نموذج فحص السيارة موقع عليها من مهندس الموقع؟", category: "فحص المركبات", image: "/assets/y.png" },
+        { id: 29, text: "هل يتم عمل فحص وصيانة للسيارة وتقييم السائق؟", category: "صيانة المركبات", image: "/assets/z.png" },
+        { id: 30, text: "هل يوجد جهاز تتبع وسماعة هاتف خارجية بالسيارة؟", category: "تتبع المركبات", image: "/assets/aa.png" },
+        { id: 31, text: "هل يوجد خطة طوارئ في مكان العمل؟", category: "خطط الطوارئ", image: "/assets/bb.png" },
+        { id: 32, text: "هل جميع الافراد مدربون على خطة الطوارئ؟", category: "تدريب الطوارئ", image: "/assets/cc.png" },
+        { id: 33, text: "هل شنطة الاسعافات موجودة وتحتوي على كل الأدوات المطلوبة؟", category: "الإسعافات الأولية", image: "/assets/dd.png" },
+        { id: 34, text: "هل يوجد شخص مؤهل ومدرب على مكافحة الحريق؟", category: "مكافحة الحريق", image: "/assets/fire_fire.png" },
+        { id: 35, text: "هل يوجد طفاية حريق 3 كجم صالحة للعمل وبحالة جيدة؟", category: "معدات الإطفاء", image: "/assets/fire.png" },
+        { id: 36, text: "هل يوجد شخص مدرب على الانقاذ في حالة العمل على ارتفاعات؟", category: "عمليات الإنقاذ", image: "/assets/gg.png" },
+        { id: 37, text: "هل يوجد عدة انقاذ مناسبة؟", category: "معدات الإنقاذ", image: "/assets/r.png" },
+        { id: 38, text: "هل يتم فحص معدات التسلق دوريا من جهة مختصة؟", category: "فحص المعدات", image: "/assets/inspection.png" }
+    ];
+
+    // متغيرات النظام
+    let currentQuestion = 0;
+    let selectedRiskValue = null;
+    let isStopWork = false;
+    let riskNote = "";
+    let finalRiskSelection = null;
+    let questions = [];
+    const assessments = [];
+    const activityType = localStorage.getItem('activityType') || '';
+    const siteData = JSON.parse(localStorage.getItem('siteData')) || {};
+
+    // عناصر DOM
+    const questionEl = document.getElementById('question');
+    const counterEl = document.getElementById('counter');
+    const totalQuestionsEl = document.getElementById('totalQuestions');
+    const questionImageEl = document.getElementById('questionImage');
+    const riskModal = document.getElementById('riskModal');
+    const riskMatrix = document.getElementById('riskMatrix');
+    const riskResultEl = document.getElementById('riskResult');
+    const noteSection = document.getElementById('noteSection');
+    const riskNoteInput = document.getElementById('riskNote');
+    const saveBtn = document.getElementById('saveBtn');
+    const noteError = document.getElementById('noteError');
+    const backBtn = document.getElementById('backBtn');
+    const finalScreen = document.getElementById('finalScreen');
+    const finalRiskMatrix = document.getElementById('finalRiskMatrix');
+    const finalNotes = document.getElementById('finalNotes');
+    const finalRecommendations = document.getElementById('finalRecommendations');
+    const matrixError = document.getElementById('matrixError');
+    const notesError = document.getElementById('notesError');
+    const validationMessage = document.getElementById('validationMessage');
+
+    // تهيئة الصفحة عند التحميل
+    window.onload = function() {
+        // محاولة استعادة البيانات من النسخة الاحتياطية
+        if (restoreFromBackup()) {
+            showBackupNotification();
+        }
+        
+        // تصفية الأسئلة حسب نوع النشاط
+        filterQuestions();
+        
+        // بدء التقييم
+        updateQuestion();
+        
+        // منع تحديد النص
+        document.onselectstart = function() {
+            return false;
+        };
+        
+        // تحسين الأداء للأجهزة المحمولة
+        document.addEventListener('touchstart', function() {}, {passive: true});
+        document.addEventListener('touchmove', function() {}, {passive: true});
+    };
+
+    // دالة للنسخ الاحتياطي للبيانات الحالية
+    function backupCurrentData() {
+        try {
+            const backupData = {
+                currentQuestion: currentQuestion,
+                assessments: assessments,
+                questions: questions,
+                timestamp: new Date().toISOString(),
+                siteData: siteData,
+                activityType: activityType
+            };
+            localStorage.setItem('riskAssessmentBackup', JSON.stringify(backupData));
+            console.log('تم حفظ النسخة الاحتياطية');
+        } catch (error) {
+            console.error('خطأ في حفظ النسخة الاحتياطية:', error);
+        }
+    }
+
+    // دالة لاستعادة البيانات من النسخة الاحتياطية
+    function restoreFromBackup() {
+        try {
+            const backupData = JSON.parse(localStorage.getItem('riskAssessmentBackup'));
+            if (backupData) {
+                // التحقق من أن البيانات حديثة (لا تتجاوز 24 ساعة)
+                const backupTime = new Date(backupData.timestamp);
+                const currentTime = new Date();
+                const hoursDiff = Math.abs(currentTime - backupTime) / 36e5;
+                
+                if (hoursDiff < 24) {
+                    currentQuestion = backupData.currentQuestion || 0;
+                    
+                    // دمج التقييمات مع الحفاظ على الهيكل الصحيح
+                    if (backupData.assessments && Array.isArray(backupData.assessments)) {
+                        backupData.assessments.forEach((assessment, index) => {
+                            if (assessment && assessment.questionId) {
+                                assessments[index] = assessment;
+                            }
+                        });
+                    }
+                    
+                    console.log('تم استعادة البيانات من النسخة الاحتياطية');
+                    return true;
+                } else {
+                    // حذف النسخة الاحتياطية إذا كانت قديمة
+                    localStorage.removeItem('riskAssessmentBackup');
+                }
+            }
+        } catch (error) {
+            console.error('خطأ في استعادة النسخة الاحتياطية:', error);
+        }
+        return false;
+    }
+
+    // دالة لعرض إشعار بوجود نسخة احتياطية
+    function showBackupNotification() {
+        const notification = document.createElement('div');
+        notification.className = 'backup-notification';
+        notification.innerHTML = 'تم استعادة التقدم السابق ✓';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // دالة للتحقق من صحة البيانات قبل الحفظ النهائي
+    function validateFinalData() {
+        const allAnswers = questions.map((q, index) => {
+            return assessments[index] || {
+                questionId: q.id,
+                question: q.text,
+                answer: q.hidden ? 'غير مطبق' : 'غير مجاب',
+                category: q.category,
+                hidden: q.hidden,
+                notes: q.hidden ? 'سؤال خاص بالأبراج - النشاط لا يتضمن أبراج' : '',
+                timestamp: new Date().toISOString()
+            };
+        });
+
+        // التحقق من أن جميع الأسئلة قد تمت الإجابة عليها
+        const unansweredQuestions = allAnswers.filter(a => 
+            !a.hidden && a.answer === 'غير مجاب'
+        );
+        
+        if (unansweredQuestions.length > 0) {
+            return {
+                valid: false,
+                message: `يوجد ${unansweredQuestions.length} أسئلة لم تتم الإجابة عليها`
+            };
+        }
+        
+        return {
+            valid: true,
+            data: allAnswers
+        };
+    }
+
+    // تصفية الأسئلة حسب نوع النشاط
+    function filterQuestions() {
+        if (activityType === 'noTower') {
+            questions = allQuestions.map(q => {
+                if (towerRelatedQuestions.includes(q.id)) {
+                    return { ...q, hidden: true, answer: 'غير مطبق', notes: 'سؤال خاص بالأبراج - النشاط لا يتضمن أبراج' };
+                }
+                return q;
+            });
+        } else {
+            questions = [...allQuestions];
+        }
+        
+        // التحقق إذا كان هناك تقدم سابق
+        checkForPreviousProgress();
+        
+        updateTotalQuestions();
+    }
+
+    // دالة للتحقق من التقدم السابق
+    function checkForPreviousProgress() {
+        const hasBackup = localStorage.getItem('riskAssessmentBackup');
+        if (hasBackup) {
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'continue-btn';
+            continueBtn.innerHTML = '↩️ متابعة التقييم السابق';
+            continueBtn.onclick = function() {
+                if (confirm('هل تريد متابعة التقييم السابق؟ سيتم فقدان التقدم الحالي إذا لم يتم حفظه.')) {
+                    location.reload();
+                }
+            };
+            
+            const counterContainer = document.querySelector('.counter');
+            if (counterContainer) {
+                counterContainer.appendChild(continueBtn);
+            }
+        }
+    }
+
+    // تحديث عدد الأسئلة الإجمالي
+    function updateTotalQuestions() {
+        const visibleQuestions = questions.filter(q => !q.hidden).length;
+        totalQuestionsEl.textContent = visibleQuestions;
+    }
+
+    // تحديث السؤال الحالي
+    function updateQuestion() {
+        // البحث عن السؤال التالي غير المخفي
+        let nextQuestionIndex = currentQuestion;
+        while (nextQuestionIndex < questions.length && questions[nextQuestionIndex].hidden) {
+            nextQuestionIndex++;
+        }
+
+        if (nextQuestionIndex < questions.length) {
+            const question = questions[nextQuestionIndex];
+            const visibleQuestionNumber = questions.slice(0, nextQuestionIndex).filter(q => !q.hidden).length + 1;
+            const totalVisible = questions.filter(q => !q.hidden).length;
+            
+            questionEl.textContent = question.text;
+            counterEl.innerHTML = `السؤال ${visibleQuestionNumber} من ${totalVisible}`;
+            
+            if (question.image) {
+                questionImageEl.src = question.image;
+                questionImageEl.style.display = 'block';
+                questionImageEl.onerror = function() {
+                    this.style.display = 'none';
+                };
+            } else {
+                questionImageEl.style.display = 'none';
+            }
+            
+            riskResultEl.style.display = 'none';
+            finalScreen.style.display = 'none';
+            document.querySelector('.buttons').style.display = 'grid';
+            validationMessage.style.display = 'none';
+            
+            // إظهار/إخفاء زر العودة
+            if (nextQuestionIndex > 0) {
+                backBtn.classList.remove('hidden');
+            } else {
+                backBtn.classList.add('hidden');
+            }
+            
+            // إضافة مؤشر التقدم
+            updateProgressIndicator(visibleQuestionNumber, totalVisible);
+            
+            // تحديث الرسوم المتحركة
+            document.querySelector('.question-box').style.animation = 'none';
+            setTimeout(() => {
+                document.querySelector('.question-box').style.animation = 'slideInUp 0.5s ease-out';
+            }, 10);
+        } else {
+            // عند الانتهاء من جميع الأسئلة
+            showFinalScreen();
+        }
+    }
+
+    // تحديث مؤشر التقدم
+    function updateProgressIndicator(current, total) {
+        const progressPercentage = Math.round((current / total) * 100);
+        const progressText = `إكمال: ${progressPercentage}%`;
+        
+        let progressEl = document.getElementById('progressIndicator');
+        if (!progressEl) {
+            progressEl = document.createElement('div');
+            progressEl.id = 'progressIndicator';
+            counterEl.parentNode.insertBefore(progressEl, counterEl.nextSibling);
+        }
+        progressEl.textContent = progressText;
+    }
+
+    // حفظ التقييم الحالي - تأكد من تخزين questionId
+    function saveAssessment(answer, riskValue, riskRow, riskColumn, isStopWork, notes) {
+        const question = questions[currentQuestion];
+        
+        // التأكد من وجود questionId
+        if (!question || !question.id) {
+            console.error('خطأ: لا يوجد سؤال أو معرف سؤال غير صالح');
+            return;
+        }
+        
+        assessments[currentQuestion] = {
+            questionId: question.id, // هذا هو السطر المهم
+            question: question.text,
+            answer: answer,
+            riskValue: riskValue,
+            riskRow: riskRow,
+            riskColumn: riskColumn,
+            isStopWork: isStopWork,
+            notes: notes,
+            image: question.image,
+            timestamp: new Date().toISOString(),
+            category: question.category,
+            hidden: question.hidden || false
+        };
+        
+        // حفظ مؤقت في localStorage بعد كل إجابة
+        backupCurrentData();
+    }
+
+    // الإجابة على السؤال الحالي
+    function answer(status) {
+        const currentQ = questions[currentQuestion];
+        
+        // إذا كان السؤال مخفيًا (خاص بالأبراج في حالة لا يتضمن برج)
+        if (currentQ.hidden) {
+            saveAssessment('غير مطبق', null, null, null, false, 'سؤال خاص بالأبراج - النشاط لا يتضمن أبراج');
+            moveToNextQuestion();
+            return;
+        }
+
+        // إضافة تأثير بصري للزر المضغوط
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(btn => btn.style.transform = 'scale(1)');
+        
+        if (status === 'غير آمن') {
+            showRiskModal();
+        } else {
+            // إضافة تأثير بصري للإجابة
+            const selectedBtn = Array.from(buttons).find(btn => btn.textContent.includes(status.split(' ')[status.split(' ').length - 1]));
+            if (selectedBtn) {
+                selectedBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    selectedBtn.style.transform = 'scale(1)';
+                }, 150);
+            }
+            
+            saveAssessment(status, null, null, null, false, null);
+            setTimeout(() => moveToNextQuestion(), 200);
+        }
+    }
+
+    // الانتقال إلى السؤال التالي (مع التحقق من الإجابة)
+    function moveToNextQuestion() {
+        // التحقق من وجود إجابة للسؤال الحالي
+        if (!assessments[currentQuestion] && !questions[currentQuestion].hidden) {
+            // إظهار رسالة التحقق
+            validationMessage.style.display = 'block';
+            
+            // إضافة تأثير الاهتزاز
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+            
+            // إخفاء الرسالة بعد 3 ثوان
+            setTimeout(() => {
+                validationMessage.style.display = 'none';
+            }, 3000);
+            
+            return; // عدم المتابعة إذا لم يتم الإجابة
+        }
+        
+        currentQuestion++;
+        
+        // البحث عن السؤال التالي غير المخفي
+        while (currentQuestion < questions.length && questions[currentQuestion].hidden) {
+            // تخزين الإجابة "غير مطبق" للأسئلة المخفية
+            if (questions[currentQuestion].hidden) {
+                saveAssessment('غير مطبق', null, null, null, false, 'سؤال خاص بالأبراج - النشاط لا يتضمن أبراج');
+            }
+            currentQuestion++;
+        }
+        
+        updateQuestion();
+    }
+
+    // العودة إلى السؤال السابق
+    function goToPreviousQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            
+            // البحث عن السؤال السابق غير المخفي
+            while (currentQuestion >= 0 && questions[currentQuestion].hidden) {
+                currentQuestion--;
+            }
+            
+            if (currentQuestion >= 0) {
+                updateQuestion();
+                showPreviousAssessment();
+            } else {
+                currentQuestion = 0;
+                updateQuestion();
+            }
+        }
+    }
+
+    // عرض تقييم السؤال السابق
+    function showPreviousAssessment() {
+        if (assessments[currentQuestion]) {
+            const assessment = assessments[currentQuestion];
+            let resultText = '';
+            
+            if (assessment.answer === 'غير آمن') {
+                resultText = `
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <strong>نتيجة التقييم السابق:</strong>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <span class="risk-code">مستوى الخطر: ${assessment.riskValue}</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <span>الموقع: الصف ${assessment.riskRow} - العمود ${assessment.riskColumn}</span>
+                    </div>
+                `;
+                
+                if (assessment.isStopWork) {
+                    resultText += `<div style="color:#f44336;font-weight:bold;text-align:center;margin:10px 0;padding:8px;background:#ffebee;border-radius:5px;">⚠️ غير مسموح بالعمل - تم إيقاف العمل فوراً</div>`;
+                }
+                
+                if (assessment.notes) {
+                    resultText += `<div style="margin-top:10px;"><strong>ملاحظات:</strong><br>${assessment.notes.replace(/\n/g, '<br>')}</div>`;
+                }
+            } else {
+                resultText = `
+                    <div style="text-align: center;">
+                        <strong>نتيجة التقييم السابق:</strong><br>
+                        <span style="color:${assessment.answer === 'آمن' ? '#4CAF50' : '#FF9800'};font-weight:bold;font-size:1.1em;">
+                            ${assessment.answer}
+                        </span>
+                    </div>
+                `;
+            }
+            
+            riskResultEl.innerHTML = resultText;
+            riskResultEl.style.display = 'block';
+            riskResultEl.style.backgroundColor = assessment.isStopWork ? '#ffebee' : '#f8f9fa';
+            riskResultEl.style.borderRight = `4px solid ${
+                assessment.answer === 'آمن' ? '#4caf50' : 
+                assessment.answer === 'غير مطبق' ? '#ff9800' : 
+                assessment.isStopWork ? '#f44336' : '#2196f3'
+            }`;
+        }
+    }
+
+    // عرض نافذة تقييم الخطر
+    function showRiskModal() {
+        riskModal.style.display = 'flex';
+        riskModal.classList.add('show');
+        selectedRiskValue = null;
+        isStopWork = false;
+        riskNote = "";
+        noteSection.style.display = 'block';
+        riskNoteInput.value = "";
+        saveBtn.textContent = 'حفظ التقييم';
+        saveBtn.classList.remove('stop-work');
+        noteError.style.display = 'none';
+        
+        // إنشاء مصفوفة المخاطر
+        createRiskMatrix();
+        
+        // منع التمرير في الخلفية
+        document.body.style.overflow = 'hidden';
+    }
+
+    // إنشاء مصفوفة المخاطر 5x5
+    function createRiskMatrix() {
+        riskMatrix.innerHTML = '';
+        for (let row = 1; row <= 5; row++) {
+            for (let col = 1; col <= 5; col++) {
+                const cellValue = row * col;
+                const cell = document.createElement('div');
+                cell.className = 'risk-cell';
+                cell.textContent = cellValue;
+                cell.setAttribute('tabindex', '0');
+                
+                // تحديد لون الخلية حسب النطاق
+                if (cellValue >= 1 && cellValue <= 2) {
+                    cell.classList.add('green');
+                } else if (cellValue >= 3 && cellValue <= 6) {
+                    cell.classList.add('yellow');
+                } else if (cellValue >= 8 && cellValue <= 12) {
+                    cell.classList.add('orange');
+                } else if (cellValue >= 15 && cellValue <= 25) {
+                    cell.classList.add('red');
+                }
+                
+                cell.onclick = function() {
+                    selectRisk(this, cellValue, row, col);
+                };
+                
+                // إضافة دعم الكيبورد
+                cell.onkeydown = function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectRisk(this, cellValue, row, col);
+                    }
+                };
+                
+                riskMatrix.appendChild(cell);
+            }
+        }
+    }
+
+    // اختيار مستوى الخطر من المصفوفة
+    function selectRisk(element, riskValue, row, col) {
+        // إزالة التحديد من جميع الخلايا
+        document.querySelectorAll('.risk-cell').forEach(cell => {
+            cell.classList.remove('selected');
+        });
+        
+        // تحديد الخلية المختارة
+        element.classList.add('selected');
+        selectedRiskValue = {
+            value: riskValue,
+            row: row,
+            column: col
+        };
+        
+        // إضافة تأثيرات اهتزاز للهاتف إذا كانت متاحة
+        if ('vibrate' in navigator) {
+            navigator.vibrate(50);
+        }
+        
+        // التحقق إذا كان الخطر ضمن النطاق الأحمر (15-25)
+        if (riskValue >= 15 && riskValue <= 25) {
+            isStopWork = true;
+            riskNoteInput.value = "غير مسموح بالعمل - يتم إيقاف العمل فوراً\n";
+            saveBtn.textContent = 'حفظ التقييم وإيقاف العمل';
+            saveBtn.classList.add('stop-work');
+            
+            // اهتزاز أقوى للمخاطر الشديدة
+            if ('vibrate' in navigator) {
+                navigator.vibrate([100, 50, 100]);
+            }
+        } else {
+            isStopWork = false;
+            if (riskNoteInput.value.includes("غير مسموح بالعمل")) {
+                riskNoteInput.value = "";
+            }
+            saveBtn.textContent = 'حفظ التقييم';
+            saveBtn.classList.remove('stop-work');
+        }
+                // التركيز على حقل الملاحظات
+        setTimeout(() => {
+            riskNoteInput.focus();
+        }, 100);
+    }
+
+    // إغلاق نافذة تقييم الخطر
+    function closeRiskModal() {
+        riskModal.style.display = 'none';
+        riskModal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+
+    // حفظ تقييم الخطر
+    function saveRiskAssessment() {
+        if (!selectedRiskValue) {
+            // إضافة تأثير اهتزاز للخطأ
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+            
+            // إضافة تأثير بصري للخطأ
+            riskMatrix.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                riskMatrix.style.animation = '';
+            }, 500);
+            
+            alert('الرجاء تحديد مستوى الخطر قبل الحفظ');
+            return;
+        }
+        
+        // التحقق من إدخال الملاحظات
+        riskNote = riskNoteInput.value.trim();
+        if (riskNote === "") {
+            noteError.style.display = 'block';
+            riskNoteInput.focus();
+            
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+            return;
+        } else {
+            noteError.style.display = 'none';
+        }
+        
+        // تخزين التقييم
+        saveAssessment(
+            'غير آمن',
+            selectedRiskValue.value,
+            selectedRiskValue.row,
+            selectedRiskValue.column,
+            isStopWork,
+            riskNote
+        );
+        
+        // إغلاق النافذة وعرض النتيجة
+        closeRiskModal();
+        showRiskResult();
+        
+        // الانتقال للسؤال التالي بعد تأخير قصير
+        setTimeout(() => moveToNextQuestion(), 1000);
+    }
+
+    // عرض نتيجة تقييم الخطر
+    function showRiskResult() {
+        const assessment = assessments[currentQuestion];
+        let resultText = '';
+        
+        if (assessment.answer === 'غير آمن') {
+            resultText = `
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <div style="background: ${assessment.isStopWork ? '#ffebee' : '#f3e5f5'}; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: #d32f2f;">⚠️ تم تسجيل خطر غير آمن</strong>
+                    </div>
+                    <div style="background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e0e0e0;">
+                        <div style="margin-bottom: 8px;">
+                            <span class="risk-code">مستوى الخطر: ${assessment.riskValue}</span>
+                        </div>
+                        <div style="margin-bottom: 8px; color: #666;">
+                            <span>الموقع في المصفوفة: الصف ${assessment.riskRow} - العمود ${assessment.riskColumn}</span>
+                        </div>
+            `;
+            
+            if (assessment.isStopWork) {
+                resultText += `<div style="color:#fff;background:#f44336;font-weight:bold;text-align:center;margin:10px 0;padding:12px;border-radius:8px;animation:pulse 2s infinite;">🛑 غير مسموح بالعمل - تم إيقاف العمل فوراً</div>`;
+            }
+            
+            if (assessment.notes) {
+                resultText += `<div style="margin-top:12px;padding:10px;background:#f8f9fa;border-radius:5px;text-align:right;"><strong>الملاحظات:</strong><br>${assessment.notes.replace(/\n/g, '<br>')}</div>`;
+            }
+            
+            resultText += '</div></div>';
+        }
+        
+        riskResultEl.innerHTML = resultText;
+        riskResultEl.style.display = 'block';
+        
+        // إضافة تأثير ظهور متدرج
+        riskResultEl.style.opacity = '0';
+        riskResultEl.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            riskResultEl.style.transition = 'all 0.5s ease-out';
+            riskResultEl.style.opacity = '1';
+            riskResultEl.style.transform = 'translateY(0)';
+        }, 100);
+    }
+
+    // حفظ البيانات النهائية
+    function saveFinalAssessment(noRisk) {
+        // التحقق من صحة البيانات أولاً
+        const validation = validateFinalData();
+        if (!validation.valid) {
+            alert(validation.message);
+            return false;
+        }
+
+        const finalData = {
+            ...siteData,
+            activityType: activityType,
+            assessments: validation.data,
+            finalRisk: noRisk ? null : finalRiskSelection,
+            finalNotes: finalNotes.value.trim(),
+            finalRecommendations: finalRecommendations.value.trim(),
+            timestamp: new Date().toISOString(),
+            noAdditionalRisk: noRisk,
+            version: '1.1' // إضافة رقم إصدار للبيانات
+        };
+        
+        try {
+            localStorage.setItem('riskAssessmentData', JSON.stringify(finalData));
+            
+            // حذف النسخة الاحتياطية بعد الحفظ الناجح
+            localStorage.removeItem('riskAssessmentBackup');
+            
+            // إضافة تأثير اهتزاز للنجاح
+            if ('vibrate' in navigator) {
+                navigator.vibrate([100, 50, 100]);
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('خطأ في حفظ البيانات النهائية:', error);
+            alert('حدث خطأ في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+            return false;
+        }
+    }
+
+    // عرض الشاشة النهائية
+    function showFinalScreen() {
+        // التحقق من أن جميع الأسئلة قد تمت الإجابة عليها
+        const unanswered = [];
+        for (let i = 0; i < questions.length; i++) {
+            if (!questions[i].hidden && !assessments[i]) {
+                unanswered.push(i);
+            }
+        }
+        
+        if (unanswered.length > 0) {
+            // إذا كان هناك أسئلة لم تتم الإجابة عليها، الرجوع لأول سؤال لم تتم الإجابة عليه
+            currentQuestion = unanswered[0];
+            updateQuestion();
+            
+            // إظهار رسالة للمستخدم
+            alert(`يوجد ${unanswered.length} أسئلة لم تتم الإجابة عليها. يرجى الإجابة على جميع الأسئلة قبل إنهاء التقييم.`);
+            return;
+        }
+        
+        // إذا تمت الإجابة على جميع الأسئلة، متابعة العرض الطبيعي
+        questionEl.innerHTML = '<div style="font-size: 1.3rem; color: #4CAF50;">🎉 تم الانتهاء من جميع الأسئلة بنجاح</div>';
+        counterEl.innerHTML = '<div style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 10px; border-radius: 8px; margin: 10px 0;">يرجى مراجعة تقييم المخاطر النهائي أدناه</div>';
+        document.querySelector('.buttons').style.display = 'none';
+        questionImageEl.style.display = 'none';
+        backBtn.classList.add('hidden');
+        
+        // عرض مصفوفة المخاطر النهائية
+        createFinalRiskMatrix();
+        finalScreen.style.display = 'block';
+        finalRiskSelection = null;
+        finalNotes.value = "";
+        finalRecommendations.value = "";
+        matrixError.style.display = 'none';
+        notesError.style.display = 'none';
+        
+        // تأثير ظهور الشاشة النهائية
+        finalScreen.style.opacity = '0';
+        finalScreen.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+            finalScreen.style.transition = 'all 0.6s ease-out';
+            finalScreen.style.opacity = '1';
+            finalScreen.style.transform = 'translateY(0)';
+        }, 200);
+    }
+
+    // إنشاء مصفوفة المخاطر النهائية
+    function createFinalRiskMatrix() {
+        finalRiskMatrix.innerHTML = '';
+        for (let row = 1; row <= 5; row++) {
+            for (let col = 1; col <= 5; col++) {
+                const cellValue = row * col;
+                const cell = document.createElement('div');
+                cell.className = 'risk-cell';
+                cell.textContent = cellValue;
+                cell.setAttribute('tabindex', '0');
+                
+                // تحديد لون الخلية حسب النطاق
+                if (cellValue >= 1 && cellValue <= 2) {
+                    cell.classList.add('green');
+                } else if (cellValue >= 3 && cellValue <= 6) {
+                    cell.classList.add('yellow');
+                } else if (cellValue >= 8 && cellValue <= 12) {
+                    cell.classList.add('orange');
+                } else if (cellValue >= 15 && cellValue <= 25) {
+                    cell.classList.add('red');
+                }
+                
+                cell.onclick = function() {
+                    // إزالة التحديد من جميع الخلايا
+                    document.querySelectorAll('#finalRiskMatrix .risk-cell').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    
+                    // تحديد الخلية المختارة
+                    cell.classList.add('selected');
+                    finalRiskSelection = {
+                        value: cellValue,
+                        row: row,
+                        column: col
+                    };
+                    
+                    matrixError.style.display = 'none';
+                    
+                    // إضافة تأثيرات اهتزاز
+                    if ('vibrate' in navigator) {
+                        navigator.vibrate(50);
+                    }
+                };
+                
+                // إضافة دعم الكيبورد
+                cell.onkeydown = function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        cell.click();
+                    }
+                };
+                
+                finalRiskMatrix.appendChild(cell);
+            }
+        }
+    }
+
+    // وظائف الشاشة النهائية
+    function noAdditionalRisks() {
+        // إضافة تأثير بصري
+        const btn = event.target;
+        btn.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            btn.style.transform = 'scale(1)';
+        }, 150);
+        
+        if (saveFinalAssessment(true)) {
+            // تأخير قصير قبل التنقل
+            setTimeout(() => {
+                window.location.href = 'Result.html';
+            }, 300);
+        }
+    }
+
+    function saveAndViewResults() {
+        // التحقق من اختيار مستوى الخطر
+        if (!finalRiskSelection) {
+            matrixError.style.display = 'block';
+            
+            // إضافة تأثير اهتزاز وتمييز بصري
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+            
+            finalRiskMatrix.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                finalRiskMatrix.style.animation = '';
+            }, 500);
+            
+            // التمرير إلى المصفوفة
+            finalRiskMatrix.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        } else {
+            matrixError.style.display = 'none';
+        }
+        
+        // التحقق من إدخال الملاحظات والتوصيات
+        const notes = finalNotes.value.trim();
+        const recommendations = finalRecommendations.value.trim();
+        
+        if (notes === "" || recommendations === "") {
+            notesError.style.display = 'block';
+            
+            // التركيز على الحقل الفارغ الأول
+            if (notes === "") {
+                finalNotes.focus();
+                finalNotes.style.borderColor = '#f44336';
+                setTimeout(() => {
+                    finalNotes.style.borderColor = '#ddd';
+                }, 2000);
+            } else if (recommendations === "") {
+                finalRecommendations.focus();
+                finalRecommendations.style.borderColor = '#f44336';
+                setTimeout(() => {
+                    finalRecommendations.style.borderColor = '#ddd';
+                }, 2000);
+            }
+            
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+            return;
+        } else {
+            notesError.style.display = 'none';
+        }
+        
+        // إضافة تأثير بصري للزر
+        const btn = event.target;
+        btn.style.transform = 'scale(0.95)';
+        btn.textContent = 'جاري الحفظ...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            if (saveFinalAssessment(false)) {
+                window.location.href = 'Result.html';
+            } else {
+                btn.textContent = 'حفظ والذهاب للنتيجة';
+                btn.disabled = false;
+                btn.style.transform = 'scale(1)';
+            }
+        }, 500);
+    }
+
+    function saveAndAddMore() {
+        // التحقق من اختيار مستوى الخطر
+        if (!finalRiskSelection) {
+            matrixError.style.display = 'block';
+            
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+            
+            finalRiskMatrix.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                finalRiskMatrix.style.animation = '';
+            }, 500);
+            
+            finalRiskMatrix.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        } else {
+            matrixError.style.display = 'none';
+        }
+        
+        // التحقق من إدخال الملاحظات والتوصيات
+        const notes = finalNotes.value.trim();
+        const recommendations = finalRecommendations.value.trim();
+        
+        if (notes === "" || recommendations === "") {
+            notesError.style.display = 'block';
+            
+            if (notes === "") {
+                finalNotes.focus();
+                finalNotes.style.borderColor = '#f44336';
+                setTimeout(() => {
+                    finalNotes.style.borderColor = '#ddd';
+                }, 2000);
+            } else if (recommendations === "") {
+                finalRecommendations.focus();
+                finalRecommendations.style.borderColor = '#f44336';
+                setTimeout(() => {
+                    finalRecommendations.style.borderColor = '#ddd';
+                }, 2000);
+            }
+            
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+            return;
+        } else {
+            notesError.style.display = 'none';
+        }
+        
+        // إضافة تأثير بصري للزر
+        const btn = event.target;
+        btn.style.transform = 'scale(0.95)';
+        btn.textContent = 'جاري الحفظ...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            if (saveFinalAssessment(false)) {
+                resetFormForNewAssessment();
+                
+                // إعادة تفعيل الزر
+                btn.textContent = 'حفظ وإضافة آخر';
+                btn.disabled = false;
+                btn.style.transform = 'scale(1)';
+            } else {
+                btn.textContent = 'حفظ وإضافة آخر';
+                btn.disabled = false;
+                btn.style.transform = 'scale(1)';
+            }
+        }, 500);
+    }
+
+    // إعادة تعيين النموذج لتقييم جديد
+    function resetFormForNewAssessment() {
+        // إعادة تعيين المتغيرات
+        currentQuestion = 0;
+        assessments.length = 0;
+        finalNotes.value = "";
+        finalRecommendations.value = "";
+        finalRiskSelection = null;
+        
+        // إخفاء الشاشة النهائية
+        finalScreen.style.display = 'none';
+        
+        // إعادة عرض الأزرار
+        document.querySelector('.buttons').style.display = 'grid';
+        
+        // تحديث السؤال
+        updateQuestion();
+        
+        // إظهار رسالة نجاح
+        showSuccessMessage();
+    }
+
+    // إظهار رسالة نجاح
+    function showSuccessMessage() {
+        const successMsg = document.createElement('div');
+        successMsg.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #4CAF50, #45a049);
+                color: white;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 2000;
+                text-align: center;
+                font-size: 1.1rem;
+                font-weight: 600;
+                animation: successPulse 0.6s ease-out;
+            ">
+                ✅ تم حفظ التقييم بنجاح!<br>
+                <small style="opacity: 0.9; font-size: 0.9rem;">يمكنك الآن بدء تقييم جديد</small>
+            </div>
+        `;
+        
+        document.body.appendChild(successMsg);
+        
+        setTimeout(() => {
+            successMsg.remove();
+        }, 2500);
+    }
+
+    // إضافة مستمع للأحداث للتحسين
+    document.addEventListener('DOMContentLoaded', function() {
+        // تحسين أداء التمرير
+        let ticking = false;
+        
+        function updateScrollPosition() {
+            // تحديث موقف زر العودة عند التمرير
+            ticking = false;
+        }
+        
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateScrollPosition);
+                ticking = true;
+            }
+        }
+        
+        window.addEventListener('scroll', requestTick, { passive: true });
+    });
+
+    // إضافة دعم اختصارات الكيبورد
+    document.addEventListener('keydown', function(e) {
+        // ESC لإغلاق النوافذ المنبثقة
+        if (e.key === 'Escape') {
+            if (riskModal.style.display === 'flex') {
+                closeRiskModal();
+            }
+        }
+        
+        // أرقام 1-3 للإجابة السريعة
+        if (!riskModal.style.display || riskModal.style.display === 'none') {
+            switch(e.key) {
+                case '1':
+                    e.preventDefault();
+                    answer('آمن');
+                    break;
+                case '2':
+                    e.preventDefault();
+                    answer('غير آمن');
+                    break;
+                case '3':
+                    e.preventDefault();
+                    answer('غير مطبق');
+                    break;
+            }
+        }
+        
+        // مفتاح الرجوع
+        if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+            if (!backBtn.classList.contains('hidden') && 
+                !riskModal.style.display || riskModal.style.display === 'none') {
+                e.preventDefault();
+                goToPreviousQuestion();
+            }
+        }
+    });
+</script>
+</body>
+</html>

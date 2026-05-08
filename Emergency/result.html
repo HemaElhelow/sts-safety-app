@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعليمات الاستعداد والاستجابة للطوارئ بالموقع</title>
+    <script src="/libs/html2canvas.min.js"></script>
+    <script src="/libs/jspdf.umd.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'Noto Sans Arabic';
+            src: url('/fonts/NotoSansArabic-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans Arabic', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 10px;
+            line-height: 1.4;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .container {
+            max-width: 794px; /* A4 width in pixels (210mm) */
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+        
+        .page {
+            background: white;
+            width: 794px; /* A4 width */
+            min-height: 1123px; /* A4 height */
+            padding: 20mm;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #1a4f8c;
+            padding-bottom: 10px;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .logo img {
+            max-width: 110%;
+            max-height: 120%;
+            object-fit: contain;
+        }
+        
+        .title-section {
+            text-align: center;
+            flex-grow: 1;
+            margin: 0 10px;
+        }
+        
+        .title-section h1 {
+            font-size: 14px;
+            color: #1a4f8c;
+            margin-bottom: 3px;
+        }
+        
+        .title-section h2 {
+            font-size: 15px;
+            color: #333;
+            font-weight: normal;
+        }
+        
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 12px;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        
+        .info-left, .info-right {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 3px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            margin-left: 8px;
+            min-width: 120px;
+        }
+        
+        /* تنسيق الجدول الأول */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 11px;
+            table-layout: fixed;
+        }
+        
+        th, td {
+            border: 1px solid #000000;
+            padding: 10px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        th {
+            background: #1a4f8c;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        /* توزيع الأعمدة للجدول الأول */
+        th:nth-child(1), td:nth-child(1) { /* العمود الأول # */
+            width: 4% !important;
+            min-width: 25px;
+        }
+        
+        th:nth-child(2), td:nth-child(2) { /* عمود الأسئلة الإنجليزية */
+            width: 22% !important;
+            min-width: 150px;
+        }
+        
+        th:nth-child(3), td:nth-child(3) { /* عمود YES */
+            width: 4% !important;
+            min-width: 25px;
+        }
+        
+        th:nth-child(4), td:nth-child(4) { /* عمود NO */
+            width: 4% !important;
+            min-width: 25px;
+        }
+        
+        th:nth-child(5), td:nth-child(5) { /* عمود Responsible Name */
+            width: 12% !important;
+            min-width: 80px;
+        }
+        
+        th:nth-child(6), td:nth-child(6) { /* عمود الأسئلة العربية */
+            width: 22% !important;
+            min-width: 150px;
+        }
+        
+        th:nth-child(7), td:nth-child(7) { /* العمود الأخير # */
+            width: 4% !important;
+            min-width: 25px;
+        }
+        
+        .checkmark {
+            color: green;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .xmark {
+            color: red;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .response-section {
+            margin-top: 20px;
+        }
+        
+        .response-section h3 {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #1a4f8c;
+            background: #f0f7ff;
+            padding: 8px;
+            border-radius: 3px;
+        }
+        
+        .scope-box {
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .scope-box h4 {
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #1a4f8c;
+        }
+        
+        /* تنسيق الجدول الثاني */
+        .response-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            table-layout: fixed;
+        }
+        
+        .response-table th, .response-table td {
+            border: 1px solid #000000;
+            padding: 10px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .response-table th {
+            background: #1a4f8c;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        /* توزيع الأعمدة للجدول الثاني */
+        .response-table td:nth-child(1) { /* العمود الأول للأرقام */
+            width: 8% !important;
+            min-width: 35px;
+        }
+        
+        .response-table td:nth-child(2) { /* عمود النص الإنجليزي */
+            width: 42% !important;
+            min-width: 160px;
+        }
+        
+        .response-table td:nth-child(3) { /* العمود الثاني للأرقام */
+            width: 8% !important;
+            min-width: 35px;
+        }
+        
+        .response-table td:nth-child(4) { /* عمود النص العربي */
+            width: 42% !important;
+            min-width: 160px;
+        }
+        
+        .number-cell {
+            text-align: center;
+            font-weight: bold;
+            background: #e9ecef;
+            font-size: 12px;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+        }
+        
+        /* الأزرار العائمة */
+        .floating-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .floating-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.3s ease;
+          
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        
+        .floating-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        
+        .floating-btn:active {
+            transform: translateY(0);
+        }
+        
+        .pdf-btn {
+            background: #1a4f8c;
+            color: white;
+        }
+        
+        .pdf-btn:hover {
+            background: #0d3a6e;
+        }
+        
+        .share-btn {
+            background: #00b894;
+            color: white;
+        }
+        
+        .share-btn:hover {
+            background: #00a085;
+        }
+        
+        .home-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .home-btn:hover {
+            background: #5a6fd8;
+        }
+        
+ 
+
+
+        /* تنسيق خاص للطباعة */
+        @media print {
+            body {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .container {
+                max-width: none !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                background: white;
+            }
+            
+            .page {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 15mm !important;
+                page-break-after: always !important;
+                width: 210mm !important;
+                min-height: 297mm !important;
+            }
+            
+            .pdf-button, .floating-buttons {
+                display: none !important;
+            }
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 15px;
+            color: #666;
+            font-style: italic;
+            font-size: 11px;
+        }
+
+        /* تنسيق النصوص للغة العربية مع اتجاه LTR */
+        .arabic-text {
+            direction: rtl;
+            text-align: right;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .english-text {
+            direction: ltr;
+            text-align: left;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        /* شعار افتراضي */
+        .default-logo {
+            width: 100px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+
+        /* تحسين محاذاة النص في الخلايا */
+        td .english-text,
+        td .arabic-text {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        /* رسالة التنبيه */
+        .alert-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 14px;
+            z-index: 2000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- الأزرار العائمة -->
+  <div class="floating-controls no-export">
+        <button class="floating-btn" onclick="generatePDF()" title="تصدير ملف PDF">
+            📄
+            <span class="btn-label">تصدير PDF</span>
+        </button>
+        <button class="floating-btn" onclick="sharePDF()" title="مشاركة">
+            🔗
+            <span class="btn-label">مشاركة</span>
+        </button>
+        <button class="floating-btn btn-secondary" onclick="window.location.href='/main.html'" title="الرئيسية">
+            🏠
+            <span class="btn-label">الرئيسية</span>
+        </button>
+
+    </div>
+
+<style>
+.floating-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.floating-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+.floating-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}
+
+.floating-btn span {
+    font-size: 13px;
+}
+</style>
+
+
+    <!-- رسالة التنبيه -->
+    <div class="alert-message" id="alertMessage"></div>
+
+    <div class="container">
+        <!-- الصفحة الأولى -->
+        <div class="page" id="page1">
+            <div class="header">
+                <div class="logo">
+                    <img src="/assets/logo.png" alt="Company Logo" id="companyLogo" onerror="this.style.display='none'; document.getElementById('defaultCompanyLogo').style.display='flex';">
+                    <div class="default-logo" id="defaultCompanyLogo" style="display: none;">Company Logo</div>
+                </div>
+                <div class="title-section">
+                    <h1>Site Emergency Preparedness and Response Instructions</h1>
+                    <h2>تعليمات الاستعداد والاستجابة للطوارئ بالموقع</h2>
+                </div>
+                <div class="logo">
+                    <img src="/assets/zero_tolerance_safety_rules.png" alt="Site Logo" id="siteLogo" onerror="this.style.display='none'; document.getElementById('defaultSiteLogo').style.display='flex';">
+                    <div class="default-logo" id="defaultSiteLogo" style="display: none;">Site Logo</div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-left">
+                    <div class="info-row">
+                        <span class="info-label">Date:</span>
+                        <span id="dateField" class="loading-message">جاري تحميل البيانات...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Subcontractor Name:</span>
+                        <span id="subcontractorField" class="loading-message">جاري تحميل البيانات...</span>
+                    </div>
+                </div>
+                <div class="info-right">
+                    <div class="info-row">
+                        <span class="info-label">Site ID:</span>
+                        <span id="siteIdField" class="loading-message">جاري تحميل البيانات...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Site Responsible Name:</span>
+                        <span id="responsibleField" class="loading-message">جاري تحميل البيانات...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Emergency Requirements</th>
+                        <th>YES</th>
+                        <th>NO</th>
+                        <th>Responsible Name</th>
+                        <th>متطلبات الطوارئ</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>24</td>
+                        <td class="english-text">
+                            All personnel IDs contain: Company emergency contact no.<br>
+                            - Ambulance no. 123<br>
+                            - Fire brigade no. 180<br>
+                            - Police no. 122
+                        </td>
+                        <td class="checkmark" id="q1"></td>
+                        <td id="q1_no"></td>
+                        <td class="english-text" id="q1_name"></td>
+                        <td class="arabic-text">
+                            كل كروت العاملين بالفريق تحتوي على رقم تليفون مسؤول الطوارئ بالشركة<br>
+                            123 رقم تليفون الاسعاف<br>
+                            180 رقم تليفون الاطفاء<br>
+                            122 رقم تليفون شرطة النجدة
+                        </td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="english-text">Is there one member at least certified First aid & basic CPR? What's his name?</td>
+                        <td class="checkmark" id="q2"></td>
+                        <td id="q2_no"></td>
+                        <td class="english-text" id="q2_name"></td>
+                        <td class="arabic-text">هل يوجد شخص متدرب على أجراء الاسعافات الأولية ومبادئ الانعاش القلبي الرئوي؟ ما اسمه؟</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="english-text">Does the team have First aid kit?</td>
+                        <td class="checkmark" id="q3"></td>
+                        <td id="q3_no"></td>
+                        <td class="english-text" id="q3_name"></td>
+                        <td class="arabic-text">هل يوجد مع الفريق حقيبة اسعافات أولية؟</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="english-text">Is there one member at least certified Fire Fighting?What's his name?</td>
+                        <td class="checkmark" id="q4"></td>
+                        <td id="q4_no"></td>
+                        <td class="english-text" id="q4_name"></td>
+                        <td class="arabic-text">هل يوجد شخص متدرب على مكافحة الحريق؟ ما اسمه؟</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="english-text">Does the team have Fire Extinguisher?</td>
+                        <td class="checkmark" id="q5"></td>
+                        <td id="q5_no"></td>
+                        <td class="english-text" id="q5_name"></td>
+                        <td class="arabic-text">هل يوجد مع الفريق طفاية حريق ؟</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="english-text">Is there one member at least certified fall arrest Rescue?What's his name?</td>
+                        <td class="checkmark" id="q6"></td>
+                        <td id="q6_no"></td>
+                        <td class="english-text" id="q6_name"></td>
+                        <td class="arabic-text">هل يوجد شخص متدرب على الإنقاذ بالمرتفعات؟ ما اسمه؟</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="english-text">What's the name of the two nearest hospital from the site?</td>
+                        <td class="checkmark" id="q7"></td>
+                        <td id="q7_no"></td>
+                        <td class="english-text" id="q7_name"></td>
+                        <td class="arabic-text">ما اسم أقرب مستشفيتين للموقع؟</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="english-text">Is The emergency exit route are safe and clear?</td>
+                        <td class="checkmark" id="q8"></td>
+                        <td id="q8_no"></td>
+                        <td class="english-text" id="q8_name"></td>
+                        <td class="arabic-text">هل طريق مخرج الطوارئ أمن وخالي من العوائق؟</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="footer">
+                Page 1 of 2 - Emergency Preparedness
+            </div>
+        </div>
+
+        <!-- الصفحة الثانية -->
+        <div class="page" id="page2">
+            <div class="header">
+                <div class="logo">
+                    <img src="/assets/logo.png" alt="Company Logo" id="companyLogo2" onerror="this.style.display='none'; document.getElementById('defaultCompanyLogo2').style.display='flex';">
+                    <div class="default-logo" id="defaultCompanyLogo2" style="display: none;">Company Logo</div>
+                </div>
+                <div class="title-section">
+                    <h1>Emergency Response Instructions</h1>
+                    <h2>تعليمات الاستجابة للطوارئ</h2>
+                </div>
+                <div class="logo">
+                    <img src="/assets/zero_tolerance_safety_rules.png" alt="Site Logo" id="siteLogo2" onerror="this.style.display='none'; document.getElementById('defaultSiteLogo2').style.display='flex';">
+                    <div class="default-logo" id="defaultSiteLogo2" style="display: none;">Site Logo</div>
+                </div>
+            </div>
+            
+            <div class="response-section">
+                <h3># الاستجابة للطوارئ Emergency Response</h3>
+                
+                <div class="scope-box">
+                    <h4 class="arabic-text">مجال التطبيق:</h4>
+                    <p class="arabic-text"> في حالة حدوث طوارئ خاصة بالسلامة والصحة المهنية والتي قد تؤثر علي سلامة او صحة العاملين او تعرض المعدات لخطر التلف داخل الموقع قم بالأتي</p>
+                    
+                    <h4 class="english-text">Scope:</h4>
+                    <p class="english-text">In case of any occupational health and safety emergency within site affecting the safety, health or wellbeing of personnel or exposing the hazard of damage to equipment do the following:</p>
+                </div>
+                
+                <table class="response-table">
+                    <tr>
+                        <td class="number-cell">1</td>
+                        <td class="english-text">Hold and stop immediately all activities</td>
+                        <td class="number-cell">1</td>
+                        <td class="arabic-text">توقد عن اداء الاتصال فورا</td>
+                    </tr>
+                    <tr>
+                        <td class="number-cell">2</td>
+                        <td class="english-text">If someone of crew is injured, secure the person to a safer place, only if site is compromised which would lead to instant danger</td>
+                        <td class="number-cell">2</td>
+                        <td class="arabic-text">إذا اصيب احد افراد فريق العمل، قم بتأمينه الي مكان من الأداء فقط استمرار وجوده بالموقع بشكل خطر أكبر على حياته</td>
+                    </tr>
+                    <tr>
+                        <td class="number-cell">3</td>
+                        <td class="english-text">Provide 1st aid assistance, Only by certified 1st aid person</td>
+                        <td class="number-cell">3</td>
+                        <td class="arabic-text">قم بتقديم الاسعافات الأولية، فقط عن طريق شخص معتمد</td>
+                    </tr>
+                    <tr>
+                        <td class="number-cell">4</td>
+                        <td class="english-text">Contact emergency service, Ambulance service, Police or Fire brigade according to emergency type</td>
+                        <td class="number-cell">4</td>
+                        <td class="arabic-text">اتصل بخدمات الطوارئ، مرفق الاسعاف، الشرطة، الإطفاء كلا على حسب حالة الطوارئ</td>
+                    </tr>
+                    <tr>
+                        <td class="number-cell">4</td>
+                        <td class="english-text">Contact your company emergency contact</td>
+                        <td class="number-cell">4</td>
+                        <td class="arabic-text">اتصل بالمسئول عن ادارة الطوارئ بشركتك</td>
+                    </tr>
+                    <tr>
+                        <td class="number-cell">5</td>
+                        <td class="english-text">Contact Ericsson direct supervisor</td>
+                        <td class="number-cell">5</td>
+                        <td class="arabic-text">اتصل بالمشرف المسئول عن الموقع من شركتك</td>
+                    </tr>
+                    <tr>
+                        <td class="number-cell">7</td>
+                        <td class="english-text">Ericsson direct supervisor must inform at once the occupational Health and Safety department</td>
+                        <td class="number-cell">7</td>
+                        <td class="arabic-text">يقوم المسئول عن الموقع فورا بإبلاغ ادارة السلامة والصحة المهنية بالشركة </td>
+                    </tr>
+                    <tr>
+                        <td class="number-cell">8</td>
+                        <td class="english-text">Note that any incident whether minor or severe including injury or damage or near miss occur it must be reported immediately according to previous sequence</td>
+                        <td class="number-cell">8</td>
+                        <td class="arabic-text">أي حادث سواء كان بسيط أو جسيم متضمنا أصلية أو تلف أو خطر كامن يجب ان يتم إبلاغه في الحال بدون تأخير طبقاً للتسلسل السابق</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="footer">
+                Page 2 of 2 - Emergency Response
+            </div>
+            </div>
+            </div>
+        
+
+    <script>
+        // مفاتيح التخزين
+        const STORAGE_KEYS = {
+            CURRENT_ENTRY: 'emergency_response_current_data',
+            SETTINGS: 'emergency_response_settings',
+            CHECKLIST_ANSWERS: 'emergencyChecklistAnswers'
+        };
+
+        // دالة للعودة للصفحة الرئيسية
+        function goToHome() {
+            window.location.href = '/main.html'; // تغيير هذا حسب اسم صفحتك الرئيسية
+        }
+
+        // دالة لمشاركة PDF
+        function sharePDF() {
+    // أولاً نقوم بإنشاء PDF
+    generatePDFForSharing().then(pdfBlob => {
+        // توليد اسم الملف الديناميكي
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        // جلب Site ID من التقرير
+        let siteId = document.getElementById('siteIdField').textContent.trim();
+        if (!siteId || siteId === 'غير محدد') {
+            siteId = '0000'; // قيمة افتراضية لو مش متسجل Site ID
+        }
+
+        // اسم الملف النهائي
+        const fileName = `emergency_report_${siteId}_${day}${month}.pdf`;
+
+        if (navigator.share) {
+            // إذا كان المتصفح يدعم Web Share API
+            navigator.share({
+                title: 'تقرير الاستجابة للطوارئ',
+                text: 'تقرير الاستعداد والاستجابة للطوارئ بالموقع',
+                files: [new File([pdfBlob], fileName, { type: 'application/pdf' })]
+            }).then(() => {
+                showAlert('تم مشاركة الملف بنجاح!');
+            }).catch(error => {
+                console.log('تم إلغاء المشاركة:', error);
+            });
+        } else if (navigator.clipboard) {
+            // إذا كان المتصفح لا يدعم المشاركة، ننسخ الاسم بدلًا من الرابط
+            navigator.clipboard.writeText(`تم إنشاء التقرير: ${fileName}`).then(() => {
+                showAlert('تم نسخ اسم التقرير إلى الحافظة!');
+            });
+        } else {
+            // بديل للمتصفحات القديمة
+            showAlert(`تم إنشاء التقرير: ${fileName} - يمكنك حفظ الملف ومشاركته يدويًا`);
+        }
+    }).catch(error => {
+        console.error('خطأ في إنشاء PDF للمشاركة:', error);
+        showAlert('حدث خطأ أثناء إنشاء الملف للمشاركة');
+    });
+}
+
+        // دالة منفصلة لإنشاء PDF للمشاركة
+        function generatePDFForSharing() {
+            return new Promise((resolve, reject) => {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                function addPageToPDF(pageElement, pageNumber) {
+                    return new Promise((resolve, reject) => {
+                        const options = {
+                            scale: 1.5,
+                            useCORS: true,
+                            allowTaint: false,
+                            logging: false,
+                            backgroundColor: '#ffffff',
+                            width: 794,
+                            height: 1123,
+                            windowWidth: 794,
+                            windowHeight: 1123,
+                            onclone: function(clonedDoc) {
+                                const clonedPage = clonedDoc.getElementById(pageElement.id);
+                                if (clonedPage) {
+                                    clonedPage.style.boxShadow = 'none';
+                                    clonedPage.style.margin = '0';
+                                    clonedPage.style.padding = '20mm';
+                                }
+                            }
+                        };
+                        
+                        html2canvas(pageElement, options).then(canvas => {
+                            const imgData = canvas.toDataURL('image/jpeg', 0.7);
+                            const imgWidth = 210;
+                            const imgHeight = 297;
+                            
+                            if (pageNumber > 1) {
+                                pdf.addPage();
+                            }
+                            
+                            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                            resolve();
+                        }).catch(reject);
+                    });
+                }
+                
+                async function generatePDF() {
+                    try {
+                        await addPageToPDF(document.getElementById('page1'), 1);
+                        await addPageToPDF(document.getElementById('page2'), 2);
+                        
+                        // الحصول على PDF كـ Blob
+                        const pdfBlob = pdf.output('blob');
+                        resolve(pdfBlob);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }
+                
+                generatePDF();
+            });
+        }
+
+        // دالة لعرض رسائل التنبيه
+        function showAlert(message) {
+            const alertElement = document.getElementById('alertMessage');
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // تحميل بيانات التقرير من LocalStorage
+        function loadReportData() {
+            // تحميل البيانات الأساسية من CURRENT_ENTRY
+            const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_ENTRY);
+            
+            if (saved) {
+                try {
+                    const entry = JSON.parse(saved);
+                    
+                    // تعبئة معلومات عامة للصفحات
+                    const dateValue = entry.dateString || getCurrentDate();
+                    document.getElementById('dateField').textContent = dateValue;
+
+                    const subcontractorValue = entry.subcontractor_name || 'غير محدد';
+                    document.getElementById('subcontractorField').textContent = subcontractorValue;
+
+                    const siteIdValue = entry.site_id || 'غير محدد';
+                    document.getElementById('siteIdField').textContent = siteIdValue;
+
+                    const responsibleValue = entry.site_responsible_name || 'غير محدد';
+                    document.getElementById('responsibleField').textContent = responsibleValue;
+
+                    console.log("✅ تم تحميل البيانات الأساسية بنجاح");
+
+                } catch (error) {
+                    console.error("❌ خطأ في تحميل البيانات الأساسية:", error);
+                }
+            } else {
+                console.warn("⚠️ لا توجد بيانات أساسية محفوظة");
+                
+                // استخدام القيم الافتراضية إذا لم تكن البيانات موجودة
+                const dateValue = getCurrentDate();
+                document.getElementById('dateField').textContent = dateValue;
+                
+                document.getElementById('subcontractorField').textContent = 'غير محدد';
+                document.getElementById('siteIdField').textContent = 'غير محدد';
+                document.getElementById('responsibleField').textContent = 'غير محدد';
+            }
+
+            // تحميل إجابات الـ checklist من emergencyChecklistAnswers
+            loadChecklistAnswers();
+        }
+
+        // دالة للحصول على التاريخ الحالي
+        function getCurrentDate() {
+            const now = new Date();
+            const englishDate = now.toLocaleDateString('en-GB');
+            const arabicDate = now.toLocaleDateString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            return `${arabicDate} - ${englishDate}`;
+        }
+
+        // تحميل إجابات الـ checklist وعرضها في الصفحة الأولى
+        function loadChecklistAnswers() {
+            const answers = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHECKLIST_ANSWERS)) || {};
+            
+            console.log("📋 بيانات الـ checklist المحملة:", answers);
+            
+            // تعيين الإجابات والأسماء للأسئلة
+            fillQuestionWithName('q1', answers['0']);
+            fillQuestionWithName('q2', answers['1']);
+            fillQuestionWithName('q3', answers['2']);
+            fillQuestionWithName('q4', answers['3']);
+            fillQuestionWithName('q5', answers['4']);
+            fillQuestionWithName('q6', answers['5']);
+            fillQuestionWithName('q7', answers['6']);
+            fillQuestionWithName('q8', answers['7']);
+        }
+
+        // دالة مساعدة لإظهار ✓ أو ✗ مع الاسم
+        function fillQuestionWithName(questionId, answerData) {
+            const yesCell = document.getElementById(questionId);
+            const noCell = document.getElementById(questionId + '_no');
+            const nameCell = document.getElementById(questionId + '_name');
+            
+            if (!yesCell || !noCell || !nameCell) {
+                console.warn(`❌ العنصر غير موجود: ${questionId}`);
+                return;
+            }
+            
+            // إزالة كلاس التحميل إذا كان موجوداً
+            yesCell.classList.remove('loading-message');
+            noCell.classList.remove('loading-message');
+            nameCell.classList.remove('loading-message');
+            
+            if (answerData) {
+                console.log(`📝 تعبئة ${questionId}:`, answerData);
+                
+                if (answerData.answer === 'yes') {
+                    yesCell.textContent = '✓';
+                    noCell.textContent = '';
+                } else if (answerData.answer === 'no') {
+                    yesCell.textContent = '';
+                    noCell.textContent = '✗';
+                } else {
+                    yesCell.textContent = '';
+                    noCell.textContent = '';
+                }
+                
+                // تعبئة الاسم إذا كان موجوداً
+                if (answerData.name) {
+                    nameCell.textContent = answerData.name;
+                } else {
+                    nameCell.textContent = '';
+                }
+            } else {
+                // إذا لم توجد بيانات، نضع قيم افتراضية
+                yesCell.textContent = '';
+                noCell.textContent = '';
+                nameCell.textContent = '';
+                console.log(`⚠️ لا توجد بيانات لـ ${questionId}`);
+            }
+        }
+
+        // دالة لتصدير PDF محسنة لمقاس A4
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            
+            // إظهار رسالة تحميل
+            showAlert('جاري إنشاء ملف PDF...');
+            
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // دالة محسنة لتحويل الصفحة إلى صورة وإضافتها إلى PDF
+            function addPageToPDF(pageElement, pageNumber) {
+                return new Promise((resolve, reject) => {
+                    // إعدادات محسنة لـ html2canvas لمقاس A4
+                    const options = {
+                        scale: 1.2,
+                        useCORS: true,
+                        allowTaint: false,
+                        logging: false,
+                        backgroundColor: '#ffffff',
+                        width: 794, // A4 width in pixels
+                        height: 1123, // A4 height in pixels
+                        windowWidth: 794,
+                        windowHeight: 1123,
+                        onclone: function(clonedDoc) {
+                            // تحسين العرض للنسخة المستنسخة
+                            const clonedPage = clonedDoc.getElementById(pageElement.id);
+                            if (clonedPage) {
+                                clonedPage.style.boxShadow = 'none';
+                                clonedPage.style.margin = '0';
+                                clonedPage.style.padding = '20mm';
+                            }
+                        }
+                    };
+                    
+                    html2canvas(pageElement, options).then(canvas => {
+                        const imgData = canvas.toDataURL('image/jpeg', 0.7);
+                        const imgWidth = 210; // A4 width in mm
+                        const imgHeight = 297; // A4 height in mm
+                        
+                        if (pageNumber > 1) {
+                            pdf.addPage();
+                        }
+                        
+                        // إضافة الصورة لتغطية صفحة A4 كاملة
+                        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                        
+                        console.log(`✅ تم إضافة الصفحة ${pageNumber}`);
+                        resolve();
+                    }).catch(error => {
+                        console.error(`❌ خطأ في تحويل الصفحة ${pageNumber}:`, error);
+                        reject(error);
+                    });
+                });
+            }
+            
+            // إضافة الصفحات بالتسلسل مع معالجة الأخطاء
+            async function generatePDFSequentially() {
+                try {
+                    console.log("🚀 بدء إنشاء PDF بمقاس A4...");
+                    
+                    // إضافة الصفحة الأولى
+                    await addPageToPDF(document.getElementById('page1'), 1);
+                    console.log("✅ الصفحة الأولى مضافة");
+                    
+                    // إضافة الصفحة الثانية
+                    await addPageToPDF(document.getElementById('page2'), 2);
+                    console.log("✅ الصفحة الثانية مضافة");
+                    
+                    // حفظ الملف
+                    // توليد اسم ملف ديناميكي مع Site ID + التاريخ + الوقت
+                  const now = new Date();
+                  const day = String(now.getDate()).padStart(2, '0');
+                  const month = String(now.getMonth() + 1).padStart(2, '0');
+
+                  // جلب Site ID من التقرير
+                  let siteId = document.getElementById('siteIdField').textContent.trim();
+                    if (!siteId || siteId === 'غير محدد') {
+                     siteId = '0000'; // قيمة افتراضية لو مش متسجل Site ID
+                   }
+
+                  // اسم الملف: emergency_report_SiteID_DDMM_HHMM.pdf
+                  const fileName = `emergency_report_${siteId}_${day}${month}.pdf`;
+
+                  pdf.save(fileName);
+
+                    console.log("✅ تم حفظ ملف PDF بنجاح بمقاس A4");
+                    showAlert('تم إنشاء ملف PDF بنجاح!');
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في إنشاء PDF:', error);
+                    showAlert('حدث خطأ أثناء إنشاء ملف PDF');
+                }
+            }
+            
+            // بدء عملية الإنشاء
+            generatePDFSequentially();
+        }
+
+        // دالة لتحديث البيانات يدوياً
+        function refreshData() {
+            console.log("🔄 تحديث البيانات...");
+            loadReportData();
+        }
+
+        // تحميل البيانات عند فتح الصفحة
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("🚀 بدء تحميل الصفحة...");
+            loadReportData();
+            document.getElementById('generatePdf').addEventListener('click', generatePDF);
+            
+            // جعل الدوال متاحة عالمياً للاستخدام من وحدة التحكم
+            window.refreshData = refreshData;
+            window.loadReportData = loadReportData;
+        });
+    </script>
+</body>
+</html>

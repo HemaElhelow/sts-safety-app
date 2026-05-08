@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>فحص السيارة - الخطوة الثانية</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 30px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .content {
+      padding: 25px 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #007bff, #28a745, #007bff);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+      border-radius: 20px 20px 0 0;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .question {
+      margin-bottom: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .question label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .answers {
+      display: flex;
+      gap: 15px;
+      margin-top: 8px;
+    }
+
+    .answers label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: normal;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .answers label:hover {
+      background-color: #f0f7ff;
+    }
+
+    .answers input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #007bff;
+    }
+
+    .signature-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      gap: 15px;
+    }
+
+    .signature-buttons button,
+    .next-button button {
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      border: none;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      flex: 1;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    }
+
+    .signature-buttons button:hover,
+    .next-button button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .next-button {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .next-button button {
+      width: 100%;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      padding: 16px;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 5px;
+      padding: 8px 12px;
+      background-color: #f8d7da;
+      border-radius: 8px;
+      border: 1px solid #f5c6cb;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* تحسينات للشاشات الصغيرة */
+    @media (max-width: 480px) {
+      .content {
+        padding: 20px 10px;
+      }
+
+      .form-container {
+        padding: 25px 20px;
+        border-radius: 15px;
+      }
+
+      .header h1 {
+        font-size: 1.2rem;
+      }
+
+      .question {
+        padding: 12px;
+        margin-bottom: 15px;
+      }
+
+      .answers {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .answers label {
+        padding: 8px 10px;
+      }
+
+      .signature-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .signature-buttons button,
+      .next-button button {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* تحسين للوضع المظلم */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      }
+
+      .form-container {
+        background: rgba(45, 55, 72, 0.95);
+        color: white;
+      }
+
+      .question {
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      }
+
+      .question:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+
+      .question label {
+        color: #e2e8f0;
+      }
+
+      .answers label:hover {
+        background-color: rgba(0, 123, 255, 0.2);
+      }
+
+      .error-message {
+        background-color: rgba(220, 53, 69, 0.2);
+        border-color: rgba(220, 53, 69, 0.3);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>فحص السيارة - الخطوة الثانية</h1>
+  </div>
+
+  <div class="content">
+    <form id="vehicleCheckStep2Form" class="form-container">
+
+      <!-- الأسئلة -->
+      <div class="question">
+        <label>1. فحص مستوى الزيت</label>
+        <div class="answers">
+          <label><input type="radio" name="فحص مستوى الزيت" value="نعم" required> نعم</label>
+          <label><input type="radio" name="فحص مستوى الزيت" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>2. فحص آلة التنبيه</label>
+        <div class="answers">
+          <label><input type="radio" name="فحص آلة التنبيه" value="نعم" required> نعم</label>
+          <label><input type="radio" name="فحص آلة التنبيه" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>3. فحص الفرامل</label>
+        <div class="answers">
+          <label><input type="radio" name="فحص الفرامل" value="نعم" required> نعم</label>
+          <label><input type="radio" name="فحص الفرامل" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>4. فحص عجلات السيارة</label>
+        <div class="answers">
+          <label><input type="radio" name="فحص عجلات السيارة" value="نعم" required> نعم</label>
+          <label><input type="radio" name="فحص عجلات السيارة" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>5. فحص الإطار الاحتياطي</label>
+        <div class="answers">
+          <label><input type="radio" name="فحص الإطار الاحتياطي" value="نعم" required> نعم</label>
+          <label><input type="radio" name="فحص الإطار الاحتياطي" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>6. فحص الإضاءة</label>
+        <div class="answers">
+          <label><input type="radio" name="فحص الإضاءة" value="نعم" required> نعم</label>
+          <label><input type="radio" name="فحص الإضاءة" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>7. فحص البطارية</label>
+        <div class="answers">
+          <label><input type="radio" name="فحص البطارية" value="نعم" required> نعم</label>
+          <label><input type="radio" name="فحص البطارية" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>8. هل يوجد طفاية الحريق؟</label>
+        <div class="answers">
+          <label><input type="radio" name="طفاية الحريق" value="نعم" required> نعم</label>
+          <label><input type="radio" name="طفاية الحريق" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>9. حزام الأمان هل هو موجود وسليم؟</label>
+        <div class="answers">
+          <label><input type="radio" name="حزام الأمان" value="نعم" required> نعم</label>
+          <label><input type="radio" name="حزام الأمان" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>10. هل خرطوم التفويل سليم؟</label>
+        <div class="answers">
+          <label><input type="radio" name="خرطوم التفويل" value="نعم" required> نعم</label>
+          <label><input type="radio" name="خرطوم التفويل" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>11. هل وصلات الماتور سليمة؟</label>
+        <div class="answers">
+          <label><input type="radio" name="وصلات الماتور" value="نعم" required> نعم</label>
+          <label><input type="radio" name="وصلات الماتور" value="لا"> لا</label>
+        </div>
+      </div>
+
+      <!-- أزرار التوقيع -->
+      <div class="signature-buttons">
+        <button type="button" onclick="driverSign()">توقيع السائق</button>
+       
+      </div>
+
+      <!-- زر الانتقال -->
+      <div class="next-button">
+        <button type="submit">💾 حفظ والمتابعة</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("vehicleCheckStep2Form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // التحقق من إجابة جميع الأسئلة
+      const questions = document.querySelectorAll('.question');
+      let allAnswered = true;
+      
+      questions.forEach(question => {
+        const radioName = question.querySelector('input[type="radio"]').name;
+        const checked = document.querySelector(`input[name="${radioName}"]:checked`);
+        
+        if (!checked) {
+          allAnswered = false;
+          question.style.animation = 'shake 0.5s';
+          setTimeout(() => {
+            question.style.animation = '';
+          }, 500);
+        }
+      });
+
+      if (!allAnswered) {
+        alert('يرجى الإجابة على جميع الأسئلة قبل المتابعة');
+        return;
+      }
+
+      // جمع البيانات
+      const formData = new FormData(this);
+      const checkData = {};
+
+      formData.forEach((value, key) => {
+        checkData[key] = value;
+      });
+
+      // أضف التاريخ والوقت
+      checkData["تاريخ الفحص"] = new Date().toLocaleString("ar-EG");
+
+      // خزّن البيانات
+      try {
+        localStorage.setItem("vehicleCheckStep2Data", JSON.stringify(checkData));
+        sessionStorage.setItem("vehicleCheckStep2Data", JSON.stringify(checkData));
+        
+        // الانتقال للصفحة التالية
+        window.location.href = "report.html";
+      } catch (e) {
+        alert('حدث خطأ في حفظ البيانات، يرجى المحاولة مرة أخرى');
+        console.error('Error saving data:', e);
+      }
+    });
+
+    function driverSign() {
+
+ window.location.href = "driver-sign.html"    }
+
+
+
+    // إضافة تأثير اهتزاز عند وجود خطأ
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

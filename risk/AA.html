@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تقييم المخاطر - Ganoub Elwady Safety</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            padding: 20px 15px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .question-box {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-content {
+            padding: 20px 15px;
+        }
+        
+        .counter {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            margin: -20px -15px 20px -15px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        
+        .question {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 500;
+            text-align: center;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .question-image-container {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 15px 0;
+            min-height: 160px;
+            background: #fafafa;
+            border-radius: 10px;
+            align-items: center;
+        }
+        
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 150px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            object-fit: contain;
+        }
+        
+        .image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 130px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            color: #999;
+            font-size: 0.8rem;
+        }
+        
+        .buttons {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            font-size: 1rem;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            text-align: center;
+            touch-action: manipulation;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-safe {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-unsafe {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+        
+        .btn-missing {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(33, 150, 243, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: all 0.2s;
+        }
+        
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .back-btn.hidden {
+            transform: translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .risk-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .risk-modal.active {
+            display: flex;
+        }
+        
+        .risk-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 750px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            animation: slideInUp 0.35s ease-out;
+        }
+        
+        .risk-modal-header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 18px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .risk-modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .risk-modal-header p {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+        
+        .risk-modal-body {
+            padding: 20px 15px;
+        }
+
+        .hazard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .hazard-field {
+            background: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border-right: 3px solid #3498db;
+        }
+        
+        .hazard-label {
+            font-size: 0.65rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        
+        .hazard-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .matrix-section {
+            margin-bottom: 20px;
+        }
+
+        .matrix-section-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .matrix-section-title.initial {
+            background: #fff3e0;
+            color: #e65100;
+            border-right: 3px solid #ff9800;
+        }
+
+        .matrix-section-title.residual {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-right: 3px solid #4caf50;
+        }
+        
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.72rem;
+            margin: 8px 0;
+            direction: ltr;
+        }
+        
+        .matrix-table th,
+        .matrix-table td {
+            border: 1px solid #ddd;
+            padding: 7px 4px;
+            text-align: center;
+        }
+        
+        .matrix-table th {
+            background: #f0f0f0;
+            font-weight: 700;
+            color: #555;
+        }
+        
+        .matrix-cell {
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .matrix-cell:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        
+        .matrix-cell.selected {
+            border: 3px solid #2c3e50 !important;
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(0,0,0,0.25);
+        }
+        
+        .risk-low    { background: #27ae60; color: white; }
+        .risk-medium { background: #FFFF66; color: white; }
+        .risk-high   { background: #FFB347; color: white; }
+        .risk-critical { background: #e74c3c; color: white; }
+
+        .controls-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .controls-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            margin: 8px 0 18px 0;
+            min-height: 80px;
+            direction: rtl;
+            text-align: right;
+            transition: border-color 0.3s;
+        }
+
+        .controls-textarea:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .stop-work-banner {
+            display: none;
+            background: linear-gradient(135deg, #f44336, #b71c1c);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .stop-work-banner.show {
+            display: block;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-save-risk {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            flex: 2;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            min-width: 140px;
+        }
+
+        .btn-save-risk.stop-work {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+        
+        .btn-cancel-modal {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            min-width: 80px;
+        }
+
+        .btn-save-risk:active, .btn-cancel-modal:active {
+            transform: scale(0.97);
+        }
+
+        .error-msg {
+            color: #f44336;
+            font-size: 0.82rem;
+            background: #ffebee;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-top: 6px;
+            display: none;
+            text-align: center;
+        }
+
+        .risk-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            display: none;
+            text-align: right;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-right: 4px solid #4caf50;
+        }
+        
+        .risk-code {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+
+        .final-screen {
+            display: none;
+            padding: 20px 15px;
+        }
+        /* ====================================================
+   تكبير مصفوفة المخاطر في نافذة "غير آمن"
+   ==================================================== */
+
+/* تكبير الجدول بالكامل */
+.risk-modal .matrix-table {
+    font-size: 1rem !important;
+    width: 100%;
+}
+
+/* تكبير الخلايا */
+.risk-modal .matrix-table th,
+.risk-modal .matrix-table td {
+    padding: 12px 8px !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+}
+
+/* تكبير الأرقام داخل الخلايا */
+.risk-modal .matrix-cell {
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+}
+
+/* تكبير عنوان الصف الأول (الاحتمال) */
+.risk-modal .matrix-table th:first-child {
+    font-size: 0.9rem !important;
+    background: #e0e0e0;
+}
+
+/* تكبير عنوان الأعمدة */
+.risk-modal .matrix-table thead tr:first-child th {
+    font-size: 0.9rem !important;
+    padding: 10px 5px !important;
+    background: #e0e0e0;
+}
+
+/* تكبير عنوان المصفوفة */
+.risk-modal .matrix-section-title {
+    font-size: 1.1rem !important;
+    padding: 12px 15px !important;
+    margin-bottom: 15px !important;
+}
+
+/* تكبير الخلايا المحددة */
+.risk-modal .matrix-cell.selected {
+    border: 4px solid #2c3e50 !important;
+    transform: scale(1.05);
+}
+
+/* جعل الجدول يأخذ عرض كامل */
+.risk-modal .matrix-section {
+    overflow-x: auto;
+}
+
+/* تحسين عرض الجدول على الموبايل */
+@media (max-width: 600px) {
+    .risk-modal .matrix-table th,
+    .risk-modal .matrix-table td {
+        padding: 10px 8px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .risk-modal .matrix-cell {
+        font-size: 0.9rem !important;
+    }
+}
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            min-height: 80px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        
+        .final-buttons {
+            display: grid;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .btn-final {
+            padding: 15px 20px;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            touch-action: manipulation;
+        }
+        
+        .btn-final-primary   { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; box-shadow: 0 4px 15px rgba(76,175,80,0.3); }
+        .btn-final-secondary { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; box-shadow: 0 4px 15px rgba(33,150,243,0.3); }
+        .btn-final-danger    { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; box-shadow: 0 4px 15px rgba(244,67,54,0.3); }
+        
+        .btn-final:active { transform: translateY(2px); }
+
+        .validation-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 10px;
+            padding: 8px;
+            background: #ffebee;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .final-hazard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .final-hazard-field {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            border-right: 3px solid #3498db;
+        }
+        
+        .final-hazard-field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            direction: rtl;
+            text-align: right;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .final-hazard-field.full-width {
+            grid-column: span 2;
+        }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+        
+        .btn, .matrix-cell, .btn-save-risk, .btn-cancel-modal, .btn-final {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .matrix-table th:first-child {
+            direction: rtl;
+            font-size: 0.6rem;
+        }
+        
+        @media (max-width: 480px) {
+            body { padding: 5px; font-size: 13px; }
+            .header { padding: 15px 10px; }
+            .header h1 { font-size: 1.3rem; }
+            .question-content { padding: 15px 10px; }
+            .question { font-size: 0.9rem; min-height: 60px; }
+            .btn { padding: 12px 16px; font-size: 0.9rem; }
+            .hazard-grid, .final-hazard-grid { grid-template-columns: 1fr; }
+            .final-hazard-field.full-width { grid-column: span 1; }
+            .back-btn { width: 50px; height: 50px; bottom: 15px; left: 15px; font-size: 18px; }
+            .matrix-table { font-size: 0.65rem; }
+            .matrix-table td, .matrix-table th { padding: 5px 2px; }
+            .question-image-container { min-height: 130px; }
+        }
+        
+        @media (min-width: 768px) {
+            .container { max-width: 650px; }
+            .buttons { grid-template-columns: repeat(3, 1fr); }
+            .final-buttons { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Ganoub Elwady Safety</h1>
+        <p>نظام تقييم المخاطر</p>
+    </div>
+    
+    <div class="question-box">
+        <div class="question-content">
+            <div class="counter" id="counter">السؤال 1 من 38</div>
+            <div class="question" id="question">تحميل السؤال...</div>
+            
+            <div class="question-image-container" id="imageContainer">
+                <img id="questionImage" class="question-image" style="display:none;">
+                <div id="imagePlaceholder" class="image-placeholder" style="display:flex;">📷 صورة توضيحية</div>
+            </div>
+            
+            <div class="buttons" id="answerButtons">
+                <button class="btn btn-safe"    onclick="answer('آمن')">✓ آمن</button>
+                <button class="btn btn-unsafe"  onclick="answer('غير آمن')">✗ غير آمن</button>
+                <button class="btn btn-missing" onclick="answer('غير مطبق')">— غير مطبق</button>
+            </div>
+            
+            <div class="validation-message" id="validationMessage">يجب الإجابة على هذا السؤال قبل الانتقال للسؤال التالي</div>
+            
+            <div class="risk-result" id="riskResult"></div>
+            
+            <div class="final-screen" id="finalScreen">
+                <h2 style="text-align:center; margin-bottom:20px; color:#333;">تقييم المخاطر - إضافة مخاطر إضافية</h2>
+                <p style="text-align:center; margin-bottom:20px; color:#666;">يمكنك إضافة مخاطر إضافية يدوياً أو تخطيها</p>
+                
+                <div class="final-hazard-grid">
+                    <div class="final-hazard-field">
+                        <div class="hazard-label">⚠️ الخطر (Hazard)</div>
+                        <textarea id="finalHazard" rows="2" placeholder="أدخل وصف الخطر..."></textarea>
+                    </div>
+                    <div class="final-hazard-field">
+                        <div class="hazard-label">👥 من سوف يتعرض (Exposed Persons)</div>
+                        <textarea id="finalExposed" rows="2" placeholder="من سوف يتعرض لهذا الخطر..."></textarea>
+                    </div>
+                    <div class="final-hazard-field">
+                        <div class="hazard-label">💢 كيف يمكن أن يتضرر (Harm)</div>
+                        <textarea id="finalHarm" rows="2" placeholder="كيف يمكن أن يتضرر المعرضون..."></textarea>
+                    </div>
+                    <div class="final-hazard-field">
+                        <div class="hazard-label">🛡️ تدابير التحكم الحالية (Existing Controls)</div>
+                        <textarea id="finalExistingControls" rows="2" placeholder="إجراءات التحكم الحالية..."></textarea>
+                    </div>
+                </div>
+
+                <div class="matrix-section">
+                    <div class="matrix-section-title initial">📊 مصفوفة المخاطر - قبل التحكم (Initial Risk)</div>
+                    <table class="matrix-table" id="finalInitialMatrixTable">
+                        <thead><tr><th>الاحتمال ↓ / الشدة →</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+                        <tbody id="finalInitialMatrixBody"></tbody>
+                    </table>
+                    <div class="error-msg" id="finalInitialMatrixError">يرجى تحديد مستوى الخطر في مصفوفة ما قبل التحكم</div>
+                </div>
+
+                <div>
+                    <label class="controls-label">🛡️ تدابير التحكم الإضافية (Additional Controls)</label>
+                    <textarea class="controls-textarea" id="finalAdditionalControls" rows="3"
+                        placeholder="أدخل إجراءات التحكم الإضافية التي سيتم تطبيقها..."></textarea>
+                    <div class="error-msg" id="finalControlsError">يرجى إدخال تدابير التحكم الإضافية</div>
+                </div>
+
+                <div class="matrix-section">
+                    <div class="matrix-section-title residual">📊 مصفوفة المخاطر - بعد التحكم (Residual Risk)</div>
+                    <table class="matrix-table" id="finalResidualMatrixTable">
+                        <thead><tr><th>الاحتمال ↓ / الشدة →</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+                        <tbody id="finalResidualMatrixBody"></tbody>
+                    </table>
+                    <div class="error-msg" id="finalResidualMatrixError">يرجى تحديد مستوى الخطر في مصفوفة ما بعد التحكم</div>
+                </div>
+
+                <div class="stop-work-banner" id="finalStopWorkBanner">
+                    🛑 تحذير: مستوى الخطر شديد جداً — يجب إيقاف العمل فوراً!
+                </div>
+                
+                <div class="final-buttons">
+                    <button class="btn-final btn-final-secondary" onclick="noAdditionalRisks()">لا يوجد خطر إضافي</button>
+                    <button class="btn-final btn-final-primary"   onclick="saveFinalManualRisk()">حفظ والذهاب للنتيجة</button>
+                    <button class="btn-final btn-final-danger"    onclick="saveAndAddMoreRisk()">حفظ وإضافة آخر</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<button class="back-btn hidden" id="backBtn" onclick="goToPreviousQuestion()">←</button>
+
+<div class="risk-modal" id="riskModal">
+    <div class="risk-content">
+        <div class="risk-modal-header">
+            <h3>⚠️ تقييم الخطر - غير آمن</h3>
+            <p id="modalQuestionPreview">يرجى ملء بيانات الخطر وتحديد مستوى المخاطرة</p>
+        </div>
+        <div class="risk-modal-body">
+            <div class="hazard-grid" id="hazardGrid"></div>
+            <div class="matrix-section">
+                <div class="matrix-section-title initial">📊 مصفوفة المخاطر - قبل التحكم (Initial Risk)</div>
+                <table class="matrix-table" id="initialMatrixTable">
+                    <thead><tr><th>الاحتمال ↓ / الشدة →</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+                    <tbody id="initialMatrixBody"></tbody>
+                </table>
+                <div class="error-msg" id="initialMatrixError">يرجى تحديد مستوى الخطر في مصفوفة ما قبل التحكم</div>
+            </div>
+            <div>
+                <label class="controls-label">🛡️ تدابير التحكم الإضافية (Additional Controls)</label>
+                <textarea class="controls-textarea" id="additionalControlsInput" rows="3"
+                    placeholder="أدخل إجراءات التحكم الإضافية التي سيتم تطبيقها..."></textarea>
+                <div class="error-msg" id="controlsError">يرجى إدخال تدابير التحكم الإضافية</div>
+            </div>
+            <div class="matrix-section">
+                <div class="matrix-section-title residual">📊 مصفوفة المخاطر - بعد التحكم (Residual Risk)</div>
+                <table class="matrix-table" id="residualMatrixTable">
+                    <thead><tr><th>الاحتمال ↓ / الشدة →</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+                    <tbody id="residualMatrixBody"></tbody>
+                </table>
+                <div class="error-msg" id="residualMatrixError">يرجى تحديد مستوى الخطر في مصفوفة ما بعد التحكم</div>
+            </div>
+            <div class="stop-work-banner" id="stopWorkBanner">🛑 تحذير: مستوى الخطر شديد جداً — يجب إيقاف العمل فوراً!</div>
+            <div class="modal-buttons">
+                <button class="btn-save-risk" id="saveRiskBtn" onclick="saveRiskAssessment()">💾 حفظ التقييم</button>
+                <button class="btn-cancel-modal" onclick="closeRiskModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // تنظيف البيانات المخزنة السابقة عند بدء الصفحة
+    // ============================================================
+    (function clearPreviousSessionData() {
+        localStorage.removeItem('riskAssessmentData');
+        localStorage.removeItem('riskAssessmentBackup');
+        localStorage.removeItem('riskAssessmentReportData');
+    })();
+
+    // ============================================================
+    // الأسئلة الكاملة - 38 سؤال
+    // ============================================================
+    const allQuestions = [
+        { id: 1, text: "هل جميع افراد فريق العمل مؤهلين ومصرح لهم بالعمل؟", category: "التأهيل والترخيص", image: "/assets/a.png",
+          hazardOptions: ["عدم وجود شهادات تأهيل مهني","عدم صلاحية التراخيص الحالية","نقص التدريب المتخصص للعمال","عدم وجود خبرة كافية للفريق"],
+          exposedOptions: ["العمال غير المؤهلين","المشرفين الجدد","عمال المقاولين الفرعيين"],
+          harmOptions: ["إصابات تشغيلية خطيرة","أخطاء في تشغيل المعدات","حوادث سقوط أو تصادم","توقف العمل بشكل مفاجئ"],
+          existingControlsOptions: ["سياسة التوظيف والتدقيق على الشهادات","برنامج التدريب المستمر للعمال","مراجعة التراخيص المهنية بشكل دوري","نظام تقييم الكفاءات قبل التوظيف"] },
+        { id: 2, text: "هل جميع اعضاء الفريق لائقين طبيا للقيام بالعمل المكلفين به؟", category: "اللياقة الطبية", image: "/assets/b.png",
+          hazardOptions: ["إصابة عامل بمرض مزمن غير معلن","عدم إجراء الفحوصات الدورية","إرهاق شديد بسبب ساعات العمل الطويلة","وجود إعاقة مؤقتة تمنع العمل بأمان"],
+          exposedOptions: ["جميع العمال بالمناوبة","عمال المرتفعات بشكل خاص","مشغلي المعدات الثقيلة","العمال الجدد غير المفحوصين"],
+          harmOptions: ["إغماء مفاجئ أثناء العمل","فقدان التركيز مما يؤدي لحوادث","إصابات جسدية مزمنة","حوادث قلبية أو تنفسية حادة"],
+          existingControlsOptions: ["الفحص الطبي الدوري الشامل","سجل طبي محدث لكل عامل","تقييم اللياقة البدنية قبل المهام الخطرة","سياسة الإبلاغ عن الحالات المرضية"] },
+        { id: 3, text: "هل يتواجد بالموقع الرقابة المؤهلة والجيدة؟", category: "الرقابة", image: "/assets/c.png",
+          hazardOptions: ["نقص عدد المشرفين المؤهلين","غياب المشرف أثناء العمل الحرج","عدم وجود رقابة كافية في المناطق الخطرة","ضعف التواصل بين المشرفين والعمال"],
+          exposedOptions: ["جميع العاملين بالموقع","عمال الصيانة والتشغيل","الزوار والمقاولين","فرق العمل"],
+          harmOptions: ["مخالفات سلامة غير مكتشفة","حوادث متعددة ومتكررة","أخطاء تشغيلية جسيمة","عدم الالتزام بإجراءات السلامة"],
+          existingControlsOptions: ["نظام إشراف متعدد المستويات","مشرفين معتمدين في السلامة المهنية","جولات تفتيشية مفاجئة","تسجيل جميع الملاحظات اليومية"] },
+        { id: 4, text: "هل يتواجد فردين بالموقع في الاعمال شديدة الخطورة وهل تم تدريب احدهم على اجراءات الطوارئ (الانقاذ على ارتفاعات، إيقاف الطوارئ، اسعافات اولية، مكافحة حريق)؟", category: "الأعمال الخطرة", image: "/assets/d.jpg",
+          hazardOptions: ["وجود عامل واحد فقط في مهمة خطرة","عدم تدريب أي من العاملين على الإنقاذ","غياب خطة إنقاذ واضحة","عدم وجود اتصال فعال مع غرفة الطوارئ"],
+          exposedOptions: ["عمال الأعمال الخطرة","عمال الصيانة في المرتفعات","العاملين في الأماكن المغلقة","عمال التركيبات الكهربائية"],
+          harmOptions: ["وفاة في حالة الطوارئ","إصابات بالغة غير قابلة للإسعاف","تأخر عملية الإنقاذ","مضاعفات خطيرة للإصابات"],
+          existingControlsOptions: ["تطبيق نظام الرفيق (Buddy System)","تدريب دوري على الإنقاذ والإسعاف","أجهزة اتصال لاسلكية مباشرة","خطة طوارئ مكتوبة وموزعة"] },
+        { id: 5, text: "هل الموقع على درجة جيدة من النظافة؟", category: "النظافة", image: "/assets/e.png",
+          hazardOptions: ["تراكم المخلفات في الموقع","انسكاب سوائل على الأرضيات","عدم التخلص من النفايات بشكل آمن","وجود اثار مواد قابلة للاشتعال"],
+          exposedOptions: ["جميع الفنيين والمهندسين","فنيين الصيانه","السكان المحيطين بالموقع والموردين","فريق الصيانة الدورية"],
+          harmOptions: ["حوادث تعثر وسقوط","إصابات بجروح قطعية","أمراض جلدية وتنفسية","تلوث بيئي وغرامات مالية"],
+          existingControlsOptions: ["إزالة اثار التسريب","تنظيف الموقع","حواجز امتصاص للسوائل المنسكبة","توعية العمال بأهمية النظافة"] },
+        { id: 6, text: "هل الموقع مؤمن ودخوله في اوقات محددة؟ وهل جميع العلامات التحذيرية في اماكنها (الكهرباء، التسلق، الاشعاع، المواد القابلة للاشتعال، الدخول في اوقات محددة... الخ)؟", category: "الأمان", image: "/assets/f.png",
+          hazardOptions: ["عدم وجود لوحات ارشادية خاصه بالمواد القابلة للاشتعال","غياب اللوحات التحذيرية في محيط تانكات المولد","لايوجد لوحات ارشادية للمواد البترولية","عدم وجود علامات السلامة الارشادية الخاصة بالسولار"],
+          exposedOptions: ["جميع المتواجدين في الموقع","فنيين التفويل","مسئولى صيانة الديزل","الفنيين في الموقع"],
+          harmOptions: ["حروق","عدم انتباه الفنيين للمخاطر","تعرض غير المؤهلين لمخاطر جسيمة","فقدان السيطرة على الموقع"],
+          existingControlsOptions: ["اضافة لوحات ارشادية للمواد القابلة للاشتعال","لوحات تحذيرية واضحة","اضافة لوحات تحذيرية على المولد والتانكات بوجود مواد قابلة للاشتعال","اضافة لوحات ارشادية"] },
+        { id: 7, text: "هل الموقع والمنطقة المحيطة خالية من الغازات والسوائل القابلة للاشتعال والاحتراق، عناصر متفجرة، ابخرة، ادخنة، اتربة، الخ؟", category: "البيئة", image: "/assets/g.png",
+          hazardOptions: ["وجود مواد قابلة للاشتعال","تخزين مواد قابلة للاشتعال بشكل خاطئ","تفريغ مواد قابلة للاشتعال","عدم وجود طفايات حريق بجوار التانكات"],
+          exposedOptions: ["جميع فنيين ومهندسين","الفنيين والمهندسين","كل فرق الصيانه","جميع المترددين على الموقع"],
+          harmOptions: ["حرائق وانفجارات كبيرة","حروق من الدرجة الثالثة","حروق ووفاة","خسائر مادية وبشرية جسيمة"],
+          existingControlsOptions: ["التأكد من عزل المواد القابلة للاشتعال بشكل آمن مع تواجد طفاية حريق صالحة للاستخدام","عزل المواد القابلة للاشتعال عن منطقة العمل وتوفير طفاية حريق صالحة","عزل المواد القابلة للاشتعال + توفير طفاية حريق + تواجد فرد مدرب","عزل المواد القابلة للاشتعال بعيدًا عن منطقة العمل مع توفير طفاية حريق مناسبة"] },
+        { id: 8, text: "هل وسائل الخروج (مثل الباب والطريق والسلالم) امنة للخروج بسلام؟", category: "مسالك الهروب", image: "/assets/exit.png",
+          hazardOptions: ["انسداد مخارج الطوارئ بالمعدات","سلالم متهالكة أو غير آمنة","عدم وضوح علامات الإخلاء","أبواب طوارئ لا تفتح للخارج"],
+          exposedOptions: ["جميع العاملين والزوار","عمال الأدوار العليا","ذوي الاحتياجات الخاصة","العمال الجدد غير المعتادين"],
+          harmOptions: ["صعوبة إخلاء الموقع وقت الطوارئ","إصابات وتدافع ووفيات","احتجاز الأفراد داخل المبنى","تأخر فرق الإنقاذ في الوصول"],
+          existingControlsOptions: ["صيانة دورية لمسالك الهروب","لافتات مضيئة لمخارج الطوارئ","تدريبات إخلاء نصف سنوية","أبواب طوارئ معتمدة وسهلة الفتح"] },
+        { id: 9, text: "هل يوجد مسافة امان بين فريق العمل والوصلات الكهربية المرتفعة؟", category: "السلامة الكهربائية", image: "/assets/jj.png",
+          hazardOptions: ["اقتراب المعدات الثقيلة من الأسلاك","عدم وجود حواجز عازلة أسفل الكابلات","سقالات معدنية قريبة جداً من التيار","عدم قياس المسافات الآمنة قبل العمل"],
+          exposedOptions: ["عمال البناء والصيانة","مشغلي الرافعات الشوكية","عمال تركيب السقالات","عمال توصيل الكابلات الأرضية"],
+          harmOptions: ["صعق كهربائي مميت","حروق من الدرجة الثالثة","انقطاع التيار وتعطل العمل","تلف المعدات الكهربائية"],
+          existingControlsOptions: ["تحديد مسافات أمان قياسية","حواجز عازلة وعلامات تحذيرية","فصل التيار أثناء العمل القريب","استخدام مراقب سلامة كهربائية"] },
+        { id: 10, text: "هل الموقع خالي من الحيوانات والثعابين وأي حيوانات ضارة أخرى؟", category: "السلامة العامة", image: "/assets/i.png",
+          hazardOptions: ["وجود ثعابين سامة في الحفر","كلاب ضالة تتجول في الموقع","حشرات لاسعة بأعشاش قريبة","قوارض تسبب تلف الأسلاك"],
+          exposedOptions: ["عمال الحفر والتنقيب","حراس الأمن الخارجيون","عمال المستودعات المفتوحة","عمال النظافة في المناطق النائية"],
+          harmOptions: ["لدغات سامة مميتة","عضات تسبب جروحاً والتهابات","أمراض معدية من الحيوانات","حساسية شديدة من لسعات الحشرات"],
+          existingControlsOptions: ["فرق مسح وتطهير للمنطقة","حواجز وشبكات حماية","حقائب إسعافات أولية متخصصة","توعية العمال بمخاطر الحيوانات"] },
+        { id: 11, text: "هل تم التحكم في اخطار الموجات الكهرومغناطيسية؟", category: "المخاطر الفيزيائية", image: "/assets/j.png",
+          hazardOptions: ["أبراج إرسال قريبة بدون حماية","أجهزة ميكروويف عالية التردد","عدم وجود قياسات دورية للإشعاع","بقاء العمال لفترات طويلة بجانب الهوائيات"],
+          exposedOptions: ["فنيي الاتصالات والصيانة","عمال تركيب الأبراج","موظفي غرف التحكم","عمال الصيانة الدورية"],
+          harmOptions: ["تأثيرات صحية على المدى البعيد","حروق إشعاعية في الأنسجة","تأثير على الخصوبة والإنجاب","صداع وإرهاق مزمن"],
+          existingControlsOptions: ["أجهزة قياس إشعاع دورية","مناطق عزل حول المصادر","بدلات حماية كهرومغناطيسية","تحديد ساعات التعرض القصوى"] },
+        { id: 12, text: "هل التوصيلات الكهربائية والاجهزة تم التفتيش عليها (معزولة، وتعمل جيدا) مثل (الاسلاك، الكابلات، المفاتيح، المولد، المحولات، البطاريات، كشافات الانارة، فيوزات، كابل الأرضي موجود... الخ)؟", category: "التفتيش الكهربائي", image: "/assets/k.png",
+          hazardOptions: ["أسلاك مكشوفة بدون عزل","توصيلات مؤقتة غير آمنة","أجهزة قديمة تالفة وغير مفحوصة","قواطع كهرباء لا تعمل"],
+          exposedOptions: ["جميع العمال في الموقع","عمال الصيانة الكهربائية","عمال التشغيل اليومي","عمال التنظيف الرطب"],
+          harmOptions: ["صعق كهربائي للعمال","حرائق بسبب تماس كهربائي","تلف الأجهزة والمعدات","توقف كامل للعمل"],
+          existingControlsOptions: ["فحص شهري للتوصيلات","برنامج صيانة وقائية شامل","قواطع حماية من التسرب الأرضي","فني كهرباء معتمد بالموقع"] },
+        { id: 13, text: "هل الرفع اليدوي يتم باستخدام معدات جيدة (مخطط لها، باستخدام بكارة مناسبة، تحديد اماكن الرفع والتنزيل)؟", category: "الرفع اليدوي", image: "/assets/l.png",
+          hazardOptions: ["أوزان زائدة عن القدرة البشرية","استخدام حبال قديمة ومهترئة","عدم وضوح تعليمات الرفع","أرضية غير مستوية للرفع"],
+          exposedOptions: ["عمال المخازن والمستودعات","عمال التحميل والتنزيل","عمال الصيانة الميكانيكية","عمال البناء والتركيب"],
+          harmOptions: ["إصابات ظهر وفتق عضلي","سقوط أحمال على الأقدام","كسور في العظام","إجهاد عضلي مزمن"],
+          existingControlsOptions: ["معدات رفع ميكانيكية مساعدة","تدريب العمال على تقنيات الرفع","أحزمة دعم للظهر","علامات وزن واضحة على الصناديق"] },
+        { id: 14, text: "هل عملية الرفع مخطط لها قبل بدء العمل وباستخدام معدات مناسبة (القائم بهذا العمل مختص وحاصل على شهادة سارية)؟", category: "رفع المعدات", image: "/assets/m.png",
+          hazardOptions: ["عدم وجود خطة رفع مكتوبة","استخدام رافعة غير مناسبة للوزن","عدم تعيين مشرف للرفع","ظروف جوية سيئة أثناء الرفع"],
+          exposedOptions: ["عمال الرفع والتركيب","المشرفين والمهندسين","عمال المنطقة المحيطة","عمال الربط والتثبيت"],
+          harmOptions: ["سقوط حمولة مميت","انقلاب الرافعة","إصابات سحق للعمال","تلف هيكلي للمبنى"],
+          existingControlsOptions: ["خطة رفع مفصلة وموقعة","مشرف رفع معتمد","فحص الرافعة قبل كل عملية","محدد زاوية وسرعة رياح"] },
+        { id: 15, text: "هل تم التحكم المناسب في العمل على ارتفاعات من حيث (وجود عدد 2 على الاقل متسلق ابراج مدربين، لائقين طبيا، استخدام معدات التسلق والهبوط المناسب)؟", category: "العمل على الارتفاعات", image: "/assets/n.png",
+          hazardOptions: ["عدم وجود نظام منع سقوط مزدوج","متسلق واحد فقط غير مدرب على الإنقاذ","أحزمة أمان غير مربوطة بشكل صحيح","سقالات غير مثبتة جيداً"],
+          exposedOptions: ["عمال تركيب الأبراج","عمال صيانة الواجهات","عمال تنظيف النوافذ","عمال تركيب اللوحات الإعلانية"],
+          harmOptions: ["سقوط من ارتفاع كبير يؤدي للوفاة","إصابات بالغة في العمود الفقري","صدمة نفسية للزملاء","غرامات تنظيمية كبيرة"],
+          existingControlsOptions: ["نظام منع سقوط مزدوج (حبلين)","تدريب متقدم على الإنقاذ","فحص نقاط التثبيت يومياً","مراقب سلامة من الأرض"] },
+        { id: 16, text: "هل سطح الموقع امن بما فيه الكفاية (حافة سطح الموقع، بدون انبعاج - انحدار - بدون هشاشة - لايوجد نقاط ضعف)؟", category: "سلامة الأسطح", image: "/assets/o.png",
+          hazardOptions: ["أسطح متهالكة قد تنهار","عدم وجود حواجز على الحواف","مواد بناء ثقيلة على السطح","عدم وجود ممرات آمنة على السطح"],
+          exposedOptions: ["عمال الصيانة على الأسطح","عمال تركيب المكيفات","عمال تركيب الألواح الشمسية","عمال التفتيش الهندسي"],
+          harmOptions: ["سقوط من ارتفاع السطح","انهيار جزء من السقف","إصابات سحق من المواد","وفاة نتيجة السقوط"],
+          existingControlsOptions: ["فحص هيكلي شهري للأسطح","حواجز حماية محيطية","مناطق محظورة محددة بعلامات","نظام تصريح للعمل على الأسطح"] },
+        { id: 17, text: "هل تم احتساب حد الامان للاحمال قبل بدء العمل؟", category: "تحميل المعدات", image: "/assets/p.png",
+          hazardOptions: ["تجاوز الحمل الأقصى للمنصة","عدم توزيع الأحمال بشكل متساوٍ","استخدام معدات غير محددة الحمل","عدم وجود هندسة تحميل مكتوبة"],
+          exposedOptions: ["مشغلي الرافعات","عمال التحميل والتنزيل","عمال المخازن","الهيكل الإنشائي للمنشأة"],
+          harmOptions: ["انهيار منصة الرفع","كسر معدات التحميل","إصابات خطيرة للعمال القريبين","تلف الهيكل الإنشائي"],
+          existingControlsOptions: ["حسابات هندسية معتمدة","ملصقات الحمل الأقصى على المعدات","مشرف هندسي قبل كل عملية تحميل","فحص حالة المعدات يومياً"] },
+        { id: 18, text: "هل المنطقة تحت رفع الخامات خالية والتحرك فيها امن؟", category: "مناطق العمل", image: "/assets/q.png",
+          hazardOptions: ["وجود عمال في نطاق سقوط الحمولة","عدم وجود حواجز أمان تحت منطقة الرفع","ازدحام مسارات الحركة","انعدام التواصل بين عامل الرفع والأرض"],
+          exposedOptions: ["العمال في منطقة الرفع","المشاة والمركبات","عمال التركيب الأرضي","عمال الإشارة والتوجيه"],
+          harmOptions: ["سقوط أحمال ثقيلة على العمال","إصابات سحق مميتة","تلف معدات ومركبات","ذعر وتراص في المنطقة"],
+          existingControlsOptions: ["تحديد مناطق حظر واضحة","نظام إشارات بين الرافع والمشرف","حواجز منع دخول أسفل الرافعة","مراقب أرضي مخصص لإخلاء المنطقة"] },
+        { id: 19, text: "هل تم فحص معدات التسلق قبل السماح بالعمل بها في كل وردية؟", category: "فحص المعدات", image: "/assets/r.png",
+          hazardOptions: ["معدات تسلق قديمة وغير مفحوصة","حبال تسلق بها قطوعات غير مرئية","أحزمة أمان بإبزيم متكسر","خوذة ذات تشققات داخلية"],
+          exposedOptions: ["عمال التسلق والهبوط","مشغلي معدات الحفاظ على ارتفاعات","عمال صيانة الأبراج","مشرف الوردية"],
+          harmOptions: ["انكسار معدات أثناء الاستخدام","سقوط العامل من ارتفاع عالٍ","فشل نظام الإنقاذ عند الحاجة","وفاة أو إعاقة دائمة"],
+          existingControlsOptions: ["بطاقة فحص معدات يومية","معايير فحص مكتوبة لكل معدة","استبدال فوري للمعدات التالفة","سجل صيانة لكل قطعة معدة"] },
+        { id: 20, text: "هل يتم التحكم في الاعمال شديدة الخطورة من حيث (تم وضع خطة، تم التدريب على استخدامها، استخدام مهمات الوقاية الشخصية المناسبة، وخطة الطوارئ موضوعة في مكانها)؟", category: "الأعمال الخطرة", image: "/assets/ss.png",
+          hazardOptions: ["غياب تصريح العمل الخطر","عدم وجود خطة عمل مكتوبة","إهمال ارتداء مهمات الوقاية","ضعف التدريب على إجراءات الطوارئ"],
+          exposedOptions: ["عمال الأعمال الخطرة","مشرف السلامة","فريق الطوارئ","المقاولين المشتركين"],
+          harmOptions: ["حوادث جسيمة غير متوقعة","فشل إجراءات الطوارئ","إصابات متعددة في آنٍ واحد","توقف العمل الكامل والتحقيقات"],
+          existingControlsOptions: ["نظام تصريح العمل الخطر PTW","خطة طوارئ مكتوبة ومراجعة","تدريب شهري على الأعمال الخطرة","رقابة مستمرة من مشرف سلامة"] },
+        { id: 21, text: "هل تم التحكم في الاعمال الكهربائية (ممنوع العمل على مصدر الكهرباء الحي، استخدام مهمات شخصية صالحة، استخدام علامات التحذير ووسائل المنع للتيار الكهربي، استخدام معدات يدوية معزولة عزل مزدوج، استخدام اسلاك كهربائية ممتدة لايوجد بها وصلات)؟", category: "الأعمال الكهربائية", image: "/assets/s.png",
+          hazardOptions: ["العمل على دوائر حية بدون فصل","استخدام أدوات غير معزولة","عدم تطبيق إجراءات LOTO","أسلاك تمديد بها وصلات مؤقتة"],
+          exposedOptions: ["الفنيين الكهربائيين","عمال الصيانة الميكانيكية المجاورين","مشغلي المعدات","أي شخص في المنطقة الكهربائية"],
+          harmOptions: ["صعق كهربائي قاتل","حروق قوس كهربائي","توقف كامل للإنتاج","تلف أجهزة ومعدات ثمينة"],
+          existingControlsOptions: ["إجراءات LOTO موثقة وصارمة","أدوات كهربائية ذات عزل مزدوج","قفازات وبدلات كهربائية معتمدة","فصل التيار وقفله قبل البدء"] },
+        { id: 22, text: "هل أدوات الحماية الشخصية مناسبة وتم فحصها قبل العمل؟", category: "معدات الوقاية", image: "/assets/mmm.png",
+          hazardOptions: ["مهمات حماية منتهية الصلاحية","مقاسات غير مناسبة للعمال","مهمات تالفة ولا تحقق الحماية","عدم وجود مهمات احتياطية"],
+          exposedOptions: ["جميع العمال بالموقع","العمال الجدد","العمال في المناطق الخطرة","عمال الزيارات والتفتيش"],
+          harmOptions: ["فشل الحماية عند حدوث حادثة","إصابات كان يمكن تفاديها","حروق أو قطوعات أو كسور","دعاوى قانونية وتعويضات"],
+          existingControlsOptions: ["فحص يومي لمهمات الوقاية","قائمة جرد وتتبع شهرية","استبدال فوري لأي مهمة تالفة","تدريب على الاستخدام الصحيح"] },
+        { id: 23, text: "هل معدات الحماية من السقوط المستخدمة امنة وفي حالة جيدة؟", category: "معدات الوقاية", image: "/assets/u.png",
+          hazardOptions: ["حزام أمان بدون فحص دوري","حبال توقف قديمة ومهترئة","نقاط إرساء غير معتمدة","عدم معرفة تفتيش العمال لمعداتهم"],
+          exposedOptions: ["عمال المرتفعات","متسلقو الأبراج","عمال صيانة الأسطح","عمال السقالات"],
+          harmOptions: ["فشل معدة الحماية عند السقوط","وفاة أو إعاقة دائمة","توقف العمل وإجراء تحقيق","غرامات تنظيمية صارمة"],
+          existingControlsOptions: ["فحص معدات قبل كل استخدام","فحص نصف سنوي من جهة معتمدة","استبدال فوري بعد أي حادثة","تدريب على الفحص الذاتي للمعدات"] },
+        { id: 24, text: "هل خوذة الرأس وحذاء الامان بحالة جيدة؟", category: "معدات الوقاية", image: "/assets/v.png",
+          hazardOptions: ["خوذات بتشققات غير مرئية","أحذية أمان منتهية الصلاحية","مواد خوذة فقدت خصائصها بعد التعرض لشمس","أحذية أمان لا تناسب طبيعة الأرضية"],
+          exposedOptions: ["جميع عمال الموقع","العمال الجدد","عمال المناطق المكشوفة","عمال القطاع الإنشائي"],
+          harmOptions: ["إصابات رأس خطيرة","كسور في أصابع القدم","انزلاق وسقوط","صدمة رأسية من أجسام ساقطة"],
+          existingControlsOptions: ["فحص يومي بصري للخوذة والحذاء","تاريخ تصنيع واضح على كل خوذة","استبدال الخوذة بعد كل صدمة","خوذات وأحذية بمواصفات EN معتمدة"] },
+        { id: 25, text: "هل يتم فحص الأدوات والمعدات قبل وبعد الاستخدام ويتم تخزينها بطريقة سليمة؟", category: "فحص المعدات", image: "/assets/aaa.png",
+          hazardOptions: ["أدوات حادة مكشوفة في مستودع غير منظم","معدات كهربائية مبللة بدون تجفيف","أدوات بمقابض متكسرة","خلط أدوات خطرة مع أدوات عادية"],
+          exposedOptions: ["عمال المستودع والتخزين","عمال الصيانة اليومية","عمال التحميل والتنزيل","الفنيين الذين يستخدمون الأدوات"],
+          harmOptions: ["جروح قطعية من أدوات غير محمية","صعق كهربائي من معدات رطبة","إصابات من تساقط أدوات غير مخزنة","أعطال معدات بسبب سوء التخزين"],
+          existingControlsOptions: ["قائمة فحص قبل وبعد الاستخدام","مستودع منظم ومؤمن","علب وحاويات مخصصة للأدوات الحادة","صيانة دورية وتنظيف الأدوات"] },
+        { id: 26, text: "هل المركبات مطابقة لمواصفات فودافون (ايرباج، فرامل هيدروليكية، حزام أمان، شنطة طوارئ)؟", category: "سلامة المركبات", image: "/assets/x.png",
+          hazardOptions: ["مركبة بدون وسائد هوائية","فرامل غير فعّالة أو قديمة","غياب شنطة الطوارئ المعتمدة","حزام أمان تالف أو غير مقيد"],
+          exposedOptions: ["سائق المركبة","الركاب","المشاة على الطريق","فرق العمل على الجانبين"],
+          harmOptions: ["حوادث طريق خطيرة","وفاة السائق أو الركاب","إصابات للمشاة","تلف ممتلكات ومركبات أخرى"],
+          existingControlsOptions: ["فحص دوري شهري للمركبات","قائمة تفتيش مركبة يومية","تأمين شامل وصيانة دورية","شنطة طوارئ مكتملة ومفحوصة"] },
+        { id: 27, text: "هل السائق مدرب على اساليب القيادة الامنة؟", category: "تدريب السائقين", image: "/assets/yy.png",
+          hazardOptions: ["سائق بدون دورة قيادة دفاعية","عدم معرفة السائق بنقاط العمى","التشتت أثناء القيادة","عدم التزام بقواعد المرور"],
+          exposedOptions: ["سائق المركبة","الركاب","المشاة وسائقو المركبات الأخرى","فرق العمل في المواقع"],
+          harmOptions: ["حوادث تصادم مميتة","إصابات خطيرة للركاب","دهس مشاة","توقف العمل وخسائر مالية"],
+          existingControlsOptions: ["دورة قيادة دفاعية معتمدة","تقييم سنوي لمهارات السائق","نظام تتبع وتقييم السلوك القيادي","إجراءات صارمة لمخالفات القيادة"] },
+        { id: 28, text: "هل يوجد نموذج فحص السيارة موقع عليها من مهندس الموقع؟", category: "فحص المركبات", image: "/assets/y.png",
+          hazardOptions: ["استخدام مركبة بدون نموذج فحص موقّع","نموذج فحص قديم لا يعكس الحالة الراهنة","مهندس الموقع لم يراجع النموذج","عدم تسجيل الأعطال المكتشفة"],
+          exposedOptions: ["السائق والركاب","مهندس الموقع","إدارة السلامة","الجهات الرقابية"],
+          harmOptions: ["تشغيل مركبة غير آمنة","حوادث ناتجة عن عطل غير مكتشف","مسؤولية قانونية على الإدارة","غرامات مالية وتوقف العمل"],
+          existingControlsOptions: ["نموذج فحص يومي موحد ومعتمد","توقيع إلزامي من مهندس قبل التشغيل","أرشفة نماذج الفحص الشهرية","خطوط إبلاغ فورية عند اكتشاف عطل"] },
+        { id: 29, text: "هل يتم عمل فحص وصيانة للسيارة وتقييم السائق؟", category: "صيانة المركبات", image: "/assets/z.png",
+          hazardOptions: ["تأخير صيانة المركبة عن موعدها","عدم تقييم السائق بشكل دوري","تجاهل تحذيرات أعطال المركبة","سجلات الصيانة غير محدثة"],
+          exposedOptions: ["السائق والركاب","فريق الصيانة","الأشخاص على الطريق","إدارة السلامة"],
+          harmOptions: ["فشل ميكانيكي مفاجئ أثناء القيادة","حوادث بسبب ضعف أداء السائق","توقف مفاجئ يعيق حركة العمل","خسائر مادية في المركبة"],
+          existingControlsOptions: ["جدول صيانة دورية وثابتة","تقرير تقييم السائق كل 6 أشهر","سجل صيانة رقمي محدث","ورشة صيانة معتمدة ومعاقد معها"] },
+        { id: 30, text: "هل يوجد جهاز تتبع وسماعة هاتف خارجية بالسيارة؟", category: "تتبع المركبات", image: "/assets/aa.png",
+          hazardOptions: ["مركبة بدون GPS أو نظام تتبع","استخدام الهاتف يدوياً أثناء القيادة","انقطاع التواصل في المناطق النائية","عدم إمكانية تحديد موقع المركبة"],
+          exposedOptions: ["السائق والركاب","إدارة العمليات","فرق الطوارئ","إدارة السلامة"],
+          harmOptions: ["صعوبة تتبع المركبة عند الطوارئ","حوادث بسبب تشتت السائق","تأخر الاستجابة للطوارئ","فقدان التواصل في الأماكن النائية"],
+          existingControlsOptions: ["جهاز GPS مثبت ومتصل بالإدارة","سماعة بلوتوث أو خارجية معتمدة","اشتراط التفعيل قبل التشغيل","مراقبة مركزية لأسطول المركبات"] },
+        { id: 31, text: "هل يوجد خطة طوارئ في مكان العمل؟", category: "خطط الطوارئ", image: "/assets/bb.png",
+          hazardOptions: ["غياب خطة طوارئ مكتوبة","لايوجد خطة طوارئ","عدم وجود توضوح يوضح أدوار الأفراد في الطوارئ","خطة الطوارئ غير موجودة"],
+          exposedOptions: ["جميع الفنيين والمهندسين","الفنيين والمقاولين","فرق العمل","الفنيين والمهندسين"],
+          harmOptions: ["فوضى عند حدوث طارئ حقيقي","تأخر الإخلاء وإصابات إضافية","صعوبة حصر المتواجدين","تدخل غير منظم قد يفاقم الضرر"],
+          existingControlsOptions: ["اضافة خطة طوارئ","عمل خطة طوارئ وتوضيح ادوار الفريق","اضافة وتوزيع خطة طوارئ على الموجودين","تحديد نقاط التجمع بلافتات واضحة"] },
+        { id: 32, text: "هل جميع الافراد مدربون على خطة الطوارئ؟", category: "تدريب الطوارئ", image: "/assets/cc.png",
+          hazardOptions: ["عدم معرفة العاملين بإجراءات وخطة الطوارئ","عدم قدرة العاملين على التصرف الصحيح أثناء حالات الطوارئ","عدم معرفة العاملين بمواقع ومعدات الطوارئ","عدم تدريب العاملين على الاستجابة للطوارئ المرتبطة بالحريق"],
+          exposedOptions: ["جميع الفنيين والمهندسين","الفنيون السائقون العاملون بالموقع","جميع الأفراد داخل الموقع","فرق التشغيل والصيانة"],
+          harmOptions: ["الذعر الجماعي والتدافع","ارتباك وتدافع أثناء الإخلاء","عدم التعرف على إشارات الإنذار","إصابات إضافية بسبب عدم الاستعداد"],
+          existingControlsOptions: ["تعيين مسؤولين للطوارئ بالموقع","تعريف العاملين بمواقع الطفايات والإسعافات الأولية ومخارج الطوارئ","توفير معدات مكافحة الحريق والإسعافات الأولية","تعريف المخارج ونقاط التجمع"] },
+        { id: 33, text: "هل شنطة الاسعافات موجودة وتحتوي على كل الأدوات المطلوبة؟", category: "الإسعافات الأولية", image: "/assets/dd.png",
+          hazardOptions: ["شنطة إسعاف فارغة أو ناقصة","مواد إسعاف منتهية الصلاحية","عدم وجود شنطة في المركبات","بُعد موقع الشنطة عن منطقة العمل"],
+          exposedOptions: ["جميع العمال في الموقع","المصابين في الحوادث","فريق الإسعافات الأولية","السائقين والمرافقين"],
+          harmOptions: ["تأخر علاج الإصابات","تفاقم الجروح لعدم وجود إسعاف","تلوث الجروح وعدوى خطيرة","وفاة في حالات يمكن فيها الإنقاذ"],
+          existingControlsOptions: ["فحص شهري لمحتويات الشنطة","قائمة جرد مفصلة لكل شنطة","استبدال فوري لأي مادة ناقصة","تدريب على الإسعافات الأولية"] },
+        { id: 34, text: "هل يوجد شخص مؤهل ومدرب على مكافحة الحريق؟", category: "مكافحة الحريق", image: "/assets/fire_fire.png",
+          hazardOptions: ["غياب مؤهل مكافحة حريق بالموقع","شهادات منتهية الصلاحية","نقص التدريب العملي على الإطفاء","عدم معرفة أنواع الحريق والمطفأة المناسبة"],
+          exposedOptions: ["جميع العمال والموظفين","المشرف الأول في الوردية","فرق الطوارئ","السكان المجاورين إن وجدوا"],
+          harmOptions: ["انتشار حريق بسبب التدخل الخاطئ","إصابات من المطفأة غير المناسبة","خسائر مادية جسيمة","ضحايا بين العمال والزوار"],
+          existingControlsOptions: ["تدريب معتمد على مكافحة الحريق","تجديد الشهادات كل 3 سنوات","تدريبات عملية على أنواع الحريق","مسؤول طوارئ حريق في كل وردية"] },
+        { id: 35, text: "هل يوجد طفاية حريق 3 كجم صالحة للعمل وبحالة جيدة؟", category: "معدات الإطفاء", image: "/assets/fire.png",
+          hazardOptions: ["طفاية حريق فارغة أو تالفة","طفاية منتهية صلاحية المعايرة","غياب الطفاية من موقع يتطلبها","طفاية من النوع غير المناسب للمكان"],
+          exposedOptions: ["جميع العمال والزوار","فريق مكافحة الحريق","المبنى والمحتويات","الأفراد في المناطق المجاورة"],
+          harmOptions: ["فشل إخماد الحريق في بدايته","انتشار الحريق لمناطق أوسع","خسائر مادية بالغة","إصابات وربما وفيات"],
+          existingControlsOptions: ["فحص شهري لطفايات الحريق","معايرة سنوية من جهة معتمدة","توزيع طفايات وفق خريطة المخاطر","لافتات إرشادية لمواقع الطفايات"] },
+        { id: 36, text: "هل يوجد شخص مدرب على الانقاذ في حالة العمل على ارتفاعات؟", category: "عمليات الإنقاذ", image: "/assets/gg.png",
+          hazardOptions: ["غياب مدرب إنقاذ ارتفاعات بالموقع","منقذ غير مؤهل يحاول التدخل","عدم وجود خطة إنقاذ واضحة","فجوة بين وقت الحادثة والإنقاذ"],
+          exposedOptions: ["عمال المرتفعات المحبوسين","فريق الإنقاذ نفسه","المشرفين والشهود","خدمات الطوارئ الخارجية"],
+          harmOptions: ["وفاة بسبب تأخر الإنقاذ","إصابات إضافية للمنقذين","حالة ذعر وصدمة نفسية","فشل نظام الإنقاذ بالكامل"],
+          existingControlsOptions: ["تدريب متخصص على إنقاذ الارتفاعات","خطة إنقاذ مكتوبة ومراجعة","معدات إنقاذ جاهزة في كل وردية","تمارين إنقاذ دورية مع فريق متكامل"] },
+        { id: 37, text: "هل يوجد عدة انقاذ مناسبة؟", category: "معدات الإنقاذ", image: "/assets/r.png",
+          hazardOptions: ["غياب حقيبة إنقاذ الارتفاعات","معدات إنقاذ منتهية الصلاحية","أحجام حبال غير مناسبة للمهمة","نقص أجهزة الهبوط التحكمي"],
+          exposedOptions: ["عمال المرتفعات المحتجزين","فريق الإنقاذ","مشرف الوردية","الخدمات الطبية الطارئة"],
+          harmOptions: ["فشل عملية الإنقاذ","إصابات إضافية للمحتجز","ذعر وتأخر يفاقم الحالة","خسارة أرواح يمكن تفاديها"],
+          existingControlsOptions: ["عدة إنقاذ كاملة في كل وردية","فحص شهري لمعدات الإنقاذ","قائمة جرد معدات إنقاذ","تدريب على استخدام كل قطعة"] },
+        { id: 38, text: "هل يتم فحص معدات التسلق دوريا من جهة مختصة؟", category: "فحص المعدات", image: "/assets/inspection.png",
+          hazardOptions: ["معدات بدون سجل فحص دوري","اعتماد على الفحص البصري فقط","شركة فحص غير معتمدة","تجاهل توصيات الفحص الدوري"],
+          exposedOptions: ["عمال التسلق والهبوط","مشغلي معدات الارتفاع","مشرف السلامة","إدارة الموقع"],
+          harmOptions: ["استخدام معدات تالفة دون علم","فشل مفاجئ أثناء الاستخدام","وفاة أو إعاقة دائمة","مسؤولية قانونية على الشركة"],
+          existingControlsOptions: ["فحص نصف سنوي من جهة معتمدة","سجل فحص تاريخي لكل معدة","شهادة صلاحية على كل قطعة","استبدال فوري عند أي توصية بالإيقاف"] }
+    ];
+
+    // ============================================================
+    // متغيرات النظام
+    // ============================================================
+    let currentQuestion = 0;
+    let questions = [];
+    let assessments = [];
+    let manualRisks = [];
+    let selectedInitialRisk = null;
+    let selectedResidualRisk = null;
+    let selectedFinalInitialRisk = null;
+    let selectedFinalResidualRisk = null;
+    let isStopWork = false;
+    let isFinalStopWork = false;
+    let transitionTimeout = null;
+
+    // ✅ متغير لحفظ بيانات الخطر المعروضة في النافذة المنبثقة الحالية
+    let currentModalHazardData = null;
+
+    const activityType = localStorage.getItem('activityType') || '';
+    const siteData = JSON.parse(localStorage.getItem('siteData') || '{}');
+    const towerRelatedQuestions = [13,14,15,16,17,18,19,23,36,37,38];
+
+    function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    window.onload = function() {
+        filterQuestions();
+        updateQuestion();
+        document.onselectstart = () => false;
+        document.addEventListener('touchstart', () => {}, { passive: true });
+    };
+
+    function filterQuestions() {
+        questions = allQuestions.map(q =>
+            activityType === 'noTower' && towerRelatedQuestions.includes(q.id)
+                ? { ...q, hidden: true }
+                : q
+        );
+        assessments = new Array(questions.length);
+    }
+
+    function updateQuestion() {
+        while (currentQuestion < questions.length && questions[currentQuestion].hidden) {
+            saveAssessment('غير مطبق', null, null, null, false, null, null, null, null, null);
+            currentQuestion++;
+        }
+
+        if (currentQuestion < questions.length) {
+            const q = questions[currentQuestion];
+            const visNum = questions.slice(0, currentQuestion).filter(x => !x.hidden).length + 1;
+            const total = questions.filter(x => !x.hidden).length;
+
+            document.getElementById('question').textContent = q.text;
+            document.getElementById('counter').innerHTML = `السؤال ${visNum} من ${total}`;
+
+            const img = document.getElementById('questionImage');
+            const placeholder = document.getElementById('imagePlaceholder');
+            
+            if (q.image && q.image !== "/assets/default.png") {
+                img.src = q.image;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+                img.onerror = () => {
+                    img.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                };
+            } else {
+                img.style.display = 'none';
+                placeholder.style.display = 'flex';
+            }
+
+            document.getElementById('riskResult').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'none';
+            document.getElementById('answerButtons').style.display = 'grid';
+            document.getElementById('validationMessage').style.display = 'none';
+            document.getElementById('backBtn').classList.toggle('hidden', currentQuestion === 0);
+        } else {
+            showFinalScreen();
+        }
+    }
+
+    // ✅ الإصلاح الرئيسي: إضافة معاملات hazard/exposed/harm/existingControls للحفظ
+    function saveAssessment(answer, initialRisk, residualRisk, additionalControls, isStop, notes, hazard, exposed, harm, existingControls) {
+        const q = questions[currentQuestion];
+        if (!q) return;
+        assessments[currentQuestion] = {
+            questionId: q.id,
+            question: q.text,
+            answer,
+            initialRisk,
+            residualRisk,
+            additionalControls,
+            isStopWork: isStop || false,
+            notes: notes || null,
+            image: q.image,
+            timestamp: new Date().toISOString(),
+            category: q.category,
+            hidden: q.hidden || false,
+            // ✅ حفظ بيانات الخطر المحددة
+            hazard: hazard || null,
+            exposed: exposed || null,
+            harm: harm || null,
+            existingControls: existingControls || null
+        };
+    }
+
+    function answer(status) {
+        const q = questions[currentQuestion];
+        if (q.hidden) {
+            saveAssessment('غير مطبق', null, null, null, false, null, null, null, null, null);
+            moveToNextQuestion();
+            return;
+        }
+        if (status === 'غير آمن') {
+            openRiskModal();
+        } else {
+            saveAssessment(status, null, null, null, false, null, null, null, null, null);
+            moveToNextQuestionImmediate();
+        }
+    }
+    
+    function moveToNextQuestionImmediate() {
+        if (transitionTimeout) clearTimeout(transitionTimeout);
+        transitionTimeout = setTimeout(() => {
+            moveToNextQuestion();
+        }, 30);
+    }
+
+    function moveToNextQuestion() {
+        if (!assessments[currentQuestion] && !questions[currentQuestion]?.hidden) {
+            const vm = document.getElementById('validationMessage');
+            vm.style.display = 'block';
+            if (navigator.vibrate) navigator.vibrate(200);
+            setTimeout(() => { vm.style.display = 'none'; }, 2000);
+            return;
+        }
+        currentQuestion++;
+        while (currentQuestion < questions.length && questions[currentQuestion].hidden) {
+            saveAssessment('غير مطبق', null, null, null, false, null, null, null, null, null);
+            currentQuestion++;
+        }
+        updateQuestion();
+    }
+
+    function goToPreviousQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            while (currentQuestion >= 0 && questions[currentQuestion]?.hidden) currentQuestion--;
+            if (currentQuestion >= 0) {
+                updateQuestion();
+                showPreviousAssessment();
+            } else {
+                currentQuestion = 0;
+                updateQuestion();
+            }
+        }
+    }
+
+    function showPreviousAssessment() {
+        const a = assessments[currentQuestion];
+        if (!a) return;
+        const el = document.getElementById('riskResult');
+        let html = '';
+        if (a.answer === 'غير آمن') {
+            html = `<div style="text-align:center;margin-bottom:10px;"><strong>نتيجة التقييم السابق:</strong></div>`;
+            html += `<div>الخطر الأولي: <span class="risk-code">${a.initialRisk?.value ?? '-'}</span> | الخطر المتبقي: <span class="risk-code">${a.residualRisk?.value ?? '-'}</span></div>`;
+            if (a.isStopWork) html += `<div style="color:#f44336;font-weight:bold;margin:8px 0;padding:8px;background:#ffebee;border-radius:5px;text-align:center;">🛑 تم إيقاف العمل فوراً</div>`;
+            if (a.notes) html += `<div style="margin-top:8px;"><strong>ملاحظات:</strong> ${a.notes}</div>`;
+        } else {
+            html = `<div style="text-align:center;"><strong>نتيجة التقييم السابق:</strong><br>
+                <span style="color:${a.answer === 'آمن' ? '#4CAF50' : '#FF9800'};font-weight:bold;">${a.answer}</span></div>`;
+        }
+        el.innerHTML = html;
+        el.style.display = 'block';
+        el.style.borderRight = `4px solid ${a.answer === 'آمن' ? '#4caf50' : a.isStopWork ? '#f44336' : '#2196f3'}`;
+    }
+
+    function openRiskModal() {
+        const q = questions[currentQuestion];
+        document.getElementById('modalQuestionPreview').textContent = q.text.length > 60 ? q.text.substring(0, 60) + '...' : q.text;
+
+        // ✅ حفظ البيانات العشوائية في متغير عام لاستخدامها عند الحفظ
+        currentModalHazardData = {
+            hazard: getRandom(q.hazardOptions || ["خطر غير محدد"]),
+            exposed: getRandom(q.exposedOptions || ["جميع العمال"]),
+            harm: getRandom(q.harmOptions || ["إصابات محتملة"]),
+            existingControls: getRandom(q.existingControlsOptions || ["إجراءات سلامة عامة"])
+        };
+
+        document.getElementById('hazardGrid').innerHTML = `
+            <div class="hazard-field"><div class="hazard-label">⚠️ الخطر (Hazard)</div><div class="hazard-value">${currentModalHazardData.hazard}</div></div>
+            <div class="hazard-field"><div class="hazard-label">👥 من سوف يتعرض (Exposed)</div><div class="hazard-value">${currentModalHazardData.exposed}</div></div>
+            <div class="hazard-field"><div class="hazard-label">💢 كيف يمكن أن يتضرر (Harm)</div><div class="hazard-value">${currentModalHazardData.harm}</div></div>
+            <div class="hazard-field"><div class="hazard-label">🛡️ التحكمات الحالية (Existing Controls)</div><div class="hazard-value">${currentModalHazardData.existingControls}</div></div>
+        `;
+
+        selectedInitialRisk = null;
+        selectedResidualRisk = null;
+        isStopWork = false;
+        document.getElementById('additionalControlsInput').value = '';
+        document.getElementById('stopWorkBanner').classList.remove('show');
+        document.getElementById('saveRiskBtn').classList.remove('stop-work');
+        document.getElementById('saveRiskBtn').textContent = '💾 حفظ التقييم';
+
+        ['initialMatrixError','controlsError','residualMatrixError'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+
+        buildMatrix('initialMatrixBody', true);
+        buildMatrix('residualMatrixBody', false);
+
+        document.getElementById('riskModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function buildMatrix(bodyId, isInitial) {
+        const tbody = document.getElementById(bodyId);
+        tbody.innerHTML = '';
+        const likelihoods = [5, 4, 3, 2, 1];
+        for (let l of likelihoods) {
+            const row = document.createElement('tr');
+            const th = document.createElement('th');
+            th.textContent = l;
+            row.appendChild(th);
+            for (let s = 1; s <= 5; s++) {
+                const val = l * s;
+                const td = document.createElement('td');
+                td.textContent = val;
+                td.className = 'matrix-cell ' + getRiskClass(val);
+                td.setAttribute('data-l', l);
+                td.setAttribute('data-s', s);
+                td.onclick = (function(lv, sv, iv) {
+                    return function() { selectRisk(lv, sv, iv); };
+                })(l, s, isInitial);
+                row.appendChild(td);
+            }
+            tbody.appendChild(row);
+        }
+    }
+    
+    function buildFinalMatrix(bodyId, isInitial) {
+        const tbody = document.getElementById(bodyId);
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        const likelihoods = [5, 4, 3, 2, 1];
+        for (let l of likelihoods) {
+            const row = document.createElement('tr');
+            const th = document.createElement('th');
+            th.textContent = l;
+            row.appendChild(th);
+            for (let s = 1; s <= 5; s++) {
+                const val = l * s;
+                const td = document.createElement('td');
+                td.textContent = val;
+                td.className = 'matrix-cell ' + getRiskClass(val);
+                td.setAttribute('data-l', l);
+                td.setAttribute('data-s', s);
+                td.onclick = (function(lv, sv, iv) {
+                    return function() { selectFinalRisk(lv, sv, iv); };
+                })(l, s, isInitial);
+                row.appendChild(td);
+            }
+            tbody.appendChild(row);
+        }
+    }
+
+    function getRiskClass(v) {
+        if (v <= 2) return 'risk-low';
+        if (v <= 6) return 'risk-medium';
+        if (v <= 12) return 'risk-high';
+        return 'risk-critical';
+    }
+
+    function selectRisk(likelihood, severity, isInitial) {
+        const bodyId = isInitial ? 'initialMatrixBody' : 'residualMatrixBody';
+        document.querySelectorAll(`#${bodyId} .matrix-cell`).forEach(c => c.classList.remove('selected'));
+
+        const cells = document.querySelectorAll(`#${bodyId} .matrix-cell`);
+        for (let c of cells) {
+            if (+c.getAttribute('data-l') === likelihood && +c.getAttribute('data-s') === severity) {
+                c.classList.add('selected');
+                break;
+            }
+        }
+
+        const riskObj = { likelihood, severity, value: likelihood * severity };
+
+        if (isInitial) {
+            selectedInitialRisk = riskObj;
+            document.getElementById('initialMatrixError').style.display = 'none';
+        } else {
+            selectedResidualRisk = riskObj;
+            document.getElementById('residualMatrixError').style.display = 'none';
+        }
+
+        if (!isInitial && riskObj.value >= 15) {
+            isStopWork = true;
+            document.getElementById('stopWorkBanner').classList.add('show');
+            document.getElementById('saveRiskBtn').classList.add('stop-work');
+            document.getElementById('saveRiskBtn').textContent = '🛑 حفظ التقييم وإيقاف العمل';
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        } else if (!isInitial) {
+            isStopWork = false;
+            document.getElementById('stopWorkBanner').classList.remove('show');
+            document.getElementById('saveRiskBtn').classList.remove('stop-work');
+            document.getElementById('saveRiskBtn').textContent = '💾 حفظ التقييم';
+        }
+
+        if (navigator.vibrate) navigator.vibrate(40);
+        if (isInitial) setTimeout(() => { document.getElementById('additionalControlsInput').focus(); }, 150);
+    }
+    
+    function selectFinalRisk(likelihood, severity, isInitial) {
+        const bodyId = isInitial ? 'finalInitialMatrixBody' : 'finalResidualMatrixBody';
+        document.querySelectorAll(`#${bodyId} .matrix-cell`).forEach(c => c.classList.remove('selected'));
+
+        const cells = document.querySelectorAll(`#${bodyId} .matrix-cell`);
+        for (let c of cells) {
+            if (+c.getAttribute('data-l') === likelihood && +c.getAttribute('data-s') === severity) {
+                c.classList.add('selected');
+                break;
+            }
+        }
+
+        const riskObj = { likelihood, severity, value: likelihood * severity };
+
+        if (isInitial) {
+            selectedFinalInitialRisk = riskObj;
+            document.getElementById('finalInitialMatrixError').style.display = 'none';
+        } else {
+            selectedFinalResidualRisk = riskObj;
+            document.getElementById('finalResidualMatrixError').style.display = 'none';
+        }
+
+        if (!isInitial && riskObj.value >= 15) {
+            isFinalStopWork = true;
+            document.getElementById('finalStopWorkBanner').classList.add('show');
+        } else if (!isInitial) {
+            isFinalStopWork = false;
+            document.getElementById('finalStopWorkBanner').classList.remove('show');
+        }
+
+        if (navigator.vibrate) navigator.vibrate(40);
+    }
+
+    function saveRiskAssessment() {
+        let valid = true;
+        if (!selectedInitialRisk) {
+            document.getElementById('initialMatrixError').style.display = 'block';
+            valid = false;
+        }
+        const controls = document.getElementById('additionalControlsInput').value.trim();
+        if (!controls) {
+            document.getElementById('controlsError').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('controlsError').style.display = 'none';
+        }
+        if (!selectedResidualRisk) {
+            document.getElementById('residualMatrixError').style.display = 'block';
+            valid = false;
+        }
+        if (!valid) {
+            if (navigator.vibrate) navigator.vibrate(200);
+            return;
+        }
+
+        // ✅ الإصلاح: تمرير بيانات الخطر المحفوظة في currentModalHazardData
+        saveAssessment(
+            'غير آمن',
+            selectedInitialRisk,
+            selectedResidualRisk,
+            controls,
+            isStopWork,
+            null,
+            currentModalHazardData ? currentModalHazardData.hazard : null,
+            currentModalHazardData ? currentModalHazardData.exposed : null,
+            currentModalHazardData ? currentModalHazardData.harm : null,
+            currentModalHazardData ? currentModalHazardData.existingControls : null
+        );
+
+        closeRiskModal();
+        showRiskResult();
+        setTimeout(() => moveToNextQuestionImmediate(), 300);
+    }
+
+    function closeRiskModal() {
+        document.getElementById('riskModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function showRiskResult() {
+        const a = assessments[currentQuestion];
+        if (!a || a.answer !== 'غير آمن') return;
+        const el = document.getElementById('riskResult');
+        let html = `<div style="text-align:center;margin-bottom:12px;"><div style="background:#fff3e0;padding:10px;border-radius:8px;margin-bottom:10px;"><strong style="color:#d32f2f;">⚠️ تم تسجيل خطر غير آمن</strong></div>
+            <div style="background:#fff;padding:12px;border-radius:8px;border:1px solid #e0e0e0;text-align:right;">
+            <div style="margin-bottom:6px;">الخطر الأولي: <span class="risk-code">${a.initialRisk?.value ?? '-'}</span> | الخطر المتبقي: <span class="risk-code">${a.residualRisk?.value ?? '-'}</span></div>`;
+        if (a.isStopWork) html += `<div style="color:#fff;background:#f44336;font-weight:bold;text-align:center;margin:10px 0;padding:10px;border-radius:8px;">🛑 غير مسموح بالعمل - تم إيقاف العمل فوراً</div>`;
+        html += '</div></div>';
+        el.innerHTML = html;
+        el.style.display = 'block';
+        setTimeout(() => { el.style.opacity = '1'; }, 80);
+    }
+
+    function saveAllData() {
+        const manualHazards = manualRisks.map((risk, index) => ({
+            id: 1000 + index,
+            questionId: 1000 + index,
+            question: risk.hazard,
+            answer: 'غير آمن',
+            initialRisk: risk.initialRisk,
+            residualRisk: risk.residualRisk,
+            additionalControls: risk.additionalControls,
+            isStopWork: risk.isStopWork || false,
+            notes: null,
+            isManual: true,
+            // ✅ حفظ البيانات بشكل صريح للمخاطر اليدوية أيضاً
+            hazard: risk.hazard,
+            exposed: risk.exposed,
+            harm: risk.harm,
+            existingControls: risk.existingControls,
+            timestamp: new Date().toISOString()
+        }));
+        
+        const allAssessments = [...assessments.filter(a => a), ...manualHazards];
+        
+        const finalData = {
+            siteData: siteData,
+            activityType: activityType,
+            assessments: allAssessments,
+            manualRisks: manualRisks,
+            timestamp: new Date().toISOString()
+        };
+        
+        localStorage.setItem('riskAssessmentData', JSON.stringify(finalData));
+        return finalData;
+    }
+
+    function saveFinalManualRisk() {
+        let valid = true;
+        
+        const hazard = document.getElementById('finalHazard').value.trim();
+        const exposed = document.getElementById('finalExposed').value.trim();
+        const harm = document.getElementById('finalHarm').value.trim();
+        const existingControls = document.getElementById('finalExistingControls').value.trim();
+        const additionalControls = document.getElementById('finalAdditionalControls').value.trim();
+        
+        if (!hazard) { valid = false; alert('الرجاء إدخال الخطر'); }
+        if (!exposed) { valid = false; alert('الرجاء إدخال من سوف يتعرض'); }
+        if (!harm) { valid = false; alert('الرجاء إدخال كيف يمكن أن يتضرر'); }
+        if (!existingControls) { valid = false; alert('الرجاء إدخال تدابير التحكم الحالية'); }
+        
+        if (!selectedFinalInitialRisk) {
+            document.getElementById('finalInitialMatrixError').style.display = 'block';
+            valid = false;
+        }
+        if (!additionalControls) {
+            document.getElementById('finalControlsError').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('finalControlsError').style.display = 'none';
+        }
+        if (!selectedFinalResidualRisk) {
+            document.getElementById('finalResidualMatrixError').style.display = 'block';
+            valid = false;
+        }
+        
+        if (!valid) {
+            if (navigator.vibrate) navigator.vibrate(200);
+            return;
+        }
+        
+        manualRisks.push({
+            hazard, exposed, harm, existingControls,
+            initialRisk: selectedFinalInitialRisk,
+            additionalControls,
+            residualRisk: selectedFinalResidualRisk,
+            isStopWork: isFinalStopWork,
+            timestamp: new Date().toISOString()
+        });
+        
+        saveAllData();
+        window.location.href = '3.html';
+    }
+
+    function saveAndAddMoreRisk() {
+        let valid = true;
+        
+        const hazard = document.getElementById('finalHazard').value.trim();
+        const exposed = document.getElementById('finalExposed').value.trim();
+        const harm = document.getElementById('finalHarm').value.trim();
+        const existingControls = document.getElementById('finalExistingControls').value.trim();
+        const additionalControls = document.getElementById('finalAdditionalControls').value.trim();
+        
+        if (!hazard) { valid = false; alert('الرجاء إدخال الخطر'); }
+        if (!exposed) { valid = false; alert('الرجاء إدخال من سوف يتعرض'); }
+        if (!harm) { valid = false; alert('الرجاء إدخال كيف يمكن أن يتضرر'); }
+        if (!existingControls) { valid = false; alert('الرجاء إدخال تدابير التحكم الحالية'); }
+        
+        if (!selectedFinalInitialRisk) {
+            document.getElementById('finalInitialMatrixError').style.display = 'block';
+            valid = false;
+        }
+        if (!additionalControls) {
+            document.getElementById('finalControlsError').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('finalControlsError').style.display = 'none';
+        }
+        if (!selectedFinalResidualRisk) {
+            document.getElementById('finalResidualMatrixError').style.display = 'block';
+            valid = false;
+        }
+        
+        if (!valid) {
+            if (navigator.vibrate) navigator.vibrate(200);
+            return;
+        }
+        
+        manualRisks.push({
+            hazard, exposed, harm, existingControls,
+            initialRisk: selectedFinalInitialRisk,
+            additionalControls,
+            residualRisk: selectedFinalResidualRisk,
+            isStopWork: isFinalStopWork,
+            timestamp: new Date().toISOString()
+        });
+        
+        ['finalHazard','finalExposed','finalHarm','finalExistingControls','finalAdditionalControls'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        
+        selectedFinalInitialRisk = null;
+        selectedFinalResidualRisk = null;
+        isFinalStopWork = false;
+        document.getElementById('finalStopWorkBanner').classList.remove('show');
+        
+        document.querySelectorAll('#finalInitialMatrixBody .matrix-cell').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('#finalResidualMatrixBody .matrix-cell').forEach(c => c.classList.remove('selected'));
+        
+        ['finalInitialMatrixError','finalControlsError','finalResidualMatrixError'].forEach(id => {
+            document.getElementById(id).style.display = 'none';
+        });
+        
+        document.getElementById('finalHazard').focus();
+        
+        const msg = document.createElement('div');
+        msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#4CAF50,#45a049);color:white;padding:15px 25px;border-radius:15px;z-index:2000;text-align:center;font-weight:bold;';
+        msg.innerHTML = '✅ تم حفظ الخطر! يمكنك إضافة خطر آخر';
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 2000);
+    }
+
+    function noAdditionalRisks() {
+        saveAllData();
+        window.location.href = '3.html';
+    }
+
+    function showFinalScreen() {
+        const unanswered = questions.reduce((acc, q, i) => {
+            if (!q.hidden && !assessments[i]) acc.push(i);
+            return acc;
+        }, []);
+
+        if (unanswered.length > 0) {
+            currentQuestion = unanswered[0];
+            updateQuestion();
+            alert(`يوجد ${unanswered.length} أسئلة لم تتم الإجابة عليها.`);
+            return;
+        }
+
+        document.getElementById('question').innerHTML = '<div style="font-size:1.3rem;color:#4CAF50;"> تم الانتهاء من جميع الأسئلة بنجاح</div>';
+        document.getElementById('counter').innerHTML = '<div style="background:linear-gradient(135deg,#4CAF50,#45a049);color:white;padding:10px;border-radius:8px;margin:10px 0;">يمكنك الآن إضافة مخاطر إضافية يدوياً</div>';
+        document.getElementById('answerButtons').style.display = 'none';
+        document.getElementById('questionImage').style.display = 'none';
+        document.getElementById('imagePlaceholder').style.display = 'none';
+        document.getElementById('backBtn').classList.add('hidden');
+
+        ['finalHazard','finalExposed','finalHarm','finalExistingControls','finalAdditionalControls'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        
+        selectedFinalInitialRisk = null;
+        selectedFinalResidualRisk = null;
+        isFinalStopWork = false;
+        document.getElementById('finalStopWorkBanner').classList.remove('show');
+        
+        buildFinalMatrix('finalInitialMatrixBody', true);
+        buildFinalMatrix('finalResidualMatrixBody', false);
+        
+        document.getElementById('finalScreen').style.display = 'block';
+        
+        ['finalInitialMatrixError','finalControlsError','finalResidualMatrixError'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    document.addEventListener('keydown', function(e) {
+        const modalOpen = document.getElementById('riskModal').classList.contains('active');
+        if (e.key === 'Escape' && modalOpen) { closeRiskModal(); return; }
+        if (!modalOpen && document.getElementById('finalScreen').style.display !== 'block') {
+            if (e.key === '1') { e.preventDefault(); answer('آمن'); }
+            if (e.key === '2') { e.preventDefault(); answer('غير آمن'); }
+            if (e.key === '3') { e.preventDefault(); answer('غير مطبق'); }
+            if ((e.key === 'ArrowLeft' || e.key === 'Backspace') && !document.getElementById('backBtn').classList.contains('hidden')) {
+                e.preventDefault(); goToPreviousQuestion();
+            }
+        }
+    });
+</script>
+</body>
+</html>

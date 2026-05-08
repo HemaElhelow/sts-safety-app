@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Risk Assessment Safety Checklist</title>
+    <script src="/libs/jspdf.umd.min.js"></script>
+    <script src="/libs/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            font-size: 9px;
+        }
+        
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 10mm auto;
+            background: white;
+            padding: 10mm;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5mm;
+        }
+        
+        .logo {
+            max-width: 35mm;
+            height: auto;
+        }
+        
+        .company-name {
+            text-align: right;
+            font-size: 15px;
+            font-weight: bold;
+            flex-grow: 1;
+            padding-right: 2mm;
+        }
+        
+        .form-title {
+            background-color: #808080;
+            padding: 2mm;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 1mm;
+            font-size: 10px;
+        }
+        
+        .form-subtitle {
+            background-color: #808080;
+            padding: 1mm;
+            text-align: center;
+            font-size: 9px;
+            margin-bottom: 2mm;
+        }
+
+        .info-section {
+            margin-bottom: 3mm;
+            padding: 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0;
+            padding: 1mm 0;
+            border-bottom: 1px solid #000000;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row span {
+            flex: 1;
+            min-width: 0;
+            margin: 0 2mm;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-row strong {
+            min-width: 17mm;
+            display: inline-block;
+            margin-right: 1mm;
+            font-size: 9px;
+        }
+
+        .info-value {
+            flex-grow: 1;
+            min-width: 0;
+            padding: 1mm;
+            font-size: 8px;
+            height: 3mm;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .checklist-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 3mm;
+            font-size: 8px;
+            page-break-inside: avoid;
+        }
+        
+        .checklist-table th,
+        .checklist-table td {
+            border: 1px solid #000000;
+            padding: 0.5mm;
+            text-align: center;
+            height: 1.mm;
+            line-height: .8;
+        }
+        
+        .checklist-table th {
+            background-color: #808080;
+            font-weight: bold;
+            padding: 2mm;
+        }
+        
+        .category-header {
+            font-weight: bold;
+            text-align: left;
+        }
+        
+        .question-cell {
+            text-align: right;
+            padding-left: 1mm;
+            direction: rtl;
+        }
+        
+        .question-en {
+            font-size: 9px;
+            color: #000000;
+            text-align: left;
+            direction: ltr;
+            margin-top: 0.5mm;
+            line-height: .7;
+        }
+        
+        .risk-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2mm;
+            font-size: 9px;
+            page-break-inside: avoid;
+        }
+        
+        .risk-matrix th, 
+        .risk-matrix td {
+            border: 1px solid #000;
+            padding:1mm;
+            vertical-align: top;
+        }
+        
+        .risk-matrix th {
+            background: #d3d3d3;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .low { background-color: #90EE90; color: black; }
+        .adequate { background-color: #FFFF99; color: black; }
+        .moderate { background-color: #FFB347; color: black; }
+        .high { background-color: #FF0000; color: white; }
+        
+        .risk-evaluation {
+            text-align: center;
+            margin: 2mm 0;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        
+        .nowrap { white-space: nowrap; }
+        .label-strong { font-weight: bold; }
+        
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 3mm;
+            font-size: 12px;
+            page-break-inside: avoid;
+        }
+        
+        .risk-table th,
+        .risk-table td {
+            border: 1px solid #000;
+            padding: 1mm;
+            text-align: center;
+            height: 25mm;
+        }
+        
+        .risk-table th {
+            background-color: #808080;
+            height: 8mm;
+        }
+        
+        /* أزرار عائمة في الزاوية اليمنى السفلية */
+        .floating-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .floating-btn {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            width: 80px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 26px;
+            transition: all 0.3s ease;
+            padding: 8px;
+        }
+        
+        .floating-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            background: linear-gradient(145deg, #0056b3, #004494);
+        }
+        
+        .btn-label {
+            font-size: 11px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(145deg, #6c757d, #545b62);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(145deg, #545b62, #3d4248);
+        }
+        
+        .no-export {
+            display: block;
+        }
+        
+        .checkmark {
+            color: Black;
+            font-weight: bold;
+            font-size: 10px;
+        }
+        
+       
+        
+        .general-site-conditions {
+            background-color: #D3D3D3 !important;
+        }
+        
+        .ppe-tools, .emergency-response {
+            background-color: #D3D3D3 !important;
+        }
+
+        @media print {
+            .no-export, .floating-controls {
+                display: none !important;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+            }
+            
+            .page {
+                box-shadow: none;
+                padding: 5mm;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                page-break-after: always;
+            }
+            
+            .checklist-table {
+                font-size: 8px;
+            }
+            
+            .info-row input {
+                border-bottom: none;
+            }
+            
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+        
+        #loading-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2mm;
+            border-radius: 2px;
+            z-index: 1000;
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .floating-controls {
+                padding: 12px;
+                gap: 8px;
+            }
+            
+            .floating-btn {
+                width: 70px;
+                height: 60px;
+                font-size: 22px;
+            }
+            
+            .btn-label {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page {
+                padding: 2mm;
+                margin: 5mm auto;
+            }
+            
+            .info-row span {
+                flex: 1 1 100%;
+            }
+            
+            .floating-controls {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px;
+            }
+            
+            .floating-btn {
+                width: 60px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .btn-label {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-message">Generating PDF...</div>
+    
+    <!-- الأزرار العائمة في الزاوية اليمنى السفلية -->
+    <div class="floating-controls no-export">
+        <button class="floating-btn" onclick="generatePDF()" title="تصدير ملف PDF">
+            📄
+            <span class="btn-label">تصدير PDF</span>
+        </button>
+        <button class="floating-btn" onclick="sharePDF()" title="مشاركة">
+            🔗
+            <span class="btn-label">مشاركة</span>
+        </button>
+        <button class="floating-btn btn-secondary" onclick="window.location.href='/main.html'" title="الرئيسية">
+            🏠
+            <span class="btn-label">الرئيسية</span>
+        </button>
+        <button class="floating-btn btn-secondary" onclick="window.print()" title="طباعة">
+            🖨️
+            <span class="btn-label">طباعة</span>
+        </button>
+    </div>
+    
+    <!-- الصفحة الأولى -->
+    <div class="page" id="page1">
+        <div class="header">
+            <div>
+                <img src="/assets/logo.png" alt="Company Logo" class="logo">
+            </div>
+            <div class="company-name">Ganoub Alwadi for petroleum service</div>
+        </div>
+
+        <div class="form-title">Site Risk Assessment Safety Checklist</div>
+        <div class="form-subtitle">Form 1/2</div>
+
+        <div class="info-section">
+            <div class="info-row">
+                <span><strong>Date & Time:</strong> <span class="info-value" id="assessmentDateTime"></span></span>
+                <span><strong>Site Code:</strong> <span class="info-value" id="siteCode"></span></span>
+                <span><strong>Site Name:</strong> <span class="info-value" id="siteName"></span></span>
+            </div>
+            
+            <div class="info-row">
+                <span><strong>Office:</strong> <span class="info-value" id="office"></span></span>
+                <span><strong>Work Type:</strong> <span class="info-value" id="workType"></span></span>
+                <span><strong>Work Account:</strong> <span class="info-value" id="workAccount"></span></span>
+            </div>
+            
+            <div class="info-row">
+                <span><strong>Assessor:</strong> <span class="info-value" id="assessor"></span></span>
+                <span><strong>Title:</strong> <span class="info-value" id="title"></span></span>
+                <span><strong>Contractor:</strong> <span class="info-value" id="contractor"></span></span>
+            </div>
+        </div>
+
+        <table class="checklist-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">Category</th>
+                    <th style="width: 65%;">Potential Hazards</th>
+                    <th style="width: 8%;">Safe</th>
+                    <th style="width: 8%;">Unsafe</th>
+                    <th style="width: 8%;">NA</th>
+                </tr>
+            </thead>
+            <tbody id="checklistBody">
+                <!-- سيتم ملؤه بواسطة الجافاسكريبت -->
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- الصفحة الثانية -->
+    <div class="page" id="page2">
+        <div class="header">
+            <div>
+                <img src="/assets/logo.png" alt="Company Logo" class="logo">
+            </div>
+            <div class="company-name">Ganoub Alwadi for petroleum service</div>
+        </div>
+        
+        <div class="form-title">Residual Risk Register</div>
+        <div class="form-subtitle">form 2/2</div>
+
+        <table class="risk-matrix">
+            <thead>
+                <tr>
+                    <th>Risk Matrix</th>
+                    <th>Explanation</th>
+                    <th class="nowrap">(S)/(L)</th>
+                    <th colspan="5">Severity</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th class="nowrap"></th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th style="background-color: #4CAF50;">1:2</th>
+                    <td style="background-color: #4CAF50;"><strong>LOW RISK (L)</strong> As low as reasonably practicable (ALARP). May be acceptable. However, attention is required & frequent review.</td>
+                    <td class="label-strong">1</td>
+                    <td style="background-color: #4CAF50;">1</td>
+                    <td style="background-color: #4CAF50;">2</td>
+                    <td style="background-color: #FFEB3B;">3</td>
+                    <td style="background-color: #FFEB3B;">4</td>
+                    <td style="background-color: #FFEB3B;">5</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #FFEB3B;">3:6</th>
+                    <td style="background-color: #FFEB3B;"><strong>ADEQUATELY CONTROLLED RISK (A)</strong> Review task to see if risk can be reduced further.</td>
+                    <td class="label-strong">2</td>
+                    <td style="background-color: #4CAF50;">2</td>
+                    <td style="background-color: #FFEB3B;">4</td>
+                    <td style="background-color: #FFEB3B;">6</td>
+                    <td style="background-color: #FF9800;">8</td>
+                    <td style="background-color: #FF9800;">10</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #FF9800;">8:12</th>
+                    <td style="background-color: #FF9800;"><strong>MODERATELY CONTROLLED RISK (M)</strong> Further Risk Reduction Measures should be considered.</td>
+                    <td class="label-strong">3</td>
+                    <td style="background-color: #FFEB3B;">3</td>
+                    <td style="background-color: #FFEB3B;">6</td>
+                    <td style="background-color: #FF9800;">9</td>
+                    <td style="background-color: #FF9800;">12</td>
+                    <td style="background-color: #FF0000;">15</td>
+                </tr>
+                <tr>
+                    <th rowspan="2" style="background-color: #FF0000;">15:25</th>
+                    <td rowspan="2" style="background-color: #FF0000;"><strong>HIGH RISK (H)</strong> Unacceptable, stop the work, immediate action to reduce the risk, apply more control.</td>
+                    <td class="label-strong">4</td>
+                    <td style="background-color: #FFEB3B;">4</td>
+                    <td style="background-color: #FF9800;">8</td>
+                    <td style="background-color: #FF9800;">12</td>
+                    <td style="background-color: #FF0000;">16</td>
+                    <td style="background-color: #FF0000;">20</td>
+                </tr>
+                <tr>
+                    <td class="label-strong">5</td>
+                    <td style="background-color: #FFEB3B;">5</td>
+                    <td style="background-color: #FF9800;">10</td>
+                    <td style="background-color: #FF0000;">15</td>
+                    <td style="background-color: #FF0000;">20</td>
+                    <td style="background-color: #FF0000;">25</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="risk-evaluation">
+            Risk Evaluation
+        </div>
+
+        <table class="risk-table">
+            <thead>
+                <tr>
+                    <th style="width: 33%;">Identified Hazards</th>
+                    <th style="width: 33%;">Additional Controls</th>
+                    <th style="width: 8%;">Severity</th>
+                    <th style="width: 8%;">Likelihood</th>
+                    <th style="width: 8%;">Priority</th>
+                </tr>
+            </thead>
+            <tbody id="riskRegisterBody">
+                <!-- سيتم ملؤه بواسطة الجافاسكريبت -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // استخدام jsPDF من المكتبة المحملة
+        const { jsPDF } = window.jspdf;
+
+        // تحديث قائمة الأسئلة لتشمل جميع الأسئلة الـ 38
+        const riskCategories = [
+            {
+                name: "People",
+                questions: [
+                    { id: 1, text: "هل جميع افراد فريق العمل مؤهلين ومصرح لهم بالعمل؟", en: "Are all team members qualified and authorized to work?" },
+                    { id: 2, text: "هل جميع اعضاء الفريق لائقين طبيا للقيام بالعمل المكلفين به؟", en: "Are all team members medically fit for their assigned tasks?" },
+                    { id: 3, text: "هل يتواجد بالموقع الرقابة مؤهلة وجيدة؟", en: "Is there qualified and adequate supervision on site?" },
+                    { id: 4, text: "هل يتواجد فردين بالموقع في الأعمال شديدة الخطورة وهل تم تدريب احدهم على إجراءات الطوارئ؟", en: "Are there at least two people on site for high-risk work, with one trained in emergency procedures?" },
+                    { id: 5, text: "هل الموقع على درجة جيدة من النظافة؟", en: "Is the site clean and well-maintained?" }
+                ]
+            },
+            {
+                name: "General Site Conditions",
+                questions: [
+                    { id: 6, text: "هل الموقع مؤمن ودخوله في أوقات محددة؟ وهل جميع العلامات التحذيرية في أماكنها؟", en: "Is the site secured with restricted access and all warning signs in place?" },
+                    { id: 7, text: "هل الموقع والمنطقة المحيطة خالية من الغازات والسوائل القابلة للاشتعال والاحتراق؟", en: "Is the site and surrounding area free from flammable gases and liquids?" },
+                    { id: 8, text: "هل وسائل الخروج (مثل الباب والطريق والسلالم) آمنة للخروج بسلام؟", en: "Are exit routes (doors, paths, stairs) safe for evacuation?" },
+                    { id: 9, text: "هل يوجد مسافة أمان بين فريق العمل والوصلات الكهربية المرتفعة؟", en: "Is there a safe distance between workers and high-voltage electrical connections?" },
+                    { id: 10, text: "هل الموقع خالي من الحيوانات والثعابين وأي حيوانات ضارة أخرى؟", en: "Is the site free from animals, snakes, and other harmful creatures?" },
+                    { id: 11, text: "هل تم التحكم في أخطار الموجات الكهرومغناطيسية؟", en: "Are electromagnetic wave hazards controlled?" },
+                    { id: 12, text: "هل التوصيلات الكهربائية والأجهزة تم التفتيش عليها (معزولة، وتعمل جيدا)؟", en: "Are electrical connections and devices inspected (insulated and working properly)?" }
+                ]
+            },
+            {
+                name: "Activity",
+                questions: [
+                    { id: 13, text: "هل الرفع اليدوي يتم باستخدام معدات جيدة (مخطط لها، باستخدام بكارة مناسبة، تحديد أماكن الرفع والتنزيل)؟", en: "Is manual lifting done with proper equipment?" },
+                    { id: 14, text: "هل عملية الرفع مخطط لها قبل بدء العمل وباستخدام معدات مناسبة؟", en: "Is lifting operation planned and using proper equipment?" },
+                    { id: 15, text: "هل تم التحكم المناسب في العمل على ارتفاعات؟", en: "Is work at heights properly controlled?" },
+                    { id: 16, text: "هل سطح الموقع آمن بما فيه الكفاية؟", en: "Is the work surface sufficiently safe?" },
+                    { id: 17, text: "هل تم احتساب حد الأمان للأحمال قبل بدء العمل؟", en: "Have safe load limits been calculated before starting work?" },
+                    { id: 18, text: "هل المنطقة تحت رفع الخامات خالية والتحرك فيها آمن؟", en: "Is the area under lifting operations clear and safe for movement?" },
+                    { id: 19, text: "هل تم فحص معدات التسلق قبل السماح بالعمل بها في كل وردية؟", en: "Are climbing equipment inspected before each shift?" },
+                    { id: 20, text: "هل يتم التحكم في الأعمال شديدة الخطورة من حيث (تم وضع خطة، تم التدريب على استخدامها، استخدام مهمات الوقاية الشخصية المناسبة، وخطة الطوارئ موضوعة في مكانها)؟", en: "Are high-risk works properly controlled?" }
+                ]
+            },
+            {
+                name: "PPE & Tools",
+                questions: [
+                    { id: 21, text: "هل تم التحكم في الأعمال الكهربائية (ممنوع العمل على مصدر الكهرباء الحي، استخدام مهمات شخصية صالحة، استخدام علامات التحذير ووسائل المنع للتيار الكهربي، استخدام معدات يدوية معزولة عزل مزدوج، استخدام أسلاك كهربائية ممتدة لايوجد بها وصلات)؟", en: "Are electrical works properly controlled?" },
+                    { id: 22, text: "هل أدوات الحماية الشخصية مناسبة وتم فحصها قبل العمل؟", en: "Is PPE appropriate and inspected before work?" },
+                    { id: 23, text: "هل معدات الحماية من السقوط المستخدمة آمنة وفي حالة جيدة؟", en: "Are fall protection equipment safe and in good condition?" },
+                    { id: 24, text: "هل خوذة الرأس وحذاء الأمان بحالة جيدة؟", en: "Are hard hats and safety shoes in good condition?" },
+                    { id: 25, text: "هل يتم فحص الأدوات والمعدات قبل وبعد الاستخدام ويتم تخزينها بطريقة سليمة؟", en: "Are tools and equipment inspected before and after use and stored properly?" }
+                ]
+            },
+            {
+                name: "Vehicle Safety",
+                questions: [
+                    { id: 26, text: "هل المركبات مطابقة لمواصفات فودافون (ايرباج، فرامل هيدروليكية، حزام أمان، شنطة طوارئ)؟", en: "Do vehicles comply with specifications (airbag, hydraulic brakes, seat belts, emergency kit)?" },
+                    { id: 27, text: "هل السائق مدرب على أساليب القيادة الآمنة؟", en: "Is the driver trained in safe driving techniques?" },
+                    { id: 28, text: "هل يوجد نموذج فحص السيارة موقع عليها من مهندس الموقع؟", en: "Is there a vehicle inspection form signed by the site engineer?" },
+                    { id: 29, text: "هل يتم عمل فحص وصيانة للسيارة وتقييم السائق؟", en: "Are vehicle inspections, maintenance, and driver evaluations performed?" },
+                    { id: 30, text: "هل يوجد جهاز تتبع وسماعة هاتف خارجية بالسيارة؟", en: "Is there a tracking device and hands-free kit in the vehicle?" }
+                ]
+            },
+            {
+                name: "Emergency Response", 
+                questions: [
+                    { id: 31, text: "هل يوجد خطة طوارئ في مكان العمل؟", en: "Is there an emergency plan at the workplace?" },
+                    { id: 32, text: "هل جميع الأفراد مدربون على خطة الطوارئ؟", en: "Are all personnel trained on the emergency plan?" },
+                    { id: 33, text: "هل شنطة الإسعافات موجودة وتحتوي على كل الأدوات المطلوبة؟", en: "Is the first aid kit available and complete?" },
+                    { id: 34, text: "هل يوجد شخص مؤهل ومدرب على مكافحة الحريق؟", en: "Is there someone qualified and trained in fire fighting?" },
+                    { id: 35, text: "هل يوجد طفاية حريق 3 كجم صالحة للعمل وبحالة جيدة؟", en: "Is there a 3kg fire extinguisher operational and in good condition?" },
+                    { id: 36, text: "هل يوجد شخص مدرب على الإنقاذ في حالة العمل على ارتفاعات؟", en: "Is there someone trained for rescue in case of work at heights?" },
+                    { id: 37, text: "هل يوجد عدة إنقاذ مناسبة؟", en: "Is there appropriate rescue equipment?" },
+                    { id: 38, text: "هل يتم فحص معدات التسلق دوريا من جهة مختصة؟", en: "Are climbing equipment periodically inspected by a specialized party?" }
+                ]
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fillDataFromOtherForm();
+            populateChecklistTable();
+            populateRiskRegister();
+        });
+
+        function fillDataFromOtherForm() {
+            const formData = JSON.parse(localStorage.getItem('riskAssessmentData'));
+            
+            if (formData) {
+                document.getElementById('siteName').textContent = formData.siteName || '';
+                document.getElementById('siteCode').textContent = formData.siteCode || '';
+                document.getElementById('office').textContent = formData.office || '';
+                document.getElementById('workType').textContent = formData.siteType || '';
+                document.getElementById('workAccount').textContent = formData.project || '';
+                document.getElementById('assessor').textContent = formData.fullname || '';
+                document.getElementById('title').textContent = formData.jobTitle || '';
+                document.getElementById('contractor').textContent = formData.contractor || '';
+                
+                // إصلاح مشكلة التوقيت - استخدام التوقيت المحلي الصحيح
+                const now = new Date();
+                
+                // الحصول على التوقيت المحلي الصحيح
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                
+                // استخدام التوقيت المحلي مباشرة
+                document.getElementById('assessmentDateTime').textContent = `${day}/${month}/${year} ${hours}:${minutes}`;
+            }
+        }
+
+        function populateChecklistTable() {
+            const tbody = document.getElementById('checklistBody');
+            let html = '';
+            
+            const assessments = JSON.parse(localStorage.getItem('riskAssessmentData'))?.assessments || [];
+            
+            riskCategories.forEach(category => {
+                const questions = category.questions;
+                let categoryClass = '';
+                
+                if (category.name === "General Site Conditions") {
+                    categoryClass = 'general-site-conditions';
+                } else if (category.name === "PPE & Tools") {
+                    categoryClass = 'ppe-tools';
+                } else if (category.name === "Emergency Response") {
+                    categoryClass = 'emergency-response';
+                }
+                
+                // إنشاء صف الفئة مع التحقق من حالة السؤال الأول
+                const firstQuestionUnsafe = isQuestionUnsafe(assessments, questions[0].id);
+                html += `<tr class="category-header ${categoryClass} ${firstQuestionUnsafe ? 'unsafe-row' : ''}">
+                    <td rowspan="${questions.length}">${category.name}</td>
+                    <td class="question-cell">
+                        <div style="direction: rtl; text-align: right;">${questions[0].text}</div>
+                        <div class="question-en">${questions[0].en}</div>
+                    </td>
+                    ${getAnswerCells(assessments, questions[0].id)}
+                </tr>`;
+                
+                // إنشاء الأسئلة المتبقية
+                for (let i = 1; i < questions.length; i++) {
+                    const questionUnsafe = isQuestionUnsafe(assessments, questions[i].id);
+                    html += `<tr class="${categoryClass} ${questionUnsafe ? 'unsafe-row' : ''}">
+                        <td class="question-cell">
+                            <div style="direction: rtl; text-align: right;">${questions[i].text}</div>
+                            <div class="question-en">${questions[i].en}</div>
+                        </td>
+                        ${getAnswerCells(assessments, questions[i].id)}
+                    </tr>`;
+                }
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        // دالة للتحقق مما إذا كان السؤال غير آمن باستخدام ID فقط
+        function isQuestionUnsafe(assessments, questionId) {
+            const assessment = assessments.find(a => a.questionId === questionId);
+            return assessment && assessment.answer === 'غير آمن';
+        }
+        
+        // الدالة المحسنة للمطابقة باستخدام ID فقط
+        function getAnswerCells(assessments, questionId) {
+            const assessment = assessments.find(a => a.questionId === questionId);
+            
+            if (!assessment) {
+                return '<td></td><td></td><td></td>';
+            }
+            
+            let safeCell = '<td></td>';
+            let unsafeCell = '<td></td>';
+            let naCell = '<td></td>';
+            
+            if (assessment.answer === 'آمن') {
+                safeCell = '<td class="checkmark">✓</td>';
+            } else if (assessment.answer === 'غير آمن') {
+                unsafeCell = '<td class="checkmark">✓</td>';
+            } else if (assessment.answer === 'غير مطبق') {
+                naCell = '<td class="checkmark">✓</td>';
+            }
+            
+            return safeCell + unsafeCell + naCell;
+        }
+        
+        function populateRiskRegister() {
+            const tbody = document.getElementById('riskRegisterBody');
+            let html = '';
+            
+            const assessments = JSON.parse(localStorage.getItem('riskAssessmentData'))?.assessments || [];
+            const unsafeAssessments = assessments.filter(a => a.answer === 'غير آمن');
+            
+            unsafeAssessments.forEach((assessment, index) => {
+                // البحث عن السؤال الأصلي باستخدام ID
+                let originalQuestion = '';
+                for (const category of riskCategories) {
+                    const foundQuestion = category.questions.find(q => q.id === assessment.questionId);
+                    if (foundQuestion) {
+                        originalQuestion = foundQuestion.text;
+                        break;
+                    }
+                }
+                
+                html += `<tr style="height: 10mm;">
+                    <td style="padding: 1mm; font-size: 15px;">${originalQuestion || assessment.question}</td>
+                    <td style="padding: 1mm; font-size: 15;">${assessment.notes || ''}</td>
+                    <td style="padding: 1mm; font-size: 15px;">${assessment.riskRow || ''}</td>
+                    <td style="padding: 1mm; font-size: 15px;">${assessment.riskColumn || ''}</td>
+                    <td style="padding: 1mm; font-size: 15px;">${assessment.riskValue || ''}</td>
+                </tr>`;
+            });
+            
+            const emptyRows = Math.max(0, 7 - unsafeAssessments.length);
+            for (let i = 0; i < emptyRows; i++) {
+                html += '<tr style="height: 10mm;"><td></td><td></td><td></td><td></td><td></td></tr>';
+            }
+            
+            tbody.innerHTML = html;
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading-message').style.display = show ? 'block' : 'none';
+        }
+
+        function generatePDF() {
+            showLoading(true);
+            
+            const buttons = document.querySelectorAll('.no-export');
+            buttons.forEach(btn => btn.style.display = 'none');
+            
+            const siteName = document.getElementById('siteName').textContent || 'Site';
+            const siteCode = document.getElementById('siteCode').textContent || 'Code';
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const fileName = `siterisk ${siteCode}_${month}${day}.pdf`;
+            
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // التقاط الصفحة الأولى
+            html2canvas(document.getElementById('page1'), {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: false
+            }).then(canvas1 => {
+                const imgData1 = canvas1.toDataURL('image/jpeg', 0.7);
+                pdf.addImage(imgData1, 'JPEG', 0, 0, 210, 297);
+                
+                // إضافة صفحة جديدة للصفحة الثانية
+                pdf.addPage();
+                
+                // التقاط الصفحة الثانية
+                html2canvas(document.getElementById('page2'), {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false
+                }).then(canvas2 => {
+                    const imgData2 = canvas2.toDataURL('image/jpeg', 0.9);
+                    pdf.addImage(imgData2, 'JPEG', 0, 0, 210, 297);
+                    
+                    // حفظ الملف
+                    pdf.save(fileName);
+                    showLoading(false);
+                    buttons.forEach(btn => btn.style.display = 'flex');
+                });
+            });
+        }
+
+        async function sharePDF() {
+            try {
+                showLoading(true);
+                const buttons = document.querySelectorAll('.no-export');
+                buttons.forEach(btn => btn.style.display = 'none');
+                
+                const siteCode = document.getElementById('siteCode').textContent || 'Code';
+                const now = new Date();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                const fileName = `Site Risk ${siteCode}_${month}${day}.pdf`;
+                
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                // التقاط الصفحة الأولى
+                html2canvas(document.getElementById('page1'), {
+                    scale: 1.2,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false
+                }).then(canvas1 => {
+                    const imgData1 = canvas1.toDataURL('image/jpeg', 0.7);
+                    pdf.addImage(imgData1, 'JPEG', 0, 0, 210, 297);
+                    
+                    // إضافة صفحة جديدة للصفحة الثانية
+                    pdf.addPage();
+                    
+                    // التقاط الصفحة الثانية
+                    html2canvas(document.getElementById('page2'), {
+                        scale: 1.2,
+                        useCORS: true,
+                        allowTaint: true,
+                        logging: false
+                    }).then(canvas2 => {
+                        const imgData2 = canvas2.toDataURL('image/jpeg', 0.7);
+                        pdf.addImage(imgData2, 'JPEG', 0, 0, 210, 297);
+                        
+                        const pdfBlob = pdf.output('blob');
+                        
+                        if (navigator.share) {
+                            navigator.share({
+                                title: 'Risk Assessment Checklist',
+                                text: 'Please find attached the risk assessment checklist',
+                                files: [new File([pdfBlob], fileName, { type: 'application/pdf' })]
+                            }).then(() => {
+                                showLoading(false);
+                                buttons.forEach(btn => btn.style.display = 'flex');
+                            });
+                        } else {
+                            pdf.save(fileName);
+                            showLoading(false);
+                            buttons.forEach(btn => btn.style.display = 'flex');
+                        }
+                    });
+                });
+            } catch (err) {
+                console.error('Error sharing:', err);
+                alert('Sharing failed. You can download the PDF instead.');
+                generatePDF();
+            }
+        }
+    </script>
+</body>
+</html>

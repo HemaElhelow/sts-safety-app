@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج استجابة الطوارئ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            text-align: right;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            margin-top: 5px;
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+        
+        .form-content {
+            padding: 30px 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 15px;
+            font-size: 16px;
+            text-align: right;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23667eea' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 20px center;
+            background-size: 12px;
+            padding-left: 45px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        input.error, select.error {
+            border-color: #e74c3c;
+            background: #fff5f5;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: block;
+            text-align: right;
+            font-weight: 500;
+        }
+        
+        .auto-filled-notice {
+            color: #27ae60;
+            font-size: 0.8em;
+            margin-top: 5px;
+            text-align: right;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0, 184, 148, 0.3);
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 184, 148, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .icon {
+            margin-left: 8px;
+            font-size: 1.2em;
+        }
+        
+        /* تحسينات إضافية للشاشات الصغيرة */
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+            }
+            
+            .form-content {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+        
+        /* تحسين للشاشات الطولية */
+        @media (orientation: portrait) and (max-height: 600px) {
+            .container {
+                margin: 10px auto;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 نموذج استجابة الطوارئ</h1>
+            <div class="subtitle">املأ البيانات المطلوبة للمتابعة</div>
+        </div>
+        
+        <div class="form-content">
+            <div class="form-group">
+                <label for="subcontractor_name">
+                    <span class="icon">👷‍♂️</span>اسم المقاول :
+                </label>
+                <div class="input-container">
+                    <select id="subcontractor_name">
+                        <option value="" selected disabled>اختر اسم المقاول</option>
+                        <option value="Ganoub Elwadi">Ganoub Elwadi</option>
+                        <option value="STS">STS</option>
+                    </select>
+                </div>
+                <span id="subcontractor_error" class="error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="site_id">
+                    <span class="icon">🏗️</span>كود الموقع:
+                </label>
+                <div class="input-container">
+                    <input type="text" id="site_id" placeholder="أدخل كود الموقع">
+                </div>
+                <span id="site_id_error" class="error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="site_responsible_name">
+                    <span class="icon">👨‍💼</span>اسم مسؤول الموقع:
+                </label>
+                <div class="input-container">
+                    <input type="text" id="site_responsible_name" placeholder="جاري تحميل البيانات...">
+                </div>
+                <span id="responsible_error" class="error"></span>
+                <div id="auto_filled_notice" class="auto-filled-notice">
+
+                </div>
+            </div>
+            
+            <button class="submit-btn" onclick="startCreation()">
+                🚀 بدء الإنشاء
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // مفاتيح التخزين في localStorage
+        const STORAGE_KEYS = {
+            CURRENT_ENTRY: 'emergency_response_current_data',
+            ALL_ENTRIES: 'emergency_response_all_data',
+            SETTINGS: 'emergency_response_settings',
+            SESSION_DATA: 'currentSessionData' // مفتاح بيانات الجلسة من الصفحة الرئيسية
+        };
+        
+        // تحميل البيانات عند تحميل الصفحة
+        window.onload = function() {
+            initializeStorage();
+            loadTechnicianData(); // تحميل بيانات الفني من الصفحة الرئيسية
+            addInputValidation();
+            loadPreviousData();
+        };
+        
+        function initializeStorage() {
+            // تهيئة التخزين إذا لم يكن موجوداً
+            if (!localStorage.getItem(STORAGE_KEYS.ALL_ENTRIES)) {
+                localStorage.setItem(STORAGE_KEYS.ALL_ENTRIES, JSON.stringify([]));
+            }
+            
+            if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
+                const defaultSettings = {
+                    autoSave: true,
+                    maxEntries: 100,
+                    backupEnabled: true
+                };
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(defaultSettings));
+            }
+        }
+        
+        function loadTechnicianData() {
+            try {
+                // جلب بيانات الجلسة من الصفحة الرئيسية
+                const sessionData = localStorage.getItem(STORAGE_KEYS.SESSION_DATA);
+                
+                if (sessionData) {
+                    const parsedData = JSON.parse(sessionData);
+                    const technicianName = parsedData.fullname;
+                    
+                    if (technicianName && technicianName.trim() !== '') {
+                        // تعبئة حقل مسؤول الموقع تلقائياً
+                        const responsibleField = document.getElementById('site_responsible_name');
+                        responsibleField.value = technicianName;
+                        responsibleField.placeholder = 'اسم مسؤول الموقع';
+                        
+                        // إظهار إشعار التعبئة التلقائية
+                        document.getElementById('auto_filled_notice').style.display = 'block';
+                        
+                        console.log('تم تحميل بيانات الفني بنجاح:', technicianName);
+                    } else {
+                        console.log('لم يتم العثور على اسم الفني في البيانات المحفوظة');
+                        showManualInputMode();
+                    }
+                } else {
+                    console.log('لم يتم العثور على بيانات الجلسة');
+                    showManualInputMode();
+                }
+            } catch (error) {
+                console.error('خطأ في تحميل بيانات الفني:', error);
+                showManualInputMode();
+            }
+        }
+        
+        function showManualInputMode() {
+            // تغيير النص التوضيحي للحقل للسماح بالإدخال اليدوي
+            const responsibleField = document.getElementById('site_responsible_name');
+            responsibleField.placeholder = 'أدخل اسم مسؤول الموقع';
+            responsibleField.value = '';
+        }
+        
+        function loadPreviousData() {
+            // تحميل البيانات السابقة إذا كانت موجودة (اختياري)
+            const previousData = getCurrentEntry();
+            if (previousData) {
+                document.getElementById('subcontractor_name').value = previousData.subcontractor_name || '';
+                document.getElementById('site_id').value = previousData.site_id || '';
+                
+                // عدم الكتابة فوق اسم الفني إذا تم تحميله من الصفحة الرئيسية
+                const currentResponsible = document.getElementById('site_responsible_name').value;
+                if (!currentResponsible) {
+                    document.getElementById('site_responsible_name').value = previousData.site_responsible_name || '';
+                }
+            }
+        }
+        
+        function addInputValidation() {
+            // إضافة التحقق التفاعلي من المدخلات
+            document.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('input', function() {
+                    clearError(this.id);
+                    if (this.classList.contains('error')) {
+                        this.classList.remove('error');
+                    }
+                    // حفظ تلقائي أثناء الكتابة
+                    autoSaveData();
+                    
+                    // إخفاء إشعار التعبئة التلقائية إذا قام المستخدم بالتعديل
+                    if (this.id === 'site_responsible_name' && this.value !== '') {
+                        document.getElementById('auto_filled_notice').style.display = 'none';
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    validateField(this.id);
+                });
+                
+                // إضافة حدث change للقائمة المنسدلة
+                if (input.tagName === 'SELECT') {
+                    input.addEventListener('change', function() {
+                        clearError(this.id);
+                        if (this.classList.contains('error')) {
+                            this.classList.remove('error');
+                        }
+                        autoSaveData();
+                    });
+                }
+            });
+        }
+        
+        function autoSaveData() {
+            // الحصول على القيم الحالية
+            const subcontractor = document.getElementById('subcontractor_name').value;
+            const siteId = document.getElementById('site_id').value.trim();
+            const responsible = document.getElementById('site_responsible_name').value.trim();
+            
+            // حفظ البيانات مؤقتاً
+            if (subcontractor || siteId || responsible) {
+                const tempData = {
+                    subcontractor_name: subcontractor,
+                    site_id: siteId,
+                    site_responsible_name: responsible,
+                    lastSaved: new Date().toISOString()
+                };
+                localStorage.setItem(STORAGE_KEYS.CURRENT_ENTRY, JSON.stringify(tempData));
+            }
+        }
+        
+        function clearError(fieldId) {
+            const errorElement = document.getElementById(fieldId.replace('_name', '') + '_error');
+            if (errorElement) {
+                errorElement.textContent = '';
+            }
+        }
+        
+        function validateField(fieldId) {
+            const field = document.getElementById(fieldId);
+            const value = field.value;
+            
+            if (!value) {
+                showError(fieldId, getErrorMessage(fieldId));
+                field.classList.add('error');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function getErrorMessage(fieldId) {
+            const messages = {
+                'subcontractor_name': 'يجب اختيار اسم المقاول',
+                'site_id': 'يجب كتابة كود الموقع',
+                'site_responsible_name': 'يجب كتابة اسم المسؤول'
+            };
+            return messages[fieldId] || 'هذا الحقل مطلوب';
+        }
+        
+        function showError(fieldId, message) {
+            let errorId = fieldId;
+            if (fieldId === 'site_responsible_name') {
+                errorId = 'responsible';
+            } else if (fieldId === 'subcontractor_name') {
+                errorId = 'subcontractor';
+            } else if (fieldId === 'site_id') {
+                errorId = 'site_id';
+            }
+            
+            const errorElement = document.getElementById(errorId + '_error');
+            if (errorElement) {
+                errorElement.textContent = message;
+            }
+        }
+        
+        function startCreation() {
+            // مسح الأخطاء السابقة
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+            document.querySelectorAll('input, select').forEach(el => el.classList.remove('error'));
+            
+            // الحصول على القيم
+            const subcontractor = document.getElementById('subcontractor_name').value;
+            const siteId = document.getElementById('site_id').value.trim();
+            const responsible = document.getElementById('site_responsible_name').value.trim();
+            
+            // التحقق من الصحة
+            let isValid = true;
+            
+            if (!subcontractor) {
+                showError('subcontractor_name', 'يجب اختيار اسم المقاول');
+                document.getElementById('subcontractor_name').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!siteId) {
+                showError('site_id', 'يجب كتابة كود الموقع');
+                document.getElementById('site_id').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!responsible) {
+                showError('site_responsible_name', 'يجب كتابة اسم المسؤول');
+                document.getElementById('site_responsible_name').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                // تمرير سلس إلى أول حقل يحتوي على خطأ
+                const firstError = document.querySelector('input.error, select.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+                return;
+            }
+            
+            // تعطيل الزر مؤقتاً
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ جاري التوجيه...';
+            
+            // حفظ البيانات في localStorage
+            saveDataToLocalStorage(subcontractor, siteId, responsible);
+            
+            // الانتقال إلى صفحة creation.html بعد فترة قصيرة
+            setTimeout(() => {
+                window.location.href = 'creation.html';
+            }, 800);
+        }
+        
+        function saveDataToLocalStorage(subcontractor, siteId, responsible) {
+            // إنشاء كائن للبيانات الجديدة
+            const now = new Date();
+            const options = { 
+                day: '2-digit', 
+                month: 'long', 
+                year: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: true 
+            };
+            const dateString = now.toLocaleString('ar-EG', options);
+            
+            const newEntry = {
+                id: Date.now(), // استخدام الطوابع الزمنية كمعرف فريد
+                subcontractor_name: subcontractor,
+                site_id: siteId,
+                site_responsible_name: responsible,
+                dateString: dateString,
+                timestamp: now.getTime(),
+                status: 'completed',
+                version: '1.0'
+            };
+            
+            // حفظ البيانات الرئيسية
+            localStorage.setItem(STORAGE_KEYS.CURRENT_ENTRY, JSON.stringify(newEntry));
+            
+            // إضافة إلى سجل جميع البيانات
+            const allEntries = getAllEntries();
+            allEntries.push(newEntry);
+            
+            // تطبيق حد أقصى لعدد السجلات المحفوظة
+            const settings = getSettings();
+            if (allEntries.length > settings.maxEntries) {
+                allEntries.splice(0, allEntries.length - settings.maxEntries);
+            }
+            
+            localStorage.setItem(STORAGE_KEYS.ALL_ENTRIES, JSON.stringify(allEntries));
+            
+            // إنشاء نسخة احتياطية
+            if (settings.backupEnabled) {
+                createBackup(newEntry);
+            }
+            
+            console.log('تم حفظ البيانات بنجاح:', newEntry);
+        }
+        
+        function getAllEntries() {
+            const entries = localStorage.getItem(STORAGE_KEYS.ALL_ENTRIES);
+            return entries ? JSON.parse(entries) : [];
+        }
+        
+        function getCurrentEntry() {
+            const entry = localStorage.getItem(STORAGE_KEYS.CURRENT_ENTRY);
+            return entry ? JSON.parse(entry) : null;
+        }
+        
+        function getSettings() {
+            const settings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+            return settings ? JSON.parse(settings) : {};
+        }
+        
+        function createBackup(entry) {
+            // إنشاء نسخة احتياطية من البيانات
+            const backupKey = `backup_${entry.timestamp}`;
+            const backupData = {
+                ...entry,
+                backupCreated: new Date().toISOString()
+            };
+            localStorage.setItem(backupKey, JSON.stringify(backupData));
+        }
+        
+        // إضافة تأثيرات بصرية عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            // تأثير تدرجي لظهور العناصر
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                setTimeout(() => {
+                    group.style.opacity = '0';
+                    group.style.transform = 'translateY(20px)';
+                    group.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        group.style.opacity = '1';
+                        group.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 150);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>الصفحة الرئيسية - Ganoub El wadi Safety</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 80px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .content {
+      padding: 20px 15px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: calc(100vh - 140px);
+    }
+
+    .form-container {
+      background: white;
+      padding: 25px 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: white;
+      appearance: none;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: left 12px center;
+      background-size: 16px;
+      padding-left: 40px;
+    }
+
+    .signature-button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #6f42c1, #6610f2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+    }
+
+    .signature-button:hover, .signature-button:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+    }
+
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 10px 5px;
+      box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+      z-index: 1000;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .navbar button {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      border: none;
+      padding: 12px 8px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .navbar button:hover, .navbar button:active {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+    
+    .error-message {
+      color: #dc3545;
+      font-size: 0.8rem;
+      margin-top: 5px;
+      padding: 5px 8px;
+      background-color: #f8d7da;
+      border-radius: 6px;
+      border: 1px solid #f5c6cb;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    /* نافذة التوقيع */
+    .signature-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .signature-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .signature-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .signature-actions button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .signature-clear {
+      background: #dc3545;
+      color: white;
+    }
+
+    .signature-save {
+      background: #28a745;
+      color: white;
+    }
+
+    #signature-canvas {
+      border: 1px solid #ddd;
+      width: 100%;
+      height: 200px;
+      background: white;
+    }
+
+    .auto-save-notice {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      text-align: center;
+      display: none;
+    }
+
+    .auto-save-notice.show {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        padding: 15px 10px;
+      }
+      
+      .header h1 {
+        font-size: 1rem;
+      }
+
+      .content {
+        padding: 15px 10px;
+      }
+
+      .form-container {
+        padding: 20px 15px;
+        border-radius: 12px;
+      }
+
+      .navbar {
+        padding: 8px 3px;
+        gap: 6px;
+      }
+
+      .navbar button {
+        padding: 10px 6px;
+        font-size: 0.75rem;
+        min-height: 45px;
+      }
+
+      input, select {
+        padding: 12px 10px;
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .navbar {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .navbar button {
+        max-width: 200px;
+        flex: none;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Ganoub El wadi Safety - الصفحة الرئيسية</h1>
+  <button onclick="logoutUser()" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:#dc3545;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;">تسجيل الخروج</button>
+</div>
+
+<div class="content">
+  <div class="form-container">
+    <div class="form-group">
+      <label for="technicianName">اسم الفني:</label>
+      <input type="text" id="technicianName" placeholder="أدخل اسم الفني كاملاً" autocomplete="name">
+      <div id="nameError" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="jobTitle">الوظيفة:</label>
+      <select id="jobTitle">
+        <option value="">اختر الوظيفة</option>
+        <option>مهندس</option>
+        <option>رئيس فريق</option>
+        <option>فني</option>
+        <option>مسئول السيفتي</option>
+      </select>
+      <div id="jobError" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="project">المشروع:</label>
+      <select id="project">
+        <option value="">اختر المشروع</option>
+        <option>Vodafone</option>
+        <option>Orange</option>
+        <option>Etisalat</option>
+        <option>WE</option>
+      </select>
+      <div id="projectError" class="error-message"></div>
+    </div>
+
+    <div id="autoSaveNotice" class="auto-save-notice">تم حفظ البيانات تلقائياً</div>
+
+    <button type="button" class="signature-button" id="signatureBtn">إضافة التوقيع</button>
+  </div>
+</div>
+
+<!-- نافذة التوقيع -->
+<div class="signature-modal" id="signatureModal">
+  <div class="signature-content">
+    <h3>الرجاء التوقيع في المربع أدناه</h3>
+    <canvas id="signature-canvas"></canvas>
+    <div class="signature-actions">
+      <button class="signature-clear" id="clearSignature">مسح</button>
+      <button class="signature-save" id="saveSignature">حفظ التوقيع</button>
+    </div>
+  </div>
+</div>
+
+<div class="navbar">
+  <button type="button" onclick="navigateTo('vehicle/vehicle')">فحص السيارة</button>
+  <button onclick="navigateTo('Driver/DriverEvaluationForm.html')">تقييم السائق</button>
+  <button onclick="navigateToRiskAssessment('risk/Mainactivity.html')">تقييم المخاطر</button>
+  <button onclick="navigateTo('Emergency/start.html')">خطة الطوارئ</button>
+</div>
+
+<script>
+  // متغيرات التوقيع
+  let signaturePad;
+  const canvas = document.getElementById('signature-canvas');
+  let saveTimeout;
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    // تحميل البيانات المحفوظة مسبقاً
+    loadSavedData();
+    
+    // إضافة مستمعات الأحداث لحفظ البيانات تلقائياً
+    document.getElementById('technicianName').addEventListener('input', autoSaveData);
+    document.getElementById('jobTitle').addEventListener('change', autoSaveData);
+    document.getElementById('project').addEventListener('change', autoSaveData);
+    
+    // تهيئة لوحة التوقيع
+    signaturePad = new SignaturePad(canvas, {
+      backgroundColor: 'rgb(255, 255, 255)',
+      penColor: 'rgb(0, 0, 0)'
+    });
+
+    // أحداث الأزرار
+    document.getElementById('signatureBtn').addEventListener('click', openSignatureModal);
+    document.getElementById('clearSignature').addEventListener('click', clearSignature);
+    document.getElementById('saveSignature').addEventListener('click', saveSignatureData);
+  });
+
+  // دالة تحميل البيانات المحفوظة
+  function loadSavedData() {
+    try {
+      const savedData = localStorage.getItem('currentSessionData');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        document.getElementById('technicianName').value = data.fullname || '';
+        document.getElementById('jobTitle').value = data.jobTitle || '';
+        document.getElementById('project').value = data.project || '';
+      }
+    } catch (e) {
+      console.error('Error loading saved data:', e);
+    }
+  }
+
+  // دالة حفظ البيانات تلقائياً
+  function autoSaveData() {
+    // إظهار إشعار الحفظ
+    const notice = document.getElementById('autoSaveNotice');
+    notice.classList.add('show');
+    
+    // إخفاء الإشعار بعد 2 ثانية
+    setTimeout(() => {
+      notice.classList.remove('show');
+    }, 2000);
+    
+    // إلغاء المهلة السابقة إذا كانت موجودة
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+    
+    // تعيين مهلة جديدة للحفظ لتجنب التكرار المستمر
+    saveTimeout = setTimeout(() => {
+      const sessionData = {
+        fullname: document.getElementById('technicianName').value.trim(),
+        jobTitle: document.getElementById('jobTitle').value,
+        project: document.getElementById('project').value,
+        timestamp: new Date().toISOString()
+      };
+      
+      try {
+        localStorage.setItem('currentSessionData', JSON.stringify(sessionData));
+        console.log('Data saved automatically');
+      } catch (e) {
+        console.error('Error auto-saving data:', e);
+      }
+    }, 500); // تأخير 500 مللي ثانية بعد آخر تغيير
+  }
+
+  function openSignatureModal() {
+    if (!validateForm()) {
+      return;
+    }
+    document.getElementById('signatureModal').style.display = 'flex';
+    resizeCanvas();
+  }
+
+  function resizeCanvas() {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext('2d').scale(ratio, ratio);
+    signaturePad.clear();
+  }
+
+  function clearSignature() {
+    signaturePad.clear();
+  }
+
+  function saveSignatureData() {
+    if (signaturePad.isEmpty()) {
+      alert('الرجاء إضافة توقيعك أولاً');
+      return;
+    }
+
+    const signatureData = signaturePad.toDataURL();
+    saveAllData(signatureData);
+    document.getElementById('signatureModal').style.display = 'none';
+  }
+
+  function validateForm() {
+    let isValid = true;
+    const name = document.getElementById('technicianName').value.trim();
+    const job = document.getElementById('jobTitle').value;
+    const project = document.getElementById('project').value;
+
+    if (!name) {
+      showError('nameError', 'يرجى إدخال اسم الفني');
+      isValid = false;
+    } else {
+      hideError('nameError');
+    }
+    
+    if (!job) {
+      showError('jobError', 'يرجى اختيار الوظيفة');
+      isValid = false;
+    } else {
+      hideError('jobError');
+    }
+    
+    if (!project) {
+      showError('projectError', 'يرجى اختيار المشروع');
+      isValid = false;
+    } else {
+      hideError('projectError');
+    }
+
+    return isValid;
+  }
+
+  function saveAllData(signatureData) {
+    const sessionData = {
+      fullname: document.getElementById('technicianName').value.trim(),
+      jobTitle: document.getElementById('jobTitle').value,
+      project: document.getElementById('project').value,
+      signature: signatureData,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      localStorage.setItem('currentSessionData', JSON.stringify(sessionData));
+      alert('تم حفظ البيانات والتوقيع بنجاح');
+    } catch (e) {
+      console.error('Error saving data:', e);
+      alert('حدث خطأ أثناء حفظ البيانات');
+    }
+  }
+
+  function navigateToRiskAssessment() {
+    const sessionData = JSON.parse(localStorage.getItem('currentSessionData') || '{}');
+
+    if (!sessionData.fullname) {
+      alert('الرجاء إدخال البيانات وحفظ التوقيع أولاً');
+      return;
+    }
+
+    if (!sessionData.signature) {
+      alert('الرجاء إضافة التوقيع أولاً');
+      return;
+    }
+
+    window.location.href = 'risk/Mainactivity.html';
+  }
+
+  function navigateTo(page) {
+    window.location.href = page;
+  }
+
+  function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.textContent = message;
+    errorElement.classList.add('show');
+  }
+  
+  function hideError(elementId) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.classList.remove('show');
+  }
+
+  // منع التكبير المزدوج على iOS
+  document.addEventListener('touchstart', function(e) {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  });
+
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
+
+  window.addEventListener('resize', resizeCanvas);
+
+  function logoutUser() {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('loginTime');
+    window.location.href = 'index.html';
+  }
+
+  // التحقق من تسجيل الدخول
+  (function() {
+    try {
+      if (localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'index.html';
+      }
+    } catch(e) {}
+  })();
+</script>
+<script src="/libs/signature_pad.umd.min.js"></script>
+</body>
+</html>

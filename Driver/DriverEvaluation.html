@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>تقييم السائق - Ganoub ELWADY Safety</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px 15px 80px;
+      direction: rtl;
+      text-align: right;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin: -20px -15px 20px;
+    }
+
+    .header h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #listContainer {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .item {
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 15px;
+      border-radius: 12px;
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .item img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .title {
+      font-weight: bold;
+      flex: 1;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .radio-group label:hover {
+      background-color: #f0f7ff;
+    }
+
+    .radio-group input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #007bff;
+    }
+
+    .comment-button {
+      cursor: pointer;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .comment-button:hover {
+      background: linear-gradient(135deg, #0069d9, #004a9f);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .comment-button.has-comment {
+      background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .go-to-report {
+      display: block;
+      margin: 30px auto 0;
+      padding: 14px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 90%;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .go-to-report:hover {
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .go-to-report:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: translateX(-50%) !important;
+    }
+
+    /* تحسينات للشاشات الصغيرة */
+    @media (max-width: 600px) {
+      .item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .radio-group {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      
+      .comment-button {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .go-to-report {
+        width: calc(100% - 30px);
+      }
+    }
+
+    /* تحسين للوضع المظلم */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      }
+
+      .item {
+        background: rgba(45, 55, 72, 0.95);
+        border-color: rgba(255,255,255,0.1);
+      }
+
+      .title {
+        color: #e2e8f0;
+      }
+
+      .radio-group label:hover {
+        background-color: rgba(0, 123, 255, 0.2);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>نموذج تقييم السائق</h2>
+  </div>
+
+  <div id="listContainer"></div>
+
+  <button class="go-to-report" onclick="goToReport()">📋 الانتقال إلى صفحة التقرير</button>
+
+  <script>
+    const evaluationData = [
+      { 
+        title: "هل السائق ملتزم بالسرعة المحددة للطريق؟", 
+        img: "/assets/driver_evaluation_128_.png" 
+      },
+      { 
+        title: "هل يقوم السائق بربط حزام الأمان أثناء القيادة", 
+        img: "/assets/seat_balt_driver_evaluation_128_2.png" 
+      },
+      { 
+        title: "هل يقوم جميع ركاب السيارة بما في ذلك انت بربط حزام الأمان؟", 
+        img: "/assets/seat_balt_driver_evaluation_128_.png" 
+      },
+      { 
+        title: "هل يقوم السائق بالتحدث فى المحمول باليد أثناء القيادة؟", 
+        img: "/assets/no_cell_phone_driver_evaluation_128_.png" 
+      },
+      { 
+        title: "هل السيارة نظيفة؟", 
+        img: "/assets/clean_car_driver_evaluation_128.png" 
+      },
+      { 
+        title: "هل يقوم السائق او احد الركاب بالتدخين داخل السيارة؟", 
+        img: "/assets/no_smoking_driver_evaluation_128.png" 
+      },
+      { 
+        title: "هل يترك السائق مسافة كافية بين سيارته والسيارة التى امام؟", 
+        img: "/assets/good_distance_driver_evaluation_128.png" 
+      },
+      { 
+        title: "هل يستخدم السائق المرايا والاشارات بصورة سليمة؟", 
+        img: "/assets/mirror_driver_evaluation_128.png" 
+      },
+      { 
+        title: "هل يتبع السائق قواعد السلامة فى تغيير الحارات؟", 
+        img: "/assets/trafficlight.jpg" 
+      },
+      { 
+        title: "هل يقوم السائق بالانتباه للمركبات ومستخدمى الطرق الاخرى؟", 
+        img: "/assets/good_distance_driver_evaluation_128_2.png" 
+      },
+      { 
+        title: "هل يستخدم السائق الحارة الصحيحة المخصة له بأمان؟", 
+        img: "/assets/driver_evaluation_128_2.png" 
+      }
+    ];
+
+    const evaluationResults = {};
+    const evaluationComments = {};
+
+    function createEvaluationItem(index, title, img) {
+      const container = document.createElement("div");
+      container.className = "item";
+
+      const image = document.createElement("img");
+      image.src = img;
+      image.alt = title;
+      image.onerror = function() {
+        this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23007BFF"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>';
+      };
+
+      const titleEl = document.createElement("div");
+      titleEl.className = "title";
+      titleEl.textContent = title;
+
+      const radioGroup = document.createElement("div");
+      radioGroup.className = "radio-group";
+
+      const passLabel = document.createElement("label");
+      const passInput = document.createElement("input");
+      passInput.type = "radio";
+      passInput.name = `radio-${index}`;
+      passInput.id = `pass-${index}`;
+      passInput.addEventListener('change', () => {
+        evaluationResults[index] = "pass";
+      });
+      passLabel.appendChild(passInput);
+      passLabel.appendChild(document.createTextNode("نعم"));
+
+      const failLabel = document.createElement("label");
+      const failInput = document.createElement("input");
+      failInput.type = "radio";
+      failInput.name = `radio-${index}`;
+      failInput.id = `fail-${index}`;
+      failInput.addEventListener('change', () => {
+        evaluationResults[index] = "fail";
+      });
+      failLabel.appendChild(failInput);
+      failLabel.appendChild(document.createTextNode("لا"));
+
+      radioGroup.appendChild(passLabel);
+      radioGroup.appendChild(failLabel);
+
+      const commentButton = document.createElement("button");
+      commentButton.className = "comment-button";
+      commentButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> إضافة ملاحظة';
+      
+      commentButton.addEventListener('click', () => {
+        const comment = prompt(`أدخل ملاحظة لـ "${title}"`, evaluationComments[index] || "");
+        if (comment !== null) {
+          if (comment.trim()) {
+            evaluationComments[index] = comment.trim();
+            commentButton.classList.add('has-comment');
+            commentButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><path d="M22 4L12 14.01l-3-3"></path></svg> تعديل الملاحظة';
+          } else {
+            delete evaluationComments[index];
+            commentButton.classList.remove('has-comment');
+            commentButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> إضافة ملاحظة';
+          }
+        }
+      });
+
+      container.appendChild(image);
+      container.appendChild(titleEl);
+      container.appendChild(radioGroup);
+      container.appendChild(commentButton);
+
+      return container;
+    }
+
+    function goToReport() {
+      // التحقق من إجابة جميع الأسئلة
+      const unansweredQuestions = [];
+      evaluationData.forEach((_, index) => {
+        if (typeof evaluationResults[index] === 'undefined') {
+          unansweredQuestions.push(index);
+        }
+      });
+
+      if (unansweredQuestions.length > 0) {
+        alert(`يرجى الإجابة على جميع الأسئلة قبل المتابعة\nعدد الأسئلة غير المجابة: ${unansweredQuestions.length}`);
+        
+        // التمرير إلى أول سؤال غير مجاب
+        const firstUnanswered = document.querySelector(`input[name="radio-${unansweredQuestions[0]}"]`);
+        if (firstUnanswered) {
+          firstUnanswered.closest('.item').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+          
+          // إضافة تأثير اهتزاز
+          firstUnanswered.closest('.item').style.animation = 'shake 0.5s';
+          setTimeout(() => {
+            firstUnanswered.closest('.item').style.animation = '';
+          }, 500);
+        }
+        
+        return;
+      }
+
+      // تعطيل الزر أثناء المعالجة
+      const button = document.querySelector('.go-to-report');
+      button.disabled = true;
+      button.innerHTML = '⏳ جاري إعداد التقرير...';
+
+      // تجهيز البيانات للحفظ
+      const results = evaluationData.map((item, index) => ({
+        question: item.title,
+        answer: evaluationResults[index] === "pass" ? "نعم" : "لا",
+        comment: evaluationComments[index] || ""
+      }));
+
+      // حفظ البيانات
+      try {
+        localStorage.setItem("driverEvaluationSummary", JSON.stringify({
+          results,
+          date: new Date().toLocaleString('ar-EG'),
+          ...JSON.parse(localStorage.getItem('driverEvaluationData') || '{}')
+        }));
+        
+        // الانتقال بعد تأخير بسيط
+        setTimeout(() => {
+          window.location.href = "report.html";
+        }, 1000);
+      } catch (e) {
+        alert('حدث خطأ في حفظ البيانات، يرجى المحاولة مرة أخرى');
+        console.error('LocalStorage error:', e);
+        button.disabled = false;
+        button.innerHTML = '📋 الانتقال إلى صفحة التقرير';
+      }
+    }
+
+    // تهيئة الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+      const listContainer = document.getElementById('listContainer');
+      
+      evaluationData.forEach((item, index) => {
+        const listItem = createEvaluationItem(index, item.title, item.img);
+        listContainer.appendChild(listItem);
+      });
+
+      // إضافة تأثير الاهتزاز
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
+</body>
+</html>

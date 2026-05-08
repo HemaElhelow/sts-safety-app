@@ -1,0 +1,39 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  table-layout: fixed; /* إجبار أعمدة بعرض محدد */
+}
+
+th, td {
+  padding: 12px 10px;
+  font-size: 16px;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+th {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  width: 35%; /* عرض عمود العناوين */
+}
+
+td {
+  text-align: right;
+  width: 65%; /* عرض عمود البيانات */
+  border-top: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+}

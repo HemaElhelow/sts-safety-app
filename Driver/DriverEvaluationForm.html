@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>نموذج تقييم السائق - Ganoub ELWADY Safety</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 30px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .content {
+      padding: 25px 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #007bff, #28a745, #007bff);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+      border-radius: 20px 20px 0 0;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    .form-group label .required {
+      color: #dc3545;
+      margin-left: 3px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: white;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 5px;
+      padding: 8px 12px;
+      background-color: #f8d7da;
+      border-radius: 8px;
+      border: 1px solid #f5c6cb;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 15px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .submit-btn:hover,
+    .submit-btn:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .submit-btn.loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+      );
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* تحسينات للشاشات الصغيرة */
+    @media (max-width: 480px) {
+      .content {
+        padding: 20px 10px;
+      }
+
+      .form-container {
+        padding: 25px 20px;
+        border-radius: 15px;
+      }
+
+      .header h2 {
+        font-size: 1.2rem;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group input {
+        padding: 12px 14px;
+        font-size: 16px;
+      }
+
+      .submit-btn {
+        padding: 14px;
+        font-size: 15px;
+      }
+    }
+
+    /* تحسين للوضع المظلم */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      }
+
+      .form-container {
+        background: rgba(45, 55, 72, 0.95);
+        color: white;
+      }
+
+      .form-group label {
+        color: #e2e8f0;
+      }
+
+      .form-group input {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .error-message {
+        background-color: rgba(220, 53, 69, 0.2);
+        border-color: rgba(220, 53, 69, 0.3);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>نموذج تقييم السائق</h2>
+  </div>
+
+  <div class="content">
+    <div class="form-container">
+      
+      <div class="form-group">
+        <label for="name_driver">
+          اسم السائق: <span class="required">*</span>
+        </label>
+        <input type="text" id="name_driver" placeholder="أدخل اسم السائق" autocomplete="name">
+        <div id="name_driverError" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="plate_number">
+          رقم السيارة: <span class="required">*</span>
+        </label>
+        <input type="text" id="plate_number" placeholder="أدخل رقم لوحة السيارة" autocomplete="off">
+        <div id="plate_numberError" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="beneficiary_company">
+          الشركة المستفيدة: <span class="required">*</span>
+        </label>
+        <input type="text" id="beneficiary_company" placeholder="أدخل اسم الشركة المستفيدة" autocomplete="organization">
+        <div id="beneficiary_companyError" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="supplier_company">
+          شركة التوريد: <span class="required">*</span>
+        </label>
+        <input type="text" id="supplier_company" placeholder="أدخل اسم شركة التوريد" autocomplete="organization">
+        <div id="supplier_companyError" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="assessor_name">
+          اسم المقيم: <span class="required">*</span>
+        </label>
+        <input type="text" id="assessor_name" placeholder="سيتم تعبئته تلقائياً" autocomplete="name" readonly>
+        <div id="assessor_nameError" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="title">
+          الوظيفة:
+        </label>
+        <input type="text" id="title" placeholder="سيتم تعبئته تلقائياً" autocomplete="title" readonly>
+        <div id="titleError" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="company_id">
+          الرقم الوظيفي:
+        </label>
+        <input type="text" id="company_id" placeholder="أدخل الرقم الوظيفي">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">
+          رقم الهاتف:
+        </label>
+        <input type="tel" id="phone" placeholder="أدخل رقم الهاتف" autocomplete="tel">
+      </div>
+
+      <div class="form-group">
+        <label for="department">
+          القسم:
+        </label>
+        <input type="text" id="department" placeholder="أدخل اسم القسم">
+      </div>
+
+      <button class="submit-btn" onclick="submitForm()">
+        <span id="submitText">💾 حفظ والمتابعة</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // جلب البيانات من الصفحة الرئيسية عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+      loadTechnicianData();
+      
+      // إضافة مستمعي الأحداث
+      const inputs = document.querySelectorAll('.form-group input');
+      
+      inputs.forEach(input => {
+        input.addEventListener('input', function() {
+          hideError(this.id);
+        });
+      });
+    });
+
+    function loadTechnicianData() {
+      try {
+        const savedData = localStorage.getItem('currentSessionData');
+        if (savedData) {
+          const data = JSON.parse(savedData);
+          
+          // تعبئة اسم المقيم من اسم الفني
+          if (data.fullname) {
+            document.getElementById('assessor_name').value = data.fullname;
+          }
+          
+          // تعبئة الوظيفة
+          if (data.jobTitle) {
+            document.getElementById('title').value = data.jobTitle;
+          }
+        } else {
+          // إذا لم توجد بيانات محفوظة
+          console.warn('لا توجد بيانات محفوظة للفني');
+          document.getElementById('assessor_name').placeholder = 'لم يتم العثور على بيانات الفني';
+        }
+      } catch (error) {
+        console.error('خطأ في تحميل بيانات الفني:', error);
+        document.getElementById('assessor_name').placeholder = 'خطأ في تحميل البيانات';
+      }
+    }
+
+    function showError(fieldId, message) {
+      const errorElement = document.getElementById(fieldId + 'Error');
+      errorElement.textContent = message;
+      errorElement.classList.add('show');
+      
+      const inputElement = document.getElementById(fieldId);
+      inputElement.style.borderColor = '#dc3545';
+      inputElement.style.animation = 'shake 0.5s';
+      
+      setTimeout(() => {
+        inputElement.style.animation = '';
+      }, 500);
+    }
+
+    function hideError(fieldId) {
+      const errorElement = document.getElementById(fieldId + 'Error');
+      errorElement.classList.remove('show');
+      
+      const inputElement = document.getElementById(fieldId);
+      inputElement.style.borderColor = '#e0e0e0';
+    }
+
+    function hideAllErrors() {
+      document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.remove('show');
+      });
+      
+      document.querySelectorAll('.form-group input').forEach(input => {
+        input.style.borderColor = '#e0e0e0';
+      });
+    }
+
+    function setButtonLoading(loading) {
+      const button = document.querySelector('.submit-btn');
+      const submitText = document.getElementById('submitText');
+      
+      if (loading) {
+        button.classList.add('loading');
+        button.disabled = true;
+        submitText.textContent = '⏳ جاري الحفظ...';
+      } else {
+        button.classList.remove('loading');
+        button.disabled = false;
+        submitText.textContent = '💾 حفظ والمتابعة';
+      }
+    }
+
+    function validateForm() {
+      hideAllErrors();
+      let isValid = true;
+
+      const requiredFields = [
+        'name_driver',
+        'plate_number',
+        'beneficiary_company',
+        'supplier_company',
+        'assessor_name',
+        'title'
+      ];
+
+      requiredFields.forEach(field => {
+        const value = document.getElementById(field).value.trim();
+        if (!value) {
+          showError(field, 'هذا الحقل مطلوب');
+          isValid = false;
+        }
+      });
+
+      return isValid;
+    }
+
+    function submitForm() {
+      if (!validateForm()) {
+        const firstError = document.querySelector('.error-message.show');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+
+      setButtonLoading(true);
+
+      const formData = {
+        name_driver: document.getElementById('name_driver').value.trim(),
+        plate_number: document.getElementById('plate_number').value.trim(),
+        beneficiary_company: document.getElementById('beneficiary_company').value.trim(),
+        supplier_company: document.getElementById('supplier_company').value.trim(),
+        assessor_name: document.getElementById('assessor_name').value.trim(),
+        title: document.getElementById('title').value.trim(),
+        company_id: document.getElementById('company_id').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        department: document.getElementById('department').value.trim(),
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        localStorage.setItem("driverEvaluationData", JSON.stringify(formData));
+        console.log('تم حفظ البيانات بنجاح:', formData);
+        
+        setTimeout(() => {
+          window.location.href = "DriverEvaluation.html";
+        }, 1500);
+        
+      } catch (error) {
+        console.error('خطأ في حفظ البيانات:', error);
+        setButtonLoading(false);
+        alert('حدث خطأ في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+      }
+    }
+
+    // إضافة تأثير الاهتزاز
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // منع التكبير المزدوج على iOS
+    document.addEventListener('touchstart', function(e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    // حفظ عند الضغط على Enter
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        submitForm();
+      }
+    });
+  </script>
+</body>
+</html>

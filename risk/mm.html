@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>بيانات الموقع - Ganoub El wadi Safety</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 15px 80px;
+            direction: rtl;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin: -20px -15px 20px;
+        }
+
+        .header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007bff, #28a745, #007bff);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+            border-radius: 12px 12px 0 0;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .data-label {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 14px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            transform: translateY(-1px);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        button:last-child {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        button:last-child:hover {
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            padding: 8px 12px;
+            background-color: #f8d7da;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .navbar button {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .navbar button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        /* تحسين للوضع المظلم */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            }
+
+            .container {
+                background: rgba(45, 55, 72, 0.95);
+                color: white;
+            }
+
+            label {
+                color: #e2e8f0;
+            }
+
+            .data-label {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.2);
+                color: white;
+            }
+
+            input[type="text"],
+            select {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.2);
+                color: white;
+            }
+
+            input[type="text"]::placeholder,
+            select option {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .error-message {
+                background-color: rgba(220, 53, 69, 0.2);
+                border-color: rgba(220, 53, 69, 0.3);
+            }
+
+            .navbar {
+                background-color: #343a40;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>بيانات الموقع</h2>
+</div>
+
+<div class="container">
+    <label>اسم الفني</label>
+    <div class="data-label" id="labelFullname"></div>
+
+    <label for="siteCode">كود الموقع <span class="required">*</span></label>
+    <input type="text" id="siteCode" name="siteCode" placeholder="أدخل كود الموقع" required>
+    <div id="siteCodeError" class="error-message"></div>
+
+    <label for="contractor">اختر المقاول <span class="required">*</span></label>
+    <select id="contractor" name="contractor" required>
+        <option value="">-- اختر المقاول --</option>
+        <option value="GanoubElwady">GanoubElwady</option>
+        <option value="STS">STS</option>
+    </select>
+    <div id="contractorError" class="error-message"></div>
+
+    <label for="siteName">اسم الموقع <span class="required">*</span></label>
+    <input type="text" id="siteName" name="siteName" placeholder="أدخل اسم الموقع" required>
+    <div id="siteNameError" class="error-message"></div>
+
+    <label for="siteType">اختر نوع الموقع <span class="required">*</span></label>
+    <select id="siteType" name="siteType" required>
+        <option value="">-- اختر نوع الموقع --</option>
+        <option>Green field in Door</option>
+        <option>Green field Out Door</option>
+        <option>Roof Top in Door</option>
+        <option>Roof Top Out Door</option>
+        <option>Monpole</option>
+        <option>Plam</option>
+        <option>Other</option>
+    </select>
+    <div id="siteTypeError" class="error-message"></div>
+
+    <label for="office">المكتب <span class="required">*</span></label>
+    <select id="office" name="office" required>
+        <option value="">اختر المكتب</option>
+        <option>المعادي</option><option>أكتوبر</option><option>الهرم</option><option>بني سويف</option><option>الشروق</option>
+        <option>المنيا</option><option>الفيوم</option><option>أسيوط</option><option>الأقصر</option><option>أسوان</option>
+        <option>الغردقة</option><option>شرم الشيخ</option><option>السويس</option><option>نويبع</option><option>دمياط</option>
+        <option>القصير</option><option>سوهاج</option><option>قنا</option><option>بنها</option><option>كفر الشيخ</option>
+        <option>مرسى علم</option><option>غارب</option><option>اسيوط</option><option>مرسى مطروح</option><option>دمياط</option>
+        <option>المنصورة</option><option>الزقازيق</option><option>شمال سيناء</option><option>دمنهور</option><option>الإسكندرية</option>
+        <option>مطروح</option><option>طنطا<option>شبين</option><option>العلمين</option><option>النوبارية</option><option>الاسماعيلية</option>
+        <option>راس سدر</option><option>نويبع</option>
+   <option>فاقوس</option>
+    </select>
+    <div id="officeError" class="error-message"></div>
+
+    <div class="button-group">
+        <button onclick="saveAndRedirect('tower')">النشاط يتضمن برج</button>
+        <button onclick="saveAndRedirect('noTower')">النشاط لا يتضمن برج</button>
+    </div>
+</div>
+
+<div class="navbar">
+    <button type="button" onclick="location.href='/main.html'">🏠 الصفحة الرئيسية</button>
+</div>
+
+<script>
+    // قائمة الأسئلة المتعلقة بالأبراج التي سيتم إخفاؤها
+    const towerRelatedQuestions = [13, 14, 15, 16, 17, 18, 19, 23, 36, 37];
+
+    // تحميل بيانات الجلسة عند فتح الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const sessionData = JSON.parse(localStorage.getItem("currentSessionData"));
+            if (sessionData) {
+                document.getElementById("labelFullname").textContent = sessionData.fullname || "غير محدد";
+                
+                // تعيين قيمة المكتب إذا كانت موجودة في البيانات المحفوظة
+                if (sessionData.office) {
+                    document.getElementById("office").value = sessionData.office;
+                }
+            } else {
+                alert("لم يتم العثور على بيانات الجلسة. سيتم توجيهك إلى الصفحة الرئيسية.");
+                setTimeout(() => {
+                    window.location.href = "/main.html";
+                }, 1500);
+            }
+        } catch (e) {
+            console.error("Error loading session data:", e);
+        }
+
+        // إضافة علامة الحقول الإلزامية
+        const style = document.createElement('style');
+        style.textContent = `
+            .required {
+                color: #dc3545;
+                font-size: 0.9em;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+
+    function showError(fieldId, message) {
+        const errorElement = document.getElementById(fieldId + 'Error');
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+        
+        const inputElement = document.getElementById(fieldId);
+        inputElement.style.borderColor = '#dc3545';
+        inputElement.style.animation = 'shake 0.5s';
+        
+        setTimeout(() => {
+            inputElement.style.animation = '';
+        }, 500);
+    }
+
+    function hideError(fieldId) {
+        const errorElement = document.getElementById(fieldId + 'Error');
+        errorElement.classList.remove('show');
+        
+        const inputElement = document.getElementById(fieldId);
+        inputElement.style.borderColor = '#e0e0e0';
+    }
+
+    function saveAndRedirect(type) {
+        // إخفاء جميع رسائل الخطأ
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.classList.remove('show');
+        });
+
+        // جمع البيانات من النموذج
+        const siteCode = document.getElementById('siteCode').value.trim();
+        const contractor = document.getElementById('contractor').value;
+        const siteName = document.getElementById('siteName').value.trim();
+        const siteType = document.getElementById('siteType').value;
+        const office = document.getElementById('office').value;
+        
+        let isValid = true;
+        
+        // التحقق من صحة البيانات
+        if (!siteCode) {
+            showError('siteCode', 'يرجى إدخال كود الموقع');
+            isValid = false;
+        }
+        
+        if (!contractor) {
+            showError('contractor', 'يرجى اختيار المقاول');
+            isValid = false;
+        }
+        
+        if (!siteName) {
+            showError('siteName', 'يرجى إدخال اسم الموقع');
+            isValid = false;
+        }
+        
+        if (!siteType) {
+            showError('siteType', 'يرجى اختيار نوع الموقع');
+            isValid = false;
+        }
+        
+        if (!office) {
+            showError('office', 'يرجى اختيار المكتب');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            // التمرير إلى أول خطأ
+            const firstError = document.querySelector('.error-message.show');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        try {
+            // تخزين البيانات في localStorage
+            const sessionData = JSON.parse(localStorage.getItem("currentSessionData")) || {};
+            const siteData = {
+                ...sessionData,
+                siteCode: siteCode,
+                contractor: contractor,
+                siteName: siteName,
+                siteType: siteType,
+                office: office, // إضافة المكتب إلى البيانات المحفوظة
+                activityType: type, // تغيير من towerType إلى activityType لتكون متسقة مع الصفحة الثانية
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem("siteData", JSON.stringify(siteData));
+            localStorage.setItem("activityType", type); // تخزين نوع النشاط بشكل منفصل لسهولة الوصول
+
+            // إذا كان النوع "noTower" نحفظ الأسئلة المخفية
+            if (type === 'noTower') {
+                localStorage.setItem("hiddenQuestions", JSON.stringify(towerRelatedQuestions));
+            } else {
+                localStorage.removeItem("hiddenQuestions");
+            }
+
+            // التوجه إلى صفحة تقييم المخاطر
+            window.location.href = 'AA.html';
+        } catch (e) {
+            console.error("Error saving site data:", e);
+            alert("حدث خطأ في حفظ البيانات. يرجى المحاولة مرة أخرى.");
+        }
+    }
+
+    // إضافة تأثير الاهتزاز
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // إخفاء رسائل الخطأ عند البدء في الكتابة
+    document.getElementById('siteCode').addEventListener('input', () => hideError('siteCode'));
+    document.getElementById('contractor').addEventListener('change', () => hideError('contractor'));
+    document.getElementById('siteName').addEventListener('input', () => hideError('siteName'));
+    document.getElementById('siteType').addEventListener('change', () => hideError('siteType'));
+    document.getElementById('office').addEventListener('change', () => hideError('office'));
+
+    // منع التكبير المزدوج على iOS
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+</script>
+</body>
+</html>

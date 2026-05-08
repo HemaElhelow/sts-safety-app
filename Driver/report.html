@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver's Performance Evaluation Questionnaire</title>
+    <script src="/libs/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-top: 60px;
+            direction: ltr;
+            background-color: #ffffff;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 12px;
+        }
+        
+        .floating-buttons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #f8f9fa;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        button {
+            padding: 8px 15px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        #savePdf {
+            background-color: #4CAF50;
+        }
+        
+        #shareBtn {
+            background-color: #2196F3;
+        }
+        
+        #homePage {
+            background-color: #ff9800;
+        }
+        
+        .page-container {
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            height: 100px;
+            max-width: 150px;
+            object-fit: contain;
+        }
+        
+        .title {
+            text-align: center;
+            background-color: #808080;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .section-title {
+            background-color: #808080;
+            padding: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+        
+        .info-table td {
+            padding: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .evaluation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 10px;
+        }
+        
+        .evaluation-table th, .evaluation-table td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: center;
+            line-height: 1.3;
+        }
+        
+        .evaluation-table th {
+            background-color: #808080;
+            font-weight: bold;
+            padding: 6px 4px;
+        }
+        
+        .question-cell {
+            text-align: left;
+            width: 50%;
+            padding: 4px;
+        }
+        
+        .signature-area {
+            margin-top: 20px;
+            border-top: 1px solid #000;
+            padding-top: 8px;
+            margin-bottom: 15px;
+            font-size: 11px;
+        }
+        
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            margin: 0 3px;
+        }
+        
+        .comment-cell {
+            text-align: left;
+            padding: 3px;
+            font-size: 10px;
+        }
+        
+        .status-message {
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 3px;
+            display: none;
+            font-size: 12px;
+        }
+        
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        
+        .info {
+            background-color: #e7f3fe;
+            color: #31708f;
+        }
+        
+        .info-text {
+            border: 1px solid #000;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+        
+        .no-export {
+            display: block;
+        }
+        
+        @media print {
+            .no-export, .floating-buttons {
+                display: none !important;
+            }
+            
+            body {
+                padding: 5px !important;
+                padding-top: 0 !important;
+                background-color: white;
+            }
+            
+            .page-container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-buttons no-export">
+        <button id="savePdf">تصدير PDF</button>
+        <button id="shareBtn">مشاركة التقرير</button>
+        <button id="homePage">الصفحة الرئيسية</button>
+    </div>
+
+    <div class="page-container">
+        <div class="header">
+            <img src="/assets/ic.png" alt="Company Logo" class="logo">
+            <img src="/assets/zero_tolerance_safety_rules.png" alt="Safety Rules" class="logo">
+        </div>
+
+        <div class="title">
+            Driver's Performance Evaluation Questionnaire<br>
+            نموذج تقييم أداء السائق
+        </div>
+
+        <div class="info-text">
+            Thank you for your time. It is important to us to receive your feedback regarding driver safety performance. 
+            Please fill this form and send it by mail to Fleet manager and/or responsible.
+        </div>
+
+        <div id="statusMessage" class="status-message no-export"></div>
+
+        <div class="section-title">
+            Driver Information (معلومات السائق)
+        </div>
+
+        <table class="info-table">
+            <tr>
+                <td>Driver name (اسم السائق): <strong><span id="driver-name">-</span></strong></td>
+                <td>Date & Time (التاريخ والوقت): <strong><span id="report-date">-</span></strong></td>
+            </tr>
+            <tr>
+                <td>(رقم اللوحة)Plate number : <strong><span id="plate-number">-</span></strong></td>
+                <td>Supplier Company(الشركة الموردة): <strong><span id="supplier-company">-</span></strong></td>
+            </tr>
+        </table>
+
+        <div class="section-title">
+            Evaluation Questions (أسئلة التقييم)
+        </div>
+
+        <table class="evaluation-table">
+            <tr>
+                <th style="width: 45%;">Question (السؤال)</th>
+                <th style="width: 8%;">YES</th>
+                <th style="width: 8%;">NO</th>
+                <th>Comment</th>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver comply with road speed limits?<br>
+                    هل السائق ملتزم بالسرعة المحددة للطريق؟
+                </td>
+                <td><input type="checkbox" name="speed" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="speed" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-1"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver fasten his seatbelt while driving?<br>
+                    هل يقوم السائق بربط حزام الأمان أثناء القيادة؟
+                </td>
+                <td><input type="checkbox" name="seatbelt" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="seatbelt" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-2"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Do all car passengers (including you) fasten their seat belts?<br>
+                    هل يقوم جميع ركاب السيارة )بما في ذلك أنت( بربط أحزمة الأمان؟
+                </td>
+                <td><input type="checkbox" name="passengers_seatbelt" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="passengers_seatbelt" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-3"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver use the handheld mobile while driving?<br>
+                    هل يقوم السائق بالحديث في المحمول باليد أثناء القيادة؟
+                </td>
+                <td><input type="checkbox" name="mobile" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="mobile" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-4"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Is the car clean?<br>
+                    هل السيارة نظيفة؟
+                </td>
+                <td><input type="checkbox" name="clean" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="clean" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-5"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Do driver/any passenger smoke inside the car?<br>
+                    هل يقوم السائق أو أحد الركاب بالتدخين داخل السيارة؟
+                </td>
+                <td><input type="checkbox" name="smoke" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="smoke" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-6"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver leave enough distance between his car and the car in front of him?<br>
+                    هل يترك السائق مسافة كافية بين سيارته والسيارة التي أمامه طول مدة الرحلة؟
+                </td>
+                <td><input type="checkbox" name="distance" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="distance" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-7"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver use signals and mirrors frequently and when necessary?<br>
+                    هل يستخدم السائق الإشارات والمرايا بصورة صحيحة؟
+                </td>
+                <td><input type="checkbox" name="signals" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="signals" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-8"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver follow safety rules in changing lanes?<br>
+                    هل يتبع السائق قواعد السلامة في تغيير الحارات؟
+                </td>
+                <td><input type="checkbox" name="lanes" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="lanes" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-9"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver pay full attention to other vehicles, and road users?<br>
+                    هل ينتبه السائق انتباها كاملا للمركبات ومستخدمي الطرق الأخرى؟
+                </td>
+                <td><input type="checkbox" name="attention" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="attention" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-10"></span></td>
+            </tr>
+            <tr>
+                <td class="question-cell">
+                    Does driver keep lane as much as possible? Does he use the proper lane?<br>
+                    هل يستخدم السائق الحارة الصحيحة المخصصة له بأمان؟
+                </td>
+                <td><input type="checkbox" name="proper_lane" class="yes-checkbox" disabled></td>
+                <td><input type="checkbox" name="proper_lane" class="no-checkbox" disabled></td>
+                <td class="comment-cell"><span class="comment-text" id="comment-11"></span></td>
+            </tr>
+        </table>
+
+        <div class="section-title">
+            Assessor Information (معلومات القائم بالتقييم)
+        </div>
+
+        <table class="info-table">
+            <tr>
+                <td>Assessor Name (الاسم) : <strong><span id="assessor-name">-</span></strong></td>
+                <td>Your Title (لقبك الوظيفي): <strong><span id="assessor-title">-</span></strong></td>
+            </tr>
+            <tr>
+                <td>Your Company(اسم شركتك) : <strong><span id="beneficiary-company">-</span></strong></td>
+                <td>(رقمك الوظيفي)Your Company ID : <strong><span id="company-id">-</span></strong></td>
+            </tr>
+            <tr>
+                <td colspan="2">(رقم تليفونك المحمول)Your Mobile No : <strong><span id="phone">-</span></strong></td>
+            </tr>
+        </table>
+
+        <div class="signature-area">
+            توقيع القائم بالتقييم Assessor Signature : 
+            <div style="height: 40px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatusMessage('Loading evaluation data...', 'info');
+            
+            try {
+                const savedData = localStorage.getItem("driverEvaluationData");
+                const evaluationSummary = localStorage.getItem("driverEvaluationSummary");
+                
+                if (savedData) {
+                    const formData = JSON.parse(savedData);
+                    
+                    document.getElementById('driver-name').textContent = formData.name_driver || '-';
+                    document.getElementById('plate-number').textContent = formData.plate_number || '-';
+                    document.getElementById('supplier-company').textContent = formData.supplier_company || '-';
+                    
+                    document.getElementById('assessor-name').textContent = formData.assessor_name || '-';
+                    document.getElementById('assessor-title').textContent = formData.title || '-';
+                    document.getElementById('beneficiary-company').textContent = formData.beneficiary_company || '-';
+                    document.getElementById('company-id').textContent = formData.company_id || '-';
+                    document.getElementById('phone').textContent = formData.phone || '-';
+                    
+                    const now = new Date();
+                    document.getElementById('report-date').textContent = formatDateTime(now);
+                } else {
+                    showStatusMessage('No driver information found. Please start a new evaluation from the first page.', 'error');
+                }
+
+                if (evaluationSummary) {
+                    const summary = JSON.parse(evaluationSummary);
+                    
+                    summary.results.forEach((result, index) => {
+                        const questionNum = index + 1;
+                        const yesCheckbox = document.querySelector(`.evaluation-table tr:nth-child(${questionNum + 1}) .yes-checkbox`);
+                        const noCheckbox = document.querySelector(`.evaluation-table tr:nth-child(${questionNum + 1}) .no-checkbox`);
+                        const commentText = document.getElementById(`comment-${questionNum}`);
+                        
+                        if (result.answer === "نعم" || result.answer === "YES") {
+                            if (yesCheckbox) yesCheckbox.checked = true;
+                        } else if (result.answer === "لا" || result.answer === "NO") {
+                            if (noCheckbox) noCheckbox.checked = true;
+                        }
+                        
+                        if (result.comment && commentText) {
+                            commentText.textContent = result.comment;
+                        }
+                    });
+                    
+                    showStatusMessage('Evaluation data loaded successfully!', 'success');
+                } else {
+                    showStatusMessage('No evaluation answers found. Please complete the evaluation questions first.', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showStatusMessage('Error loading evaluation data. Please try again.', 'error');
+            }
+
+            document.getElementById('savePdf').addEventListener('click', exportToPdf);
+            document.getElementById('shareBtn').addEventListener('click', shareEvaluation);
+            document.getElementById('homePage').addEventListener('click', goToHomePage);
+        });
+
+        function formatDateTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+
+        function formatDateForFilename(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}${month}${day}`;
+        }
+
+        function getFileName() {
+            const driverName = document.getElementById('driver-name').textContent.replace(/\s+/g, '_');
+            const today = new Date();
+            const dateCode = formatDateForFilename(today);
+            return `driver_evaluation_${driverName}_${dateCode}.pdf`;
+        }
+
+        function showStatusMessage(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = 'status-message';
+            
+            if (type === 'success') {
+                statusElement.classList.add('success');
+            } else if (type === 'error') {
+                statusElement.classList.add('error');
+            } else {
+                statusElement.classList.add('info');
+            }
+            
+            statusElement.style.display = 'block';
+            
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function goToHomePage() {
+            window.location.href = '/main.html';
+        }
+        
+        function exportToPdf() {
+            const element = document.querySelector('.page-container');
+            const opt = {
+                margin: [5, 5],
+                filename: getFileName(),
+                image: { type: 'jpeg', quality: 0.8 },
+                html2canvas: { 
+                    scale: 1.5,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: 680,
+                    windowHeight: document.documentElement.scrollHeight,
+                    ignoreElements: function(element) {
+                        return element.classList.contains('no-export');
+                    }
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait',
+                    compress: true
+                }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                showStatusMessage('PDF exported successfully!', 'success');
+            }).catch(err => {
+                console.error('Error generating PDF:', err);
+                showStatusMessage('Error generating PDF. Please try again.', 'error');
+            });
+        }
+        
+        async function shareEvaluation() {
+            const statusElement = document.getElementById('statusMessage');
+            try {
+                showStatusMessage('Preparing evaluation for sharing...', 'info');
+                
+                // إنشاء ملف PDF
+                const element = document.querySelector('.page-container');
+                const opt = {
+                    margin: [5, 5],
+                    image: { type: 'jpeg', quality: 0.8 },
+                    html2canvas: { 
+                        scale: 1.5,
+                        scrollX: 0,
+                        scrollY: 0,
+                        windowWidth: 680,
+                        windowHeight: document.documentElement.scrollHeight,
+                        ignoreElements: function(element) {
+                            return element.classList.contains('no-export');
+                        }
+                    },
+                    jsPDF: { 
+                        unit: 'mm', 
+                        format: 'a4', 
+                        orientation: 'portrait',
+                        compress: true
+                    }
+                };
+                
+                // إخفاء رسالة الحالة قبل إنشاء PDF
+                const originalDisplay = statusElement.style.display;
+                statusElement.style.display = 'none';
+                
+                const pdfBlob = await html2pdf().set(opt).from(element).toPdf().output('blob');
+                
+                // استعادة عرض رسالة الحالة
+                statusElement.style.display = originalDisplay;
+                
+                const driverName = document.getElementById('driver-name').textContent;
+                const fileName = getFileName();
+                const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+
+                // محاولة استخدام واجهة Web Share API إذا كانت متاحة
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Driver Evaluation Report - ' + driverName,
+                            text: 'Please find attached the driver evaluation report',
+                            files: [file]
+                        });
+                        showStatusMessage('Evaluation shared successfully!', 'success');
+                    } catch (shareError) {
+                        if (shareError.name !== 'AbortError') {
+                            showStatusMessage('Sharing was cancelled', 'info');
+                        }
+                    }
+                } else {
+                    // Fallback لإرسال البريد الإلكتروني
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    const mailtoLink = `mailto:?subject=Driver Evaluation Report - ${driverName}&body=Please find attached the driver evaluation report.&attachment=${pdfUrl}`;
+                    window.location.href = mailtoLink;
+                }
+            } catch (error) {
+                console.error('Error sharing evaluation:', error);
+                showStatusMessage('Error sharing evaluation. Please try exporting as PDF instead.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

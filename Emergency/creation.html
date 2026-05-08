@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة التحقق للاستجابة للطوارئ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+            text-align: right;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 1.6em;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            margin-top: 8px;
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+        
+        .form-content {
+            padding: 20px;
+        }
+        
+        .question-box {
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f8f9ff, #ffffff);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .question-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        
+        .question-icon {
+            font-size: 2.5em;
+            min-width: 60px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+        }
+        
+        .question {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1em;
+            line-height: 1.5;
+            flex: 1;
+        }
+        
+        .options {
+            margin-top: 15px;
+        }
+        
+        .option {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+        
+        .option label {
+            font-weight: 500;
+            color: #34495e;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            text-align: right;
+            margin-top: 10px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .text-input.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .text-input.error {
+            border-color: #e74c3c;
+            background: #fff5f5;
+            animation: shake 0.3s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0, 184, 148, 0.3);
+            margin-top: 30px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 184, 148, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e1e8ed;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+            }
+            
+            .form-content {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.4em;
+            }
+            
+            .question-box {
+                padding: 15px;
+            }
+            
+            .question-icon {
+                font-size: 2em;
+                min-width: 50px;
+            }
+        }
+        
+        /* تأثير التركيز على الأسئلة غير المُجابة */
+        .question-box.unanswered {
+            border: 2px solid #e74c3c;
+            background: linear-gradient(135deg, #fff5f5, #ffffff);
+        }
+        
+        .question-box.answered {
+            border: 2px solid #00b894;
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+        }
+        
+        .required-field {
+            color: #e74c3c;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .required-field.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 قائمة التحقق للاستجابة للطوارئ</h1>
+            <div class="subtitle">تأكد من جاهزية فريقك لمواجهة الطوارئ</div>
+        </div>
+        
+        <div class="form-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 من 8 أسئلة مُجابة</div>
+            
+            <div id="questions-container">
+                <!-- الأسئلة سيتم إضافتها هنا ديناميكيًا -->
+            </div>
+            
+            <button id="submit-btn" class="submit-btn">
+                📋 إرسال الإجابات
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // بيانات الأسئلة باللغة العربية مع الأيقونات
+        const questions = [
+            {
+                id: "q1", 
+                text: "كل كروت العاملين بالفريق تحتوي علي:\n• رقم تليفون مسئول الطوارئ بالشركة\n• رقم تليفون الإسعاف 123\n• رقم تليفون الإطفاء 180\n• رقم تليفون شرطة النجدة 122",
+                icon: "🆔",
+                needsName: false
+            },
+            {
+                id: "q2", 
+                text: "هل يوجد شخص متدرب على إجراء الإسعافات الأولية ومبادئ الإنعاش القلبي الرئوي؟",
+                icon: "🏥",
+                needsName: true,
+                namePrompt: "اكتب اسم المُدرب:",
+                nameId: "trainer-name"
+            },
+            {
+                id: "q3", 
+                text: "هل يوجد مع الفريق حقيبة إسعافات أولية؟",
+                icon: "⛑️",
+                needsName: false
+            },
+            {
+                id: "q4", 
+                text: "هل يوجد شخص متدرب على مكافحة الحريق؟",
+                icon: "🧯",
+                needsName: true,
+                namePrompt: "اكتب اسم المُدرب:",
+                nameId: "fire-trainer-name"
+            },
+            {
+                id: "q5", 
+                text: "هل يوجد مع الفريق طفاية حريق؟",
+                icon: "🚒",
+                needsName: false
+            },
+            {
+                id: "q6", 
+                text: "هل يوجد شخص متدرب على الإنقاذ من المرتفعات؟",
+                icon: "🦺",
+                needsName: true,
+                namePrompt: "اكتب اسم المُدرب:",
+                nameId: "rescue-trainer-name"
+            },
+            {
+                id: "q7", 
+                text: "ما اسم أقرب مستشفيين للموقع؟",
+                icon: "🏥",
+                needsName: true,
+                namePrompt: "اكتب أسماء المستشفيات:",
+                alwaysShowName: true,
+                nameId: "hospital-names"
+            },
+            {
+                id: "q8", 
+                text: "هل طريق مخرج الطوارئ آمن وخالي من العوائق؟",
+                icon: "🚪",
+                needsName: true,
+                namePrompt: "كم عدد المخارج:",
+                nameId: "emergency-exits"
+            }
+        ];
+
+        let answeredQuestions = 0;
+        let savedAnswers = {};
+
+        // تحميل الإجابات المحفوظة من localStorage
+        function loadSavedAnswers() {
+            const saved = localStorage.getItem('emergencyChecklistAnswers');
+            if (saved) {
+                savedAnswers = JSON.parse(saved);
+                answeredQuestions = Object.keys(savedAnswers).length;
+                updateProgress();
+                
+                // ملء النموذج بالإجابات المحفوظة
+                Object.keys(savedAnswers).forEach(index => {
+                    const answer = savedAnswers[index];
+                    const radio = document.querySelector(`input[name="q${index}"][value="${answer.answer}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        
+                        const nameInput = document.getElementById(`q${index}-name`);
+                        if (nameInput && answer.name) {
+                            nameInput.value = answer.name;
+                            if (questions[index].alwaysShowName || (questions[index].needsName && answer.answer === 'yes')) {
+                                nameInput.classList.add('show');
+                            }
+                        }
+                        
+                        updateQuestionState(document.querySelector(`.question-box:nth-child(${parseInt(index) + 2})`), parseInt(index));
+                    }
+                });
+            }
+        }
+
+        // عرض الأسئلة
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            
+            questions.forEach((question, index) => {
+                const questionBox = document.createElement('div');
+                questionBox.className = 'question-box';
+                questionBox.style.animationDelay = `${index * 0.1}s`;
+                
+                questionBox.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-icon">${question.icon}</div>
+                        <div class="question">${question.text.replace(/\n/g, '<br>')}</div>
+                    </div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q${index}-yes" name="q${index}" value="yes">
+                            <label for="q${index}-yes">نعم ✅</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q${index}-no" name="q${index}" value="no">
+                            <label for="q${index}-no">لا ❌</label>
+                        </div>
+                        ${question.needsName || question.alwaysShowName ? 
+                            `<input type="text" id="q${index}-name" class="text-input" 
+                                  placeholder="${question.namePrompt || 'الرجاء إدخال الاسم'}"
+                                  data-required="${question.needsName}">
+                             <div class="required-field" id="q${index}-required">هذا الحقل مطلوب</div>` 
+                            : ''}
+                    </div>
+                `;
+                
+                container.appendChild(questionBox);
+                
+                // إضافة أحداث للإجابات
+                const yesRadio = document.getElementById(`q${index}-yes`);
+                const noRadio = document.getElementById(`q${index}-no`);
+                const nameInput = document.getElementById(`q${index}-name`);
+                const requiredField = document.getElementById(`q${index}-required`);
+                
+                // تحديث التقدم عند الإجابة
+                [yesRadio, noRadio].forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        updateProgress();
+                        updateQuestionState(questionBox, index);
+                        
+                        // حفظ الإجابة
+                        savedAnswers[index] = {
+                            question: question.text,
+                            answer: radio.value,
+                            name: nameInput ? nameInput.value.trim() : null
+                        };
+                        
+                        // حفظ في localStorage
+                        localStorage.setItem('emergencyChecklistAnswers', JSON.stringify(savedAnswers));
+                        
+                        // التحقق من صحة الحقول المطلوبة
+                        validateNameField(index);
+                    });
+                });
+                
+                // إظهار/إخفاء حقل النص
+                if (nameInput) {
+                    if (question.alwaysShowName) {
+                        nameInput.classList.add('show');
+                    }
+                    
+                    yesRadio.addEventListener('change', () => {
+                        if (!question.alwaysShowName) {
+                            nameInput.classList.add('show');
+                            nameInput.focus();
+                        }
+                        // التحقق من صحة الحقول المطلوبة
+                        validateNameField(index);
+                    });
+                    
+                    noRadio.addEventListener('change', () => {
+                        if (!question.alwaysShowName) {
+                            nameInput.classList.remove('show');
+                            nameInput.value = '';
+                            nameInput.classList.remove('error');
+                            if (requiredField) {
+                                requiredField.classList.remove('show');
+                            }
+                        }
+                        // التحقق من صحة الحقول المطلوبة
+                        validateNameField(index);
+                    });
+                    
+                    // تحديث الإجابة المحفوظة عند تغيير النص
+                    nameInput.addEventListener('input', () => {
+                        if (savedAnswers[index]) {
+                            savedAnswers[index].name = nameInput.value.trim();
+                            localStorage.setItem('emergencyChecklistAnswers', JSON.stringify(savedAnswers));
+                        }
+                        nameInput.classList.remove('error');
+                        if (requiredField) {
+                            requiredField.classList.remove('show');
+                        }
+                    });
+                }
+            });
+        }
+
+        // التحقق من صحة حقل الاسم
+        function validateNameField(index) {
+            const question = questions[index];
+            const nameInput = document.getElementById(`q${index}-name`);
+            const requiredField = document.getElementById(`q${index}-required`);
+            const yesRadio = document.getElementById(`q${index}-yes`);
+            
+            if (question.needsName && yesRadio && yesRadio.checked && nameInput) {
+                if (nameInput.value.trim() === '') {
+                    nameInput.classList.add('error');
+                    if (requiredField) {
+                        requiredField.classList.add('show');
+                    }
+                    return false;
+                } else {
+                    nameInput.classList.remove('error');
+                    if (requiredField) {
+                        requiredField.classList.remove('show');
+                    }
+                    return true;
+                }
+            }
+            
+            return true;
+        }
+
+        // تحديث شريط التقدم
+        function updateProgress() {
+            answeredQuestions = Object.keys(savedAnswers).length;
+            const percentage = (answeredQuestions / questions.length) * 100;
+            
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = 
+                `${answeredQuestions} من ${questions.length} أسئلة مُجابة`;
+        }
+
+        // تحديث حالة السؤال بصرياً
+        function updateQuestionState(questionBox, index) {
+            const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+            
+            if (selectedOption) {
+                questionBox.classList.remove('unanswered');
+                questionBox.classList.add('answered');
+            } else {
+                questionBox.classList.remove('answered');
+                questionBox.classList.add('unanswered');
+            }
+        }
+
+        // التحقق من اكتمال الإجابات
+        function validateAnswers() {
+            let allValid = true;
+            const errors = [];
+            
+            questions.forEach((question, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                const nameInput = document.getElementById(`q${index}-name`);
+                const questionBox = document.querySelector(`.question-box:nth-child(${index + 2})`);
+                
+                if (!selectedOption) {
+                    allValid = false;
+                    questionBox.classList.add('unanswered');
+                    errors.push(`السؤال ${index + 1} غير مُجاب`);
+                    return;
+                }
+                
+                // التحقق من حقل النص المطلوب
+                if (!validateNameField(index)) {
+                    allValid = false;
+                    errors.push(`يرجى تعبئة اسم المطلوب في السؤال ${index + 1}`);
+                }
+            });
+            
+            return { valid: allValid, errors };
+        }
+
+        // إرسال الإجابات والانتقال إلى صفحة النتائج
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const validation = validateAnswers();
+            
+            if (!validation.valid) {
+                alert('⚠️ ' + validation.errors.join('\n'));
+                
+                // التمرير إلى أول سؤال غير مُجاب
+                const firstUnanswered = document.querySelector('.question-box.unanswered');
+                if (firstUnanswered) {
+                    firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return;
+            }
+            
+            // تعطيل الزر أثناء الإرسال
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ جاري الإرسال...';
+            
+            // محاكاة إرسال البيانات
+            setTimeout(() => {
+                console.log('الإجابات المحفوظة:', savedAnswers);
+                
+                // حفظ في localStorage
+                localStorage.setItem('emergencyChecklistAnswers', JSON.stringify(savedAnswers));
+                
+                // الانتقال إلى صفحة النتائج
+                window.location.href = 'result.html';
+                
+            }, 1000);
+        });
+
+        // تحميل الأسئلة والإجابات المحفوظة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            loadSavedAnswers();
+        });
+    </script>
+</body>
+</html>

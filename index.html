@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>تسجيل الدخول - STS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* خلفية متحركة */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      animation: backgroundMove 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes backgroundMove {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-20px, -20px) scale(1.1); }
+    }
+
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 380px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .company-logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 25px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      animation: logoFloat 3s ease-in-out infinite;
+      font-size: 48px;
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 35px 30px;
+      border-radius: 20px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      width: 100%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #007bff, #0056b3, #007bff);
+      background-size: 200% 100%;
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .login-box h2 {
+      margin-bottom: 25px;
+      color: #333;
+      font-weight: 700;
+      font-size: 1.5rem;
+      position: relative;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 16px 20px;
+      padding-right: 50px;
+      border: 2px solid #e0e0e0;
+      border-radius: 15px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: white;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .input-group .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 18px;
+      transition: color 0.3s ease;
+    }
+
+    .input-group input:focus + .input-icon {
+      color: #007bff;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 15px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .login-button:hover, .login-button:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+    }
+
+    .login-button.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .login-button.loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+      );
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .forgot-password {
+      margin-top: 15px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .forgot-password a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-password a:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 14px;
+      border: 1px solid #f5c6cb;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 14px;
+      border: 1px solid #c3e6cb;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    /* تحسينات للشاشات الصغيرة */
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+
+      .login-container {
+        max-width: 100%;
+      }
+
+      .company-logo {
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+        margin-bottom: 20px;
+      }
+
+      .login-box {
+        padding: 25px 20px;
+        border-radius: 15px;
+      }
+
+      .login-box h2 {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+      }
+
+      .input-group input {
+        padding: 14px 18px;
+        padding-right: 45px;
+        font-size: 16px; /* منع التكبير التلقائي في iOS */
+      }
+
+      .login-button {
+        padding: 14px;
+        font-size: 15px;
+      }
+    }
+
+    /* تحسينات للشاشات الصغيرة جداً */
+    @media (max-width: 360px) {
+      .login-box {
+        padding: 20px 15px;
+      }
+
+      .company-logo {
+        width: 80px;
+        height: 80px;
+        font-size: 28px;
+      }
+    }
+
+    /* تحسين للوضع الأفقي على الهواتف */
+    @media (max-height: 600px) and (orientation: landscape) {
+      body {
+        padding: 10px;
+      }
+
+      .company-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .login-box {
+        padding: 20px 25px;
+      }
+
+      .login-box h2 {
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+    }
+
+    /* تحسين للوضع المظلم */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      }
+
+      .login-box {
+        background: rgba(45, 55, 72, 0.95);
+        color: white;
+      }
+
+      .login-box h2 {
+        color: white;
+      }
+
+      .input-group input {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      .input-group input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="company-logo">
+      Ganoub Elwady
+    </div>
+    
+    <div class="login-box">
+      <h2>تسجيل الدخول</h2>
+      
+      <div class="input-group">
+        <input type="password" id="loginPassword" placeholder="كلمة المرور" autocomplete="current-password">
+        <span class="input-icon">🔒</span>
+      </div>
+      
+      <button class="login-button" onclick="loginUser()">
+        <span id="buttonText">دخول</span>
+      </button>
+      
+      <div id="errorMessage" class="error-message"></div>
+      <div id="successMessage" class="success-message"></div>
+      
+      <div class="forgot-password">
+        <a href="#" onclick="showAdminContact()">نسيت كلمة المرور؟</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // كلمة المرور الثابتة للنظام
+    const SYSTEM_PASSWORD = "sts@2023";
+
+    function showError(message) {
+      const errorElement = document.getElementById("errorMessage");
+      const successElement = document.getElementById("successMessage");
+      
+      successElement.classList.remove("show");
+      errorElement.textContent = message;
+      errorElement.classList.add("show");
+      
+      // إخفاء الرسالة تلقائياً بعد 5 ثوانٍ
+      setTimeout(() => {
+        errorElement.classList.remove("show");
+      }, 5000);
+    }
+
+    function showSuccess(message) {
+      const errorElement = document.getElementById("errorMessage");
+      const successElement = document.getElementById("successMessage");
+      
+      errorElement.classList.remove("show");
+      successElement.textContent = message;
+      successElement.classList.add("show");
+    }
+
+    function setButtonLoading(loading) {
+      const button = document.querySelector(".login-button");
+      const buttonText = document.getElementById("buttonText");
+      
+      if (loading) {
+        button.classList.add("loading");
+        buttonText.textContent = "جاري التحميل...";
+        button.disabled = true;
+      } else {
+        button.classList.remove("loading");
+        buttonText.textContent = "دخول";
+        button.disabled = false;
+      }
+    }
+
+    function loginUser() {
+      const password = document.getElementById("loginPassword").value;
+      
+      // مسح الرسائل السابقة
+      document.getElementById("errorMessage").classList.remove("show");
+      document.getElementById("successMessage").classList.remove("show");
+      
+      if (!password) {
+        showError("يرجى إدخال كلمة المرور");
+        document.getElementById("loginPassword").focus();
+        return;
+      }
+      
+      // تأثير التحميل
+      setButtonLoading(true);
+      
+      // محاكاة تأخير الشبكة
+      setTimeout(() => {
+        if (password === SYSTEM_PASSWORD) {
+          showSuccess("تم تسجيل الدخول بنجاح!");
+          
+          // تخزين حالة تسجيل الدخول دائمًا باستخدام localStorage
+          try {
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("loginTime", new Date().toISOString());
+          } catch (e) {
+            console.warn('Could not save to localStorage:', e);
+          }
+          
+          // توجيه المستخدم إلى الصفحة الرئيسية بعد ثانيتين
+          setTimeout(() => {
+            window.location.href = "main.html";
+          }, 1500);
+          
+        } else {
+          setButtonLoading(false);
+          showError("كلمة المرور غير صحيحة");
+          document.getElementById("loginPassword").value = "";
+          document.getElementById("loginPassword").focus();
+        }
+      }, 1000);
+    }
+
+    function showAdminContact() {
+      // تأثير بصري أفضل من alert
+      showError("للاستفسار عن كلمة المرور، يرجى التواصل مع مدير النظام");
+    }
+
+    // السماح بالدخول عند الضغط على Enter
+    document.getElementById("loginPassword").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        loginUser();
+      }
+    });
+
+    // التركيز التلقائي على حقل كلمة المرور عند تحميل الصفحة
+    window.addEventListener('load', function() {
+      document.getElementById("loginPassword").focus();
+    });
+
+    // إخفاء رسائل الخطأ عند البدء في الكتابة
+    document.getElementById("loginPassword").addEventListener('input', function() {
+      document.getElementById("errorMessage").classList.remove("show");
+      document.getElementById("successMessage").classList.remove("show");
+    });
+
+    // منع التكبير المزدوج على iOS
+    document.addEventListener('touchstart', function(e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    // التحقق من حالة تسجيل الدخول السابقة باستخدام localStorage
+    window.addEventListener('load', function() {
+      try {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        if (isLoggedIn === "true") {
+          window.location.href = "main.html";
+        }
+      } catch (e) {
+        console.warn('Could not access localStorage:', e);
+      }
+    });
+
+    // تسجيل Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        console.warn('SW registration failed:', err);
+      });
+    }
+  </script>
+</body>
+</html>
